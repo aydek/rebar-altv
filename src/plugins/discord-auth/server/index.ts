@@ -72,7 +72,9 @@ async function handleToken(player: alt.Player, token: string) {
     }
 
     if (account.banned) {
-        player.kick(account.reason || translate.t('discord.auth.banned.no.reason'));
+        player.kick(
+            `${translate.t('discord.auth.banned')} ${account.reason || translate.t('discord.auth.banned.no.reason')}`,
+        );
         return;
     }
 
@@ -99,6 +101,8 @@ async function handleToken(player: alt.Player, token: string) {
         username: currentUser.username,
         avatar: currentUser.avatar,
     });
+
+   
 
     alt.setTimeout(() => {
         setAccount(player, account);
@@ -152,6 +156,8 @@ function setAccount(player: alt.Player, account: Account) {
     Rebar.document.account.useAccountBinder(player).bind(account);
     const playerWorld = Rebar.player.useWorld(player);
     const view = Rebar.player.useWebview(player);
+
+   
 
     playerWorld.clearScreenFade(500);
     view.hide('DiscordAuth');

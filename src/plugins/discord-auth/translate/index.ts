@@ -13,6 +13,7 @@ setBulk({
         'discord.auth.guild.no.member': `You aren't in our discord server, please join before connect.`,
         'discord.auth.guild.no.whitelist': 'You are not whitelisted. Please check our whitelist policy.',
         'discord.auth.success': 'has authenticated.',
+        'discord.auth.banned': 'You are banned! ',
         'discord.auth.banned.no.reason': 'Without any reason.',
 
         'discord.auth.title': 'Discord Authentication',
@@ -31,7 +32,8 @@ setBulk({
         'discord.auth.guild.no.member': 'Prisijunkite prie mūsų discord serverio ir bandykite dar kartą.',
         'discord.auth.guild.no.whitelist': 'Paskyra nėra patvirtinta, daugiau informacijos discord serveryje.',
         'discord.auth.success': 'has authenticated.',
-        'discord.auth.banned.no.reason': 'be priežasties',
+        'discord.auth.banned': 'Esate užblokuotas!',
+        'discord.auth.banned.no.reason': 'Be priežasties',
 
         'discord.auth.title': 'Discord Autorizacija',
         'discord.auth.subtile': 'Prisijungiama su discord...',
