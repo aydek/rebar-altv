@@ -1,5 +1,5 @@
 const translations = {};
-let defaultLang = 'en';
+let defaultLang = 'lt';
 
 export function useTranslate(lang: string = defaultLang) {
     /**
