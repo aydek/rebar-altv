@@ -1,10 +1,13 @@
 {
     "compilerOptions": {
-        "baseUrl": "src",
+        "baseUrl": "./",
         "paths": {
-            "@Server/*": ["main/server/*"],
-            "@Client/*": ["main/client/*"],
-            "@Shared/*": ["main/shared/*"]
+            "@Server/*": ["src/main/server/*"],
+            "@Client/*": ["src/main/client/*"],
+            "@Shared/*": ["src/main/shared/*"],
+            "@Components/*": ["webview/src/components/*"],
+            "@Composables/*": ["webview/composables/*"],
+            
         },
         "typeRoots": ["./node_modules/@types", "./node_modules/@altv"],
         "removeComments": true,

@@ -14,7 +14,9 @@ export function useAudio() {
     async function play(path: string) {
         const audio = new Audio(path);
         audio.loop = false;
-        await audio.play();
+        try {
+            await audio.play();
+        } catch {}
 
         // this._audio[soundID] = new Audio(path);
         // this._audio[soundID].soundID = soundID;

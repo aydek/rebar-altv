@@ -1,6 +1,7 @@
 const translations = {};
+let defaultLang = 'en';
 
-export function useTranslate(lang: string = 'en') {
+export function useTranslate(lang: string = defaultLang) {
     /**
      * Translate text based on key
      *
