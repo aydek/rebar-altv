@@ -1,26 +1,18 @@
 import * as alt from 'alt-client';
-import * as native from 'natives';
-import { useWebview } from '@Client/webview/index.js';
-import { DiscordEvents } from '../shared/events.js';
+import { DiscordAuthEvents } from '../shared/events.js';
 
-const webview = useWebview();
-const DISCORD_APP_ID = '955250749867175966';
 
-async function beginAuth() {
-    try {
-        await alt.Utils.waitFor(() => alt.isGameFocused(), 99999999999);
-    } catch (error) {
-        native.restartGame();
-    }
+async function getDiscordToken(applicationIdentifier: string) {
+    let bearerToken: string;
 
     try {
-        const token = await alt.Discord.requestOAuth2Token(DISCORD_APP_ID);
-        alt.emitServer(DiscordEvents.toServer.passToken, token);
-    } catch (e) {
-        alt.logError(e);
-        alt.emitServer(DiscordEvents.toServer.passToken, undefined);
+        bearerToken = await alt.Discord.requestOAuth2Token(applicationIdentifier);
+    } catch (err) {
+        console.log('Error getDiscordToken');
+        console.log(err);
     }
-    webview.off(DiscordEvents.toClient.beginAuth);
+
+    alt.emitServer(DiscordAuthEvents.toServer.pushToken, bearerToken);
 }
 
-webview.on(DiscordEvents.toClient.beginAuth, beginAuth);
+alt.onServer(DiscordAuthEvents.toClient.requestToken, getDiscordToken);

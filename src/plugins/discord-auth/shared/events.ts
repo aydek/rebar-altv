@@ -1,11 +1,11 @@
-export const DiscordEvents = {
-    toClient: {
-        beginAuth: 'DiscordEvents:toClient:beginAuth',
-    },
+export const DiscordAuthEvents = {
     toServer: {
-        passToken: 'DiscordEvents:toServer:passToken',
+        pushToken: 'discord:event:pushToken',
+    },
+    toClient: {
+        requestToken: 'discord:event:requestToken',
     },
     toWebview: {
-        updateData: 'DiscordEvents:toWebview:updateData',
+        updateData: 'discord:event:updateData',
     },
 };

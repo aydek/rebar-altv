@@ -3,29 +3,22 @@ const { setBulk } = useTranslate();
 
 setBulk({
     en: {
-        'dcauth.div.welcome': 'Welcome to the server!',
-        'dcauth.div.authorizing': 'Authorizing using discord...',
-        'dcauth.div.disclamer': 'If nothing happens in 5 seconds, minimize the game and check discord client.',
+        'discord.auth.to.long': 'No session request found. Restart client.',
+        'discord.auth.no.session': 'No session request found. Restart client.',
+        'discord.auth.already.complete': 'Session request already completed. Restart client.',
+        'discord.auth.expired.session': 'Authentication session expired. Restart client.',
+        'discord.auth.token.failed': 'Failed to Authenticate with Discord. Restart client.',
+        'discord.auth.request.failed': 'cannot get current your Discord user.',
+        'discord.auth.account.failed': 'failed to get or create account',
+        'discord.auth.guild.no.member': 'you arent in our discord server, please join before connect',
+        'discord.auth.guild.no.whitelist': 'you are not whitelisted. Please check our whitelist policy',
+        'discord.auth.success': 'has authenticated.',
+        'discord.auth.banned.no.reason': 'without any reason',
 
-        'dcauth.div.login': 'Logging in...',
 
-        'dcauth.error.notoken': 'Discord Application was not launched. Rejoin with Discord Launched.',
-        'dcauth.error.norequest': 'No login request found. Rejoin server.',
-        'dcauth.error.badToken': 'Could not authorize token. Rejoin server.',
-
-        'dcauth.error.invalidData': 'Discord data was invalid. Rejoin server.',
-    },
-    lt: {
-        'dcauth.div.welcome': 'Sveiki atvykę!',
-        'dcauth.div.authorizing': 'Autorizuojama naudojant discord...',
-        'dcauth.div.disclamer': 'Jei nieko neįvyko per 5 secundes, patikrinkite discord klientą.',
-
-        'dcauth.div.login': 'Jungiamasi...',
-
-        'dcauth.error.notoken': 'Discord programa nepaleista. Prisijunkite iš naujo su atidarytu discord klientu.',
-        'dcauth.error.norequest': 'Neradome prisijungimo prašymo, bandykite iš naujo.',
-        'dcauth.error.badToken': 'Autorizacija nepavyko, bandykite iš naujo. (Bad Token)',
-
-        'dcauth.error.invalidData': 'Discord duomenys netinkami, bandykite iš naujo.',
-    },
-});
+        'discord.auth.title': 'Discord Authentication',
+        'discord.auth.subtile': 'Authorizing using discord...',
+        'discord.auth.information': 'If nothing happens in 5 seconds, minimize the game and check discord client.',
+        'discord.auth.login': 'Logging in...',
+    }
+})

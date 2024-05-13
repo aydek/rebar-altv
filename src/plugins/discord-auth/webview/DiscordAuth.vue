@@ -4,7 +4,7 @@ import '../translate/index';
 import { useEvents } from '@Composables/useEvents';
 import { useTranslate } from '@Shared/translate';
 import { onMounted, ref } from 'vue';
-import { DiscordEvents } from '../shared/events';
+import { DiscordAuthEvents } from '../shared/events';
 
 interface IInfo {
     id: string;
@@ -22,18 +22,14 @@ function handleData(data: IInfo) {
 }
 
 onMounted(() => {
-    setTimeout(() => {
-        events.emitClient(DiscordEvents.toClient.beginAuth);
-    }, 2000);
-
-    events.on(DiscordEvents.toWebview.updateData, handleData);
+    events.on(DiscordAuthEvents.toWebview.updateData, handleData);
 });
 </script>
 
 <template>
     <FullScreenBG class="grid place-items-center text-xl font-bold">
         <div class="text-bg-shadow flex flex-col items-center gap-4 text-center" v-if="info">
-            <div class="mb-5">{{ t('dcauth.div.login') }}</div>
+            <div class="mb-5">{{ t('discord.auth.login') }}</div>
 
             <img
                 :src="`https://cdn.discordapp.com/avatars/${info.id}/${info.avatar}.png`"
@@ -43,7 +39,7 @@ onMounted(() => {
         </div>
 
         <div class="flex flex-col items-center gap-4" v-if="!info">
-            <div class="mb-5">{{ t('dcauth.div.welcome') }}</div>
+            <div class="mb-5">{{ t('discord.auth.title') }}</div>
             <svg class="aspect-square w-24 animate-bounce" viewBox="0 -28.5 256 256" preserveAspectRatio="xMidYMid">
                 <g>
                     <path
@@ -54,8 +50,8 @@ onMounted(() => {
                 </g>
             </svg>
             <div class="flex flex-col items-center gap-2 text-center">
-                <div>{{ t('dcauth.div.authorizing') }}</div>
-                <div class="text-neutral-400">{{ t('dcauth.div.disclamer') }}</div>
+                <div>{{ t('discord.auth.subtile') }}</div>
+                <div class="text-neutral-400">{{ t('discord.auth.information') }}</div>
             </div>
         </div>
     </FullScreenBG>

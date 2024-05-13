@@ -1,90 +1,164 @@
 import * as alt from 'alt-server';
+import { DiscordAuthConfig } from './config.js';
+import { DiscordAuthEvents } from '../shared/events.js';
 import { useRebar } from '@Server/index.js';
+import { Account } from '@Shared/types/index.js';
+import { getCurrentUser, getUserGuildMember, requestInit } from './requests.js';
+import { DiscordInfo, DiscordSession } from '../shared/discordAuth.js';
+import { useTranslate } from '@Shared/translate.js';
+
+import '../translate/index.js';
+
+import * as Plugin from './api.js';
 
 const Rebar = useRebar();
+const db = Rebar.database.useDatabase();
+const translate = useTranslate();
 
-import { Account } from '@Shared/types/account.js';
-import { useTranslate } from '@Shared/translate.js';
-import '../translate/index.js';
-import { DiscordEvents } from '../shared/events.js';
-const { t } = useTranslate('en');
+const sessions: Array<DiscordSession> = [];
 
-const loginCallbacks: Array<(player: alt.Player) => void> = [];
-const loginRequest: { [id: string]: boolean } = {};
+requestInit();
 
-async function handleToken(player: alt.Player, token: string) {
-    if (!token) {
-        player.kick(t('dcauth.error.notoken'));
-        return;
-    }
-
-    if (!loginRequest[player.id]) {
-        player.kick(t('dcauth.error.norequest'));
-        return;
-    }
-
-    const request: Response | undefined = await fetch('https://discordapp.com/api/users/@me', {
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: `Bearer ${token}`,
-        },
-    }).catch((err) => {
-        alt.logError(err);
-        player.kick(t('dcauth.error.norequest'));
-        return undefined;
-    });
-
-    if (!request || !request.ok) {
-        player.kick(t('dcauth.error.badToken'));
-        return;
-    }
-
-    const data = await request.json();
-    if (!data.username || !data.id) {
-        player.kick(t('dcauth.error.invalidData'));
-        return;
-    }
-
-    delete loginRequest[player.id];
-
-    alt.log('heelllooo???????????');
-    Rebar.player.useWebview(player).emit(DiscordEvents.toWebview.updateData, {
-        id: data.id,
-        username: data.username,
-        avatar: data.avatar,
-    });
-}
-
-async function handleConnect(player: alt.Player) {
-    loginRequest[player.id] = true;
+function handleConnect(player: alt.Player) {
+    const playerWorld = Rebar.player.useWorld(player);
 
     player.dimension = player.id + 1;
-    Rebar.player.useWebview(player).show('DiscordAuth', 'page');
-    Rebar.player.useNative(player).invoke('doScreenFadeOut', 0);
+    playerWorld.setScreenFade(0);
+
+    sessions.push({
+        id: player.id,
+        expiration: Date.now() + 60000 * DiscordAuthConfig.SESSION_EXPIRE_TIME_IN_MINUTES,
+    });
+
+    const view = Rebar.player.useWebview(player);
+    view.show('DiscordAuth', 'page');
+    alt.setTimeout(() => {
+        player.emit(DiscordAuthEvents.toClient.requestToken, DiscordAuthConfig.APPLICATION_ID);
+    }, 2000);
 }
 
-async function handleDisconnect(player: alt.Player) {
-    delete loginRequest[player.id];
+async function handleToken(player: alt.Player, token: string) {
+    if (!player || !player.valid) return;
+    alt.log(`${player.name} needs to be authenticated.`);
+
+    setSessionFinish(player);
+
+    if (!token) {
+        player.kick(translate.t('discord.auth.token.failed'));
+        return;
+    }
+
+    const currentUser = (await getCurrentUser(token)) as DiscordInfo | undefined;
+    if (!currentUser) {
+        player.kick(translate.t('discord.auth.request.failed'));
+        return;
+    }
+
+    let account = await db.get<Account>({ discord: currentUser.id }, Rebar.database.CollectionNames.Accounts);
+
+    if (!account) {
+        const _id = await db.create<Partial<Account>>(
+            {
+                discord: currentUser.id,
+            },
+            Rebar.database.CollectionNames.Accounts,
+        );
+        account = await db.get<Account>({ _id }, Rebar.database.CollectionNames.Accounts);
+    }
+
+    if (!account) {
+        player.kick(translate.t('discord.auth.account.failed'));
+        return;
+    }
+
+    if (account.banned) {
+        player.kick(account.reason || translate.t('discord.auth.banned.no.reason'));
+        return;
+    }
+
+    if (DiscordAuthConfig.SERVER_ID && DiscordAuthConfig.SERVER_ID.length !== 0) {
+        const guildMember = await getUserGuildMember(currentUser.id);
+        if (!guildMember) {
+            player.kick(translate.t('discord.auth.guild.no.member'));
+            return;
+        }
+
+        if (DiscordAuthConfig.WHITELIST_ROLE_ID && DiscordAuthConfig.WHITELIST_ROLE_ID.length !== 0) {
+            const role = guildMember.roles.cache.get(DiscordAuthConfig.WHITELIST_ROLE_ID);
+            if (!role) {
+                player.kick(translate.t('discord.auth.guild.no.whitelist'));
+                return;
+            }
+        }
+    }
+
+    alt.log(`${currentUser.username} has authenticated.`);
+
+    Rebar.player.useWebview(player).emit(DiscordAuthEvents.toWebview.updateData, {
+        id: currentUser.id,
+        username: currentUser.username,
+        avatar: currentUser.avatar,
+    });
+
+    alt.setTimeout(() => {
+        setAccount(player, account);
+    }, 2000);
 }
 
-alt.onClient(DiscordEvents.toServer.passToken, handleToken);
+function cleanupSessions() {
+    let count = 0;
+    for (let i = sessions.length - 1; i >= 0; i--) {
+        if (sessions[i].expiration > Date.now() && !sessions[i].finished) {
+            continue;
+        }
+
+        const player = alt.Player.all.find((x) => x.id === sessions[i].id);
+        if (player && player.valid && !sessions[i].finished) {
+            alt.log(`Kicked ${player.name} for waiting too long to login.`);
+            player.kick(translate.t('discord.auth.expired.session'));
+        }
+
+        count += 1;
+        sessions.splice(i, 1);
+        break;
+    }
+
+    if (count >= 1) {
+        alt.log(`Cleaned Sessions for Authorization: ${count} `);
+    }
+}
+
+function setSessionFinish(player: alt.Player) {
+    const sessionIndex = sessions.findIndex((x) => x.id === player.id);
+    if (sessionIndex <= -1) {
+        player.kick(translate.t('discord.auth.no.session'));
+        return;
+    }
+
+    if (sessions[sessionIndex].finished) {
+        player.kick(translate.t('discord.auth.already.complete'));
+        return;
+    }
+
+    sessions[sessionIndex].finished = true;
+
+    if (Date.now() > sessions[sessionIndex].expiration) {
+        player.kick(translate.t('discord.auth.expired.session'));
+        return;
+    }
+}
+
+function setAccount(player: alt.Player, account: Account) {
+    Rebar.document.account.useAccountBinder(player).bind(account);
+    const playerWorld = Rebar.player.useWorld(player);
+    const view = Rebar.player.useWebview(player);
+
+    playerWorld.clearScreenFade(500);
+    view.hide('DiscordAuth');
+
+    Plugin.invokeLogin(player, account);
+}
+
 alt.on('playerConnect', handleConnect);
-alt.on('playerDisconnect', handleDisconnect);
-
-export function useAuth() {
-    function onLogin(callback: (player: alt.Player) => void) {
-        loginCallbacks.push(callback);
-    }
-
-    return {
-        onLogin,
-    };
-}
-
-declare global {
-    export interface ServerPlugin {
-        ['auth-api']: ReturnType<typeof useAuth>;
-    }
-}
-
-Rebar.useApi().register('auth-api', useAuth());
+alt.onClient(DiscordAuthEvents.toServer.pushToken, handleToken);
+alt.setInterval(cleanupSessions, 5000);

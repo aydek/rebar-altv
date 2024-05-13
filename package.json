@@ -46,6 +46,7 @@
     },
     "dependencies": {
         "@vitejs/plugin-vue": "^5.0.4",
+        "discord.js": "^14.15.2",
         "dotenv": "^16.4.5",
         "mongodb": "^6.6.1",
         "sjcl": "^1.0.8",

@@ -220,8 +220,8 @@ async function handleLogin(player: alt.Player) {
 }
 
 async function init() {
-    await alt.Utils.waitFor(() => api.isReady('auth-api'), 30000);
-    const auth = api.get('auth-api');
+    await alt.Utils.waitFor(() => api.isReady('discord-auth-api'), 30000);
+    const auth = api.get('discord-auth-api');
     auth.onLogin(handleLogin);
     alt.onClient(CharacterSelectEvents.toServer.submitUsername, handleUsernameSubmit);
     alt.onClient(CharacterSelectEvents.toServer.trashCharacter, handleTrashCharacter);
