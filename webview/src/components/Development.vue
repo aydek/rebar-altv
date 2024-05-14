@@ -19,7 +19,7 @@ function togglePage(pageName: string) {
     if (isVisible) {
         hide(pageName);
     } else {
-        show(pageName, 'persistent');
+        show(pageName, 'overlay');
     }
     visiblePages.value[pageName] = isVisible ? false : true;
     localStorage.setItem('openVuepages', JSON.stringify(visiblePages.value));
@@ -50,7 +50,7 @@ onMounted(() => {
             const parsed = JSON.parse(storage);
             for (let pageName of Object.keys(parsed)) {
                 if (parsed[pageName]) {
-                    show(pageName, 'persistent');
+                    show(pageName, 'overlay');
                 }
             }
 
@@ -66,7 +66,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="fixed right-0 top-0">
+    <div class="fixed right-0 top-0 z-50">
         <div v-if="showToolbar" class="items-center justify-center p-4">
             <div class="flex w-72 flex-col gap-2">
                 <Button

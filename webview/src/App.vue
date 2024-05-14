@@ -26,6 +26,7 @@ onMounted(handleMount);
         class="relative left-0 top-0 flex h-screen min-h-full w-screen min-w-full select-none overflow-hidden text-white"
     >
         <img src="/devbg.jpg" v-if="isDeveloping" class="absolute -z-50 h-full w-full" />
+
         <DevelopmentBar v-if="isDeveloping" />
         <!-- Persistent Pages -->
         <template v-for="(pageInfo, index) in pagesPersistent">

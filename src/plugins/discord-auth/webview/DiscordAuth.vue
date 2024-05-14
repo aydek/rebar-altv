@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import FullScreenBG from '@Components/FullScreenBG.vue';
+import Button from '@Components/Button.vue';
 import '../translate/index';
 import { useEvents } from '@Composables/useEvents';
 import { useTranslate } from '@Shared/translate';
@@ -24,6 +25,22 @@ function handleData(data: IInfo) {
 onMounted(() => {
     events.on(DiscordAuthEvents.toWebview.updateData, handleData);
 });
+
+function alt() {
+    return 'alt' in window;
+}
+
+function devtoogle() {
+    if (info.value) {
+        info.value = undefined;
+    } else {
+        info.value = {
+            id: '300753043476185088',
+            username: 'aydek',
+            avatar: '',
+        };
+    }
+}
 </script>
 
 <template>
@@ -37,6 +54,10 @@ onMounted(() => {
             />
             <div>{{ info.username }}#</div>
         </div>
+
+        <Button type="primary" class="absolute bottom-28 left-1/2" v-if="!alt()" @click="devtoogle()"
+            >Toggle view</Button
+        >
 
         <div class="flex flex-col items-center gap-4" v-if="!info">
             <div class="mb-5">{{ t('discord.auth.title') }}</div>

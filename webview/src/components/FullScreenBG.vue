@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-    <div class="pointer-events-none absolute -z-10 h-screen w-screen bg-black bg-opacity-50">
+    <div class="absolute h-screen w-screen bg-black bg-opacity-50">
         <div class="circle bottom"></div>
         <div class="circle top"></div>
         <slot />
@@ -15,7 +15,7 @@
     width: 100vw;
     aspect-ratio: 1/1;
     border-radius: 50%;
-    z-index: -1;
+    z-index: -50;
 }
 
 .bottom {
