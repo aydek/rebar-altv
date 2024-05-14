@@ -20,6 +20,7 @@ const config = useConfig();
 config.initFromEnv('discord_bot_token', {
     env: 'DISCORD_BOT_TOKEN',
     default: '',
+    required: true,
 });
 
 export const DiscordConfig = {
