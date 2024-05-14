@@ -12,6 +12,7 @@ import '../translate/index.js';
 import * as Plugin from './api.js';
 
 const Rebar = useRebar();
+const api = Rebar.useApi();
 const db = Rebar.database.useDatabase();
 const translate = useTranslate();
 
@@ -60,6 +61,7 @@ async function handleToken(player: alt.Player, token: string) {
         const _id = await db.create<Partial<Account>>(
             {
                 discord: currentUser.id,
+                username: currentUser.username,
             },
             Rebar.database.CollectionNames.Accounts,
         );
@@ -68,13 +70,6 @@ async function handleToken(player: alt.Player, token: string) {
 
     if (!account) {
         player.kick(translate.t('discord.auth.account.failed'));
-        return;
-    }
-
-    if (account.banned) {
-        player.kick(
-            `${translate.t('discord.auth.banned')} ${account.reason || translate.t('discord.auth.banned.no.reason')}`,
-        );
         return;
     }
 
@@ -101,8 +96,6 @@ async function handleToken(player: alt.Player, token: string) {
         username: currentUser.username,
         avatar: currentUser.avatar,
     });
-
-   
 
     alt.setTimeout(() => {
         setAccount(player, account);
@@ -152,15 +145,21 @@ function setSessionFinish(player: alt.Player) {
     }
 }
 
-function setAccount(player: alt.Player, account: Account) {
+async function setAccount(player: alt.Player, account: Account) {
     Rebar.document.account.useAccountBinder(player).bind(account);
     const playerWorld = Rebar.player.useWorld(player);
     const view = Rebar.player.useWebview(player);
 
-   
+    const banAPI = await api.getAsync('ban-handler-api');
 
     playerWorld.clearScreenFade(500);
     view.hide('DiscordAuth');
+
+    const banned = await banAPI.checkBan(player);
+
+    if (banned) {
+        return;
+    }
 
     Plugin.invokeLogin(player, account);
 }

@@ -24,6 +24,13 @@ export type Account = {
     discord?: string;
 
     /**
+     * Discord username. The one you get from developer mode.
+     * @type {string}
+     *
+     */
+    username?: string;
+
+    /**
      * Email bound to the discord account.
      * @type {string}
      *
