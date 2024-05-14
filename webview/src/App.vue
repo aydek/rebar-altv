@@ -23,7 +23,7 @@ onMounted(handleMount);
 
 <template>
     <div
-        class="relative left-0 top-0 flex h-screen min-h-full w-screen min-w-full select-none overflow-hidden text-white"
+        class="relative left-0 top-0 flex h-screen min-h-full w-screen min-w-full select-none overflow-hidden text-xl text-white"
     >
         <img src="/devbg.jpg" v-if="isDeveloping" class="absolute -z-50 h-full w-full" />
 
