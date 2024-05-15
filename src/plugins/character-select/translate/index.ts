@@ -10,6 +10,8 @@ setBulk({
         'character.select.delete': 'Delete',
         'character.select.cash': 'Cash',
         'character.select.played': 'Played',
+        'character.select.are.you.sure': 'Are you sure you want to delete character',
+        'character.select.back': 'Back',
     },
     lt: {
         'character.select.title': 'Veikėjo pasirinkimas',
@@ -19,5 +21,7 @@ setBulk({
         'character.select.delete': 'Pašalinti',
         'character.select.cash': 'Pinigai',
         'character.select.played': 'Žaista',
+        'character.select.are.you.sure': 'Ar esate tikri jog norite pašalinti veikėją',
+        'character.select.back': 'Atgal',
     },
 });
