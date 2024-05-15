@@ -4,6 +4,10 @@ Rebar is a TypeScript framework for [alt:V](https://altv.mp) that prioritizes pl
 
 Plugins for Rebar allow developers to drag & drop repositories into their server framework.
 
+### [Read our Docs!](https://rebarv.com)
+
+### [Join our Discord!](https://discord.gg/63rrbadsR7)
+
 ## Features
 
 -   TypeScript
@@ -15,6 +19,13 @@ Plugins for Rebar allow developers to drag & drop repositories into their server
 -   Webview Overlays, Persistent Pages, and Single Pages
 -   Vue 3
 -   TailwindCSS
+
+## Where to find Plugins?
+
+If you're looking for plugins for Rebar, check out these two websites.
+
+-   https://github.com/Stuyk/awesome-rebar
+-   https://forge.plebmasters.de/hub/Script
 
 ## Requirements
 
