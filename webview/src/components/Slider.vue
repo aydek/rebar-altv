@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useAudio } from '@Composables/useAudio';
 import { twMerge } from 'tailwind-merge';
 import { ref, watch } from 'vue';
-import { playSound } from '../utility/sound.js';
 
 interface IProps {
     class?: string;
@@ -25,6 +25,8 @@ const emit = defineEmits<{
 
 const rangeValue = ref(props.value);
 
+const audio = useAudio();
+
 watch(rangeValue, (value) => {
     emit('onChange', Number(value));
 });
@@ -38,12 +40,12 @@ watch(
 </script>
 
 <template>
-    <div class="w-full px-2 flex justify-between items-center">
+    <div class="flex w-full items-center justify-between px-2">
         <input
-            :class="twMerge('appearance-none h-1 w-full bg-neutral-500 outline-none', props.class)"
+            :class="twMerge('h-1 w-full appearance-none bg-neutral-500 outline-none', props.class)"
             :tabindex="-1"
-            @click="() => playSound('select')"
-            @mouseenter="() => playSound('hover')"
+            @click="() => audio.play('/sounds/select.ogg')"
+            @mouseenter="() => audio.play('/sounds/hover.ogg')"
             type="range"
             v-model="rangeValue"
             :min="props.min"
