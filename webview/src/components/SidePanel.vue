@@ -4,12 +4,14 @@ import { onMounted, ref } from 'vue';
 
 interface IProps {
     position?: 'left' | 'right';
+    class?: string;
 }
 
 const show = ref(false);
 
 const props = withDefaults(defineProps<IProps>(), {
     position: 'left',
+    class: '',
 });
 
 onMounted(() => {
@@ -23,12 +25,13 @@ onMounted(() => {
     <div
         :class="
             twMerge(
-                'transition-all z-0',
+                'z-0 transition-all',
                 !show && 'opacity-0',
 
-                props.position === 'left' && 'bg-gradient-to-r left-0 items-start',
-                props.position === 'right' && 'bg-gradient-to-l right-0 items-center',
-                'absolute w-[40rem] h-screen flex flex-col justify-center px-20  from-black via-[#00000099] to-transparent',
+                props.position === 'left' && 'left-0 items-start bg-gradient-to-r',
+                props.position === 'right' && 'right-0 items-center bg-gradient-to-l',
+                'absolute flex h-screen w-[40rem] flex-col justify-center from-black  via-[#00000099] to-transparent px-20',
+                props.class,
             )
         "
     >
@@ -37,7 +40,7 @@ onMounted(() => {
                 twMerge(
                     'transition-all',
                     !show && 'opacity-0',
-                    'circle absolute w-screen aspect-square rounded-full bottom-0 pointer-events-none',
+                    'circle pointer-events-none absolute bottom-0 aspect-square w-screen rounded-full',
                     props.position === 'left' && 'left-0 -translate-x-1/2 translate-y-1/2',
                     props.position === 'right' && 'right-0 translate-x-1/2 translate-y-1/2',
                 )
