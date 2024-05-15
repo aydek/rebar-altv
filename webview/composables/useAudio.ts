@@ -1,5 +1,5 @@
-import { Events } from '../../src/main/shared/events';
-import { useEvents } from './useEvents';
+import { Events } from '@Shared/events/index.js';
+import { useEvents } from './useEvents.js';
 
 const events = useEvents();
 
