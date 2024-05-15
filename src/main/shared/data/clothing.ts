@@ -1,3 +1,29 @@
+export enum PropKey {
+    hat = 0,
+    glasses = 1,
+    ears = 2,
+    watch = 6,
+    bracelet = 7,
+}
+
+export enum ClothingKey {
+    mask = 1,
+    hair = 2,
+    torso = 3,
+    legs = 4,
+    bag = 5,
+    shoes = 6,
+    accesory = 7,
+    undershirt = 8,
+    armour = 9,
+    decals = 10,
+    top = 11,
+}
+
+export const allClothingKeys = [2, 3, 4, 5, 6, 7, 8, 10, 11];
+
+export const allPropKeys = [0, 1, 2, 6, 7];
+
 export const Clothing = {
     male: {
         default: {
