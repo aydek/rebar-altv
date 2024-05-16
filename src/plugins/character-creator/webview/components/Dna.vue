@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import SidePanel from '@Components/SidePanel.vue';
 import Button from '@Components/Button.vue';
 import ChevronSelector from '@Components/ChevronSelector.vue';
 import Slider from '@Components/Slider.vue';
-import { useStore } from '../store/store';
+import { useStore } from '../store';
 import Icon from '@Components/Icon.vue';
 import { fathers, mothers } from '../const/parentNames';
 import '../../translate/index';
@@ -60,27 +61,8 @@ function reset() {
 }
 </script>
 <template>
-    <div class="flex w-full flex-col items-center gap-6">
+    <SidePanel position="right" class="gap-6 px-10">
         <div class="text-3xl font-bold">{{ title }}</div>
-        <div class="flex w-full items-center gap-3">
-            <div class="whitespace-nowrap text-2xl font-bold">{{ t('character.creator.sex') }}:</div>
-            <Button
-                class="flex w-full justify-center gap-2"
-                @click="setAppearance('sex', 1)"
-                :type="appearance.sex === 1 ? 'primary' : 'secondary'"
-            >
-                <Icon icon="icon-male" />
-                <div>{{ t('character.creator.male') }}</div>
-            </Button>
-            <Button
-                class="flex w-full justify-center gap-2"
-                @click="setAppearance('sex', 0)"
-                :type="appearance.sex === 0 ? 'primary' : 'secondary'"
-            >
-                <div>{{ t('character.creator.female') }}</div>
-                <Icon icon="icon-female" />
-            </Button>
-        </div>
 
         <div class="relative">
             <img class="rounded-3xl" src="/images/background.png" />
@@ -92,13 +74,13 @@ function reset() {
         <div class="flex w-full items-center gap-4">
             <ChevronSelector
                 :text="mothers[internal.motherIndex].name"
-                @onPrev="motherIndex(-1)"
-                @onNext="motherIndex(+1)"
+                @onPrev="() => motherIndex(-1)"
+                @onNext="() => motherIndex(+1)"
             />
             <ChevronSelector
                 :text="fathers[internal.fatherIndex].name"
-                @onPrev="fatherIndex(-1)"
-                @onNext="fatherIndex(+1)"
+                @onPrev="() => fatherIndex(-1)"
+                @onNext="() => fatherIndex(+1)"
             />
         </div>
 
@@ -126,5 +108,5 @@ function reset() {
                 <Icon icon="icon-shuffle" :size="1.1" />
             </Button>
         </div>
-    </div>
+    </SidePanel>
 </template>
