@@ -6,6 +6,7 @@ import Dna from './components/Dna.vue';
 import Hair from './components/Hair.vue';
 import Eyes from './components/Eyes.vue';
 import Features from './components/Features.vue';
+import Appearance from './components/Appearance.vue';
 import { useStore } from './store';
 import '../translate/index';
 import { useTranslate } from '@Shared/translate';
@@ -21,7 +22,7 @@ const navigationItems = [
     { title: t('character.creator.hair'), component: Hair, icon: 'icon-hair' },
     { title: t('character.creator.eyes'), component: Eyes, icon: 'icon-eye' },
     { title: t('character.creator.features'), component: Features, icon: 'icon-face' },
-    { title: 'Appearance', component: Dna, icon: 'icon-makeup' },
+    { title: t('character.creator.appearance'), component: Appearance, icon: 'icon-makeup' },
     { title: 'Shirt', component: Dna, icon: 'icon-shirt' },
     { title: 'Pants', component: Dna, icon: 'icon-trousers' },
     { title: 'Shoes', component: Dna, icon: 'icon-boots' },

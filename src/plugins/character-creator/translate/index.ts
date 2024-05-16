@@ -29,6 +29,7 @@ setBulk({
         'character.creator.eyebrows': 'Eyebrows',
         'character.creator.eyebrows.color': 'Eyebrows color',
         'character.creator.features': 'Features',
+        'character.creator.appearance': 'Appearance',
     },
     lt: {
         'character.creator.title': 'Veikėjo kūrimas',
@@ -57,5 +58,6 @@ setBulk({
         'character.creator.eyebrows': 'Antakiai',
         'character.creator.eyebrows.color': 'Antakių spalva',
         'character.creator.features': 'Bruožai',
+        'character.creator.appearance': 'Išvaizda',
     },
 });

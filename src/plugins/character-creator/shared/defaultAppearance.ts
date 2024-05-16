@@ -32,7 +32,6 @@ export const DefaultAppearance: Appearance = {
         { id: 7, opacity: 1, color1: 0, color2: 0, value: -1 },
         { id: 8, opacity: 1, color1: 0, color2: 0, value: -1 },
         { id: 9, opacity: 1, color1: 0, color2: 0, value: -1 },
-        { id: 10, opacity: 1, color1: 0, color2: 0, value: -1 },
     ],
     structure: new Array(20).fill(0),
     hairDlc: 0,
