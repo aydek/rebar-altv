@@ -50,3 +50,19 @@ export type ClothingComponent = {
      */
     isProp?: boolean;
 };
+
+export interface ClothingItemData {
+    id: number;
+    drawable: number;
+    dlc: string;
+    texture: number;
+    name: string;
+}
+
+export interface ClothingTopItemData extends ClothingItemData {
+    combos: Array<{
+        undershirt: number;
+        torso: number;
+        armour: number;
+    }>;
+}

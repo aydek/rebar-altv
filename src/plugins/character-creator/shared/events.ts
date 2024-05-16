@@ -1,5 +1,6 @@
 export const CharacterCreatorEvents = {
-    toServer: {
-        updateAppearance: 'character:creator:toServer:updateAppearance',
+    toClient: {
+        updateAppearance: 'character:creator:toClient:updateAppearance',
+        updateClothes: 'character:creator:toClient:updateClothes',
     },
 };

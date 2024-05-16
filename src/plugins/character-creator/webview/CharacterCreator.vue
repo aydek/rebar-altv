@@ -7,6 +7,7 @@ import Hair from './components/Hair.vue';
 import Eyes from './components/Eyes.vue';
 import Features from './components/Features.vue';
 import Appearance from './components/Appearance.vue';
+import Top from './components/Top.vue';
 import { useStore } from './store';
 import '../translate/index';
 import { useTranslate } from '@Shared/translate';
@@ -23,7 +24,7 @@ const navigationItems = [
     { title: t('character.creator.eyes'), component: Eyes, icon: 'icon-eye' },
     { title: t('character.creator.features'), component: Features, icon: 'icon-face' },
     { title: t('character.creator.appearance'), component: Appearance, icon: 'icon-makeup' },
-    { title: 'Shirt', component: Dna, icon: 'icon-shirt' },
+    { title: t('character.creator.top'), component: Top, icon: 'icon-shirt' },
     { title: 'Pants', component: Dna, icon: 'icon-trousers' },
     { title: 'Shoes', component: Dna, icon: 'icon-boots' },
     { title: 'Hat', component: Dna, icon: 'icon-winter-hat' },
@@ -33,7 +34,7 @@ const navigationItems = [
 const { internal, setInternal, appearance, setAppearance } = useStore();
 
 keys.onKeyUp('Tab', () => {
-    if (internal.modalOpen) return;
+    if (internal.modalOpen || !('alt' in window)) return;
     let index = internal.navIndex;
     index += 1;
     if (index > navigationItems.length - 1) index = 0;

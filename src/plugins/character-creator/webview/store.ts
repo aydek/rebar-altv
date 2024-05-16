@@ -1,9 +1,10 @@
 import { Appearance } from '@Shared/types/appearance.js';
 import { ref } from 'vue';
-import { DefaultAppearance } from '../shared/defaultAppearance.js';
+import { DefaultAppearance, DefaultClothes } from '../shared/defaultAppearance.js';
 import { useEvents } from '@Composables/useEvents.js';
 import { CharacterCreatorEvents } from '../shared/events.js';
 import { IInternal, initialInternal } from './const/internalStateDefault.js';
+import { ClothingComponent } from '@Shared/types/clothingComponent.js';
 
 const events = useEvents();
 
@@ -28,13 +29,13 @@ export function useStore() {
             console.log(appearance.value);
 
             for (const _key in appearance.value) {
-                events.emitServer(CharacterCreatorEvents.toServer.updateAppearance, _key, appearance.value[_key]);
+                events.emitServer(CharacterCreatorEvents.toClient.updateAppearance, _key, appearance.value[_key]);
             }
 
             return;
         }
         appearance.value[key] = value;
-        events.emitServer(CharacterCreatorEvents.toServer.updateAppearance, key, JSON.parse(JSON.stringify(value)));
+        events.emitServer(CharacterCreatorEvents.toClient.updateAppearance, key, JSON.parse(JSON.stringify(value)));
     }
 
     function setInternal<T extends keyof IInternal>(key: T, value: IInternal[T]) {

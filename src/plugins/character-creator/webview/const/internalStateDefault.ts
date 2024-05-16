@@ -16,7 +16,7 @@ export interface IInternal {
 }
 
 export const initialInternal: IInternal = {
-    navIndex: 4,
+    navIndex: 5,
     modalOpen: false,
     motherIndex: 0,
     fatherIndex: 0,
