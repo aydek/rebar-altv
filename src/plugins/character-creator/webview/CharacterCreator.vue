@@ -8,15 +8,23 @@ import Eyes from './components/Eyes.vue';
 import Features from './components/Features.vue';
 import Appearance from './components/Appearance.vue';
 import Top from './components/Top.vue';
+import Legs from './components/Legs.vue';
+import Shoes from './components/Shoes.vue';
+import Hat from './components/Hat.vue';
+import Accesories from './components/Accesories.vue';
+import Information from './components/Information.vue';
 import { useStore } from './store';
 import '../translate/index';
 import { useTranslate } from '@Shared/translate';
 import { useKeyPress } from '@Composables/useKeyPress';
 import { useAudio } from '@Composables/useAudio';
+import { useEvents } from '@Composables/useEvents';
+import { CharacterCreatorEvents } from '../shared/events';
 
 const { t } = useTranslate();
 const keys = useKeyPress();
 const audio = useAudio();
+const events = useEvents();
 
 const navigationItems = [
     { title: t('character.creator.dna'), component: Dna, icon: 'icon-dna1' },
@@ -25,10 +33,10 @@ const navigationItems = [
     { title: t('character.creator.features'), component: Features, icon: 'icon-face' },
     { title: t('character.creator.appearance'), component: Appearance, icon: 'icon-makeup' },
     { title: t('character.creator.top'), component: Top, icon: 'icon-shirt' },
-    { title: 'Pants', component: Dna, icon: 'icon-trousers' },
-    { title: 'Shoes', component: Dna, icon: 'icon-boots' },
-    { title: 'Hat', component: Dna, icon: 'icon-winter-hat' },
-    { title: 'Accesories', component: Dna, icon: 'icon-watch' },
+    { title: t('character.creator.legs'), component: Legs, icon: 'icon-trousers' },
+    { title: t('character.creator.shoes'), component: Shoes, icon: 'icon-boots' },
+    { title: t('character.creator.hat'), component: Hat, icon: 'icon-winter-hat' },
+    { title: t('character.creator.accesories'), component: Accesories, icon: 'icon-watch' },
 ];
 
 const { internal, setInternal, appearance, setAppearance } = useStore();
@@ -42,6 +50,10 @@ keys.onKeyUp('Tab', () => {
 
     audio.play('/sounds/select.ogg');
 });
+
+function handleBack() {
+    events.emitClient(CharacterCreatorEvents.toClient.back);
+}
 </script>
 <template>
     <SidePanel class="gap-6 px-10">
@@ -83,11 +95,11 @@ keys.onKeyUp('Tab', () => {
         </div>
 
         <div class="flex w-full gap-2">
-            <Button class="flex w-full justify-center gap-2" type="secondary" @click="console.log('back')">
+            <Button class="flex w-full justify-center gap-2" type="secondary" @click="handleBack">
                 <Icon icon="icon-back" />
                 <div>{{ t('character.creator.back') }}</div>
             </Button>
-            <Button class="flex w-full justify-center gap-2" @click="console.log('save')">
+            <Button class="flex w-full justify-center gap-2" @click="() => setInternal('modalOpen', true)">
                 <div>{{ t('character.creator.save') }}</div>
                 <Icon icon="icon-check2" />
             </Button>
@@ -99,6 +111,7 @@ keys.onKeyUp('Tab', () => {
             <div>{{ t('character.creator.to.navigate') }}</div>
         </div>
     </SidePanel>
+    <Information v-if="internal.modalOpen" @setInternal="setInternal" :internal="internal" />
     <div class="ml-3 flex w-[40rem] justify-center">
         <component :is="navigationItems[internal.navIndex].component" />
     </div>

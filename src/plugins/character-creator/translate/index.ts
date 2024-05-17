@@ -32,6 +32,20 @@ setBulk({
         'character.creator.appearance': 'Appearance',
         'character.creator.top': 'Top',
         'character.creator.undershirt': 'Undershirt',
+        'character.creator.legs': 'Legs',
+        'character.creator.shoes': 'Shoes',
+        'character.creator.hat': 'Head',
+        'character.creator.accesories': 'Accesories',
+
+        'character.creator.first.name': 'First name',
+        'character.creator.last.name': 'Last name',
+        'character.creator.age': 'Age',
+
+        'character.creator.verify.name': 'Verify name',
+        'character.creator.finish': 'Finish',
+        'character.creator.name.taken': 'Name is already taken',
+        'character.creator.name.error': 'Invalid name format',
+        'character.creator.day.error': 'Age must be form 18 to 99',
     },
     lt: {
         'character.creator.title': 'Veikėjo kūrimas',
@@ -63,5 +77,19 @@ setBulk({
         'character.creator.appearance': 'Išvaizda',
         'character.creator.top': 'Viršus',
         'character.creator.undershirt': 'Marškiniai',
+        'character.creator.legs': 'Kojos',
+        'character.creator.shoes': 'Batai',
+        'character.creator.hat': 'Galva',
+        'character.creator.accesories': 'Aksesuarai',
+
+        'character.creator.first.name': 'Vardas',
+        'character.creator.last.name': 'Pavardė',
+        'character.creator.age': 'Amžius',
+
+        'character.creator.verify.name': 'Patvirtinti vardą',
+        'character.creator.finish': 'Baigti',
+        'character.creator.name.taken': 'Vardas jau užimtas',
+        'character.creator.name.error': 'Netinkamas vardo formatas',
+        'character.creator.day.error': 'Amžius privalo būti tarp 18 ir 99',
     },
 });

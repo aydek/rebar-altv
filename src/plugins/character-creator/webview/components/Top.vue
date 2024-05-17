@@ -20,6 +20,7 @@ import { useAudio } from '@Composables/useAudio';
 import { useEvents } from '@Composables/useEvents';
 import { CharacterCreatorEvents } from '../../shared/events';
 import { ClothingKey } from '@Shared/data/clothing';
+import '../../translate/index';
 
 const { appearance, internal, setInternal } = useStore();
 
@@ -284,7 +285,7 @@ function setTabIndex(index: number) {
             </template>
         </div>
 
-        <div class="mt-8 flex w-full items-center gap-2">
+        <div class="flex w-full items-center gap-2">
             <Button type="secondary" class="flex w-full items-center justify-center gap-3" @click="reset">
                 <Icon icon="icon-cross1" :size="1" />
                 <div>{{ t('character.creator.reset') }}</div>
