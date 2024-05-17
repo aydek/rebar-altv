@@ -94,7 +94,7 @@ onMounted(() => {
 
                 <div class="mt-10 flex w-full flex-col gap-2">
                     <Button
-                        type="primary"
+                        :type="loading ? 'disabled' : 'primary'"
                         class="flex items-center justify-center"
                         v-if="characters.length"
                         @click="handlePlay"
@@ -104,7 +104,7 @@ onMounted(() => {
                     </Button>
 
                     <Button
-                        type="secondary"
+                        :type="loading ? 'disabled' : 'secondary'"
                         class="flex items-center justify-center"
                         v-if="characters.length"
                         @click="toggleDelete"
@@ -119,7 +119,7 @@ onMounted(() => {
                 <div v-for="(item, index) in Array(6)">
                     <Button
                         v-if="index < characters.length"
-                        :type="selectIndex === index ? 'primary' : 'secondary'"
+                        :type="loading ? 'disabled' : selectIndex === index ? 'primary' : 'secondary'"
                         @click="setIndex(index)"
                         class="grid aspect-square place-items-center"
                     >
