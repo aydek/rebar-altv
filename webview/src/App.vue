@@ -4,6 +4,7 @@ import { usePages } from '../composables/usePages';
 import { usePageEvents } from '../composables/usePageEvents';
 import { useAudio } from '../composables/useAudio';
 import DevelopmentBar from './components/Development.vue';
+import { useMessenger } from '../composables/useMessenger';
 
 const { pagesPersistent, pagesOverlay, page } = usePages();
 const { init } = usePageEvents();
@@ -16,6 +17,7 @@ function handleMount() {
 
     init();
     useAudio();
+    useMessenger();
 }
 
 onMounted(handleMount);
