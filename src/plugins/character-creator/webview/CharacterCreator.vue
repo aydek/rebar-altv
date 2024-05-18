@@ -20,6 +20,7 @@ import { useKeyPress } from '@Composables/useKeyPress';
 import { useAudio } from '@Composables/useAudio';
 import { useEvents } from '@Composables/useEvents';
 import { CharacterCreatorEvents } from '../shared/events';
+import { onMounted } from 'vue';
 
 const { t } = useTranslate();
 const keys = useKeyPress();
@@ -39,7 +40,7 @@ const navigationItems = [
     { title: t('character.creator.accesories'), component: Accesories, icon: 'icon-watch' },
 ];
 
-const { internal, setInternal, appearance, setAppearance } = useStore();
+const { internal, setInternal, appearance, setAppearance, resetStore } = useStore();
 
 keys.onKeyUp('Tab', () => {
     if (internal.modalOpen || !('alt' in window)) return;
@@ -54,6 +55,10 @@ keys.onKeyUp('Tab', () => {
 function handleBack() {
     events.emitClient(CharacterCreatorEvents.toClient.back);
 }
+
+onMounted(() => {
+    resetStore();
+});
 </script>
 <template>
     <SidePanel class="gap-6">

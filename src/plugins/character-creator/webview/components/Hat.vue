@@ -10,15 +10,13 @@ import { useKeyPress } from '@Composables/useKeyPress';
 import { useStore } from '../store';
 import { useAudio } from '@Composables/useAudio';
 import { useTranslate } from '@Shared/translate';
-import { useEvents } from '@Composables/useEvents';
-import { CharacterCreatorEvents } from '../../shared/events';
 import { PropKey } from '@Shared/data/clothing';
 import '../../translate/index';
 
-const { appearance, internal, setInternal } = useStore();
+const { appearance, internal, setInternal, setClothes } = useStore();
 const keys = useKeyPress();
 const audio = useAudio();
-const events = useEvents();
+
 const { t } = useTranslate();
 
 const title = t('character.creator.hat');
@@ -28,7 +26,7 @@ const allItems = ref<ClothingItemData[]>([]);
 const scrollRef = ref(null);
 
 onMounted(() => {
-    if (appearance.sex === 0) {
+    if (appearance.sex === 1) {
         allItems.value = [
             {
                 id: -1,
@@ -94,12 +92,7 @@ function keyboardIndex(value: number) {
 function setIndex(index: number) {
     if (index !== internal.hatIndex) {
         setInternal('hatIndex', index);
-        events.emitClient(
-            CharacterCreatorEvents.toClient.updateClothes,
-            true,
-            PropKey.hat,
-            toRaw(allItems.value[index]),
-        );
+        setClothes(true, PropKey.hat, toRaw(allItems.value[index]));
     }
 }
 
@@ -134,7 +127,7 @@ function autoScroll() {
             </template>
         </div>
 
-        <div class=" flex w-full items-center gap-2">
+        <div class="flex w-full items-center gap-2">
             <Button type="secondary" class="flex w-full items-center justify-center gap-3" @click="reset">
                 <Icon icon="icon-cross1" :size="1" />
                 <div>{{ t('character.creator.reset') }}</div>

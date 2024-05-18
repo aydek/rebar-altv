@@ -12,11 +12,13 @@ export function useAudio() {
     }
 
     async function play(path: string) {
-        const audio = new Audio(path);
+        const audio = new Audio(resolvePath(path));
         audio.loop = false;
         try {
             await audio.play();
-        } catch {}
+        } catch (err) {
+            console.log(err);
+        }
 
         // this._audio[soundID] = new Audio(path);
         // this._audio[soundID].soundID = soundID;
@@ -34,4 +36,8 @@ export function useAudio() {
     return {
         play,
     };
+}
+
+function resolvePath(currentPath: string): string {
+    return '.' + currentPath;
 }

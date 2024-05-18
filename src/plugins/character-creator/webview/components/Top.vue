@@ -17,17 +17,14 @@ import { useTranslate } from '@Shared/translate';
 import { ClothingItemData, ClothingTopItemData } from '@Shared/types';
 import { useKeyPress } from '@Composables/useKeyPress';
 import { useAudio } from '@Composables/useAudio';
-import { useEvents } from '@Composables/useEvents';
-import { CharacterCreatorEvents } from '../../shared/events';
 import { ClothingKey } from '@Shared/data/clothing';
 import '../../translate/index';
 
-const { appearance, internal, setInternal } = useStore();
+const { appearance, internal, setInternal, setClothes } = useStore();
 
 const { t } = useTranslate();
 const keys = useKeyPress();
 const audio = useAudio();
-const events = useEvents();
 
 const title = t('character.creator.top');
 
@@ -38,7 +35,7 @@ const allUndershirts = ref<ClothingItemData[]>([]);
 const scrollRef = ref(null);
 
 onMounted(() => {
-    if (appearance.sex === 0) {
+    if (appearance.sex === 1) {
         allItems.value = [
             {
                 id: -1,
@@ -77,7 +74,7 @@ watch(
         const newValue = [];
         if (target && target.combos.length > 1) {
             for (const combo of target.combos) {
-                const allUnderItems = appearance.sex === 0 ? maleUndershirts : femaleUndershirts;
+                const allUnderItems = appearance.sex === 1 ? maleUndershirts : femaleUndershirts;
                 newValue.push(allUnderItems.find((item) => item.id === combo.undershirt));
             }
             allUndershirts.value = toRaw(newValue);
@@ -132,8 +129,8 @@ function keyboardIndex(value: number, tabindex: number) {
 function setIndex(index: number, tabindex: number) {
     if (tabindex === 0) {
         if (index !== internal.topsIndex) {
-            const alltorsos = appearance.sex === 0 ? maleTorsos : femaleTorsos;
-            const allUnderItems = appearance.sex === 0 ? maleUndershirts : femaleUndershirts;
+            const alltorsos = appearance.sex === 1 ? maleTorsos : femaleTorsos;
+            const allUnderItems = appearance.sex === 1 ? maleUndershirts : femaleUndershirts;
 
             const combos = allItems.value[index].combos;
 
@@ -148,36 +145,21 @@ function setIndex(index: number, tabindex: number) {
             setInternal('topsIndex', index);
             setInternal('undershirtIndex', 0);
 
-            events.emitClient(
-                CharacterCreatorEvents.toClient.updateClothes,
-                false,
-                ClothingKey.top,
-                toRaw(allItems.value[index]),
-            );
+            setClothes(false, ClothingKey.top, toRaw(allItems.value[index]));
 
             if (undershirtItem) {
-                events.emitClient(
-                    CharacterCreatorEvents.toClient.updateClothes,
-                    false,
-                    ClothingKey.undershirt,
-                    toRaw(undershirtItem),
-                );
+                setClothes(false, ClothingKey.undershirt, toRaw(undershirtItem));
             }
 
             if (torsoItem) {
-                events.emitClient(
-                    CharacterCreatorEvents.toClient.updateClothes,
-                    false,
-                    ClothingKey.torso,
-                    toRaw(torsoItem),
-                );
+                setClothes(false, ClothingKey.torso, toRaw(torsoItem));
             }
         }
     } else if (tabindex === 1) {
         if (index !== internal.undershirtIndex && allUndershirts.value.length > 0) {
             setInternal('undershirtIndex', index);
 
-            const alltorsos = appearance.sex === 0 ? maleTorsos : femaleTorsos;
+            const alltorsos = appearance.sex === 1 ? maleTorsos : femaleTorsos;
 
             const combos = allItems.value[internal.topsIndex].combos;
 
@@ -187,20 +169,10 @@ function setIndex(index: number, tabindex: number) {
                 torsoItem = alltorsos.find((i) => i.id === combos[index].torso);
             }
 
-            events.emitClient(
-                CharacterCreatorEvents.toClient.updateClothes,
-                false,
-                ClothingKey.undershirt,
-                toRaw(allUndershirts.value[index]),
-            );
+            setClothes(false, ClothingKey.undershirt, toRaw(allUndershirts.value[index]));
 
             if (torsoItem) {
-                events.emitClient(
-                    CharacterCreatorEvents.toClient.updateClothes,
-                    false,
-                    ClothingKey.torso,
-                    toRaw(torsoItem),
-                );
+                setClothes(false, ClothingKey.torso, toRaw(torsoItem));
             }
         }
     }

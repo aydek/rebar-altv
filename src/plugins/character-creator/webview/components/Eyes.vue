@@ -16,7 +16,7 @@ const { t } = useTranslate();
 const title = t('character.creator.eyes');
 
 function eyesColorIndex(val: number) {
-    let current = appearance.eyebrowsColor1;
+    let current = appearance.eyes;
     current = current + val;
     if (current < 0) current = eyeColors.length - 1;
     if (current > eyeColors.length - 1) current = 0;

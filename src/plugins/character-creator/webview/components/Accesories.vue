@@ -17,16 +17,13 @@ import { ClothingItemData } from '@Shared/types';
 import { useStore } from '../store';
 import { useKeyPress } from '@Composables/useKeyPress';
 import { useAudio } from '@Composables/useAudio';
-import { useEvents } from '@Composables/useEvents';
 import { useTranslate } from '@Shared/translate';
 import '../../translate/index';
-import { CharacterCreatorEvents } from '../../shared/events';
 import { PropKey } from '@Shared/data/clothing';
 
-const { appearance, internal, setInternal } = useStore();
+const { appearance, internal, setInternal, setClothes } = useStore();
 const keys = useKeyPress();
 const audio = useAudio();
-const events = useEvents();
 const { t } = useTranslate();
 
 const title = t('character.creator.accesories');
@@ -42,7 +39,7 @@ const scrollRef = ref(null);
 const noneItem = { id: -1, drawable: -1, dlc: '', name: 'None', texture: 0 };
 
 onMounted(() => {
-    if (appearance.sex === 0) {
+    if (appearance.sex === 1) {
         allWatches.value = [
             {
                 ...noneItem,
@@ -160,42 +157,22 @@ function setIndex(tab: number, index: number) {
     if (tab === 0) {
         if (index !== internal.glassesIndex) {
             setInternal('glassesIndex', index);
-            events.emitClient(
-                CharacterCreatorEvents.toClient.updateClothes,
-                true,
-                PropKey.glasses,
-                toRaw(allGlasses.value[index]),
-            );
+            setClothes(true, PropKey.glasses, toRaw(allGlasses.value[index]));
         }
     } else if (tab === 1) {
         if (index !== internal.watchIndex) {
             setInternal('watchIndex', index);
-            events.emitClient(
-                CharacterCreatorEvents.toClient.updateClothes,
-                true,
-                PropKey.watch,
-                toRaw(allWatches.value[index]),
-            );
+            setClothes(true, PropKey.watch, toRaw(allWatches.value[index]));
         }
     } else if (tab === 2) {
         if (index !== internal.earingIndex) {
             setInternal('earingIndex', index);
-            events.emitClient(
-                CharacterCreatorEvents.toClient.updateClothes,
-                true,
-                PropKey.ears,
-                toRaw(allEarings.value[index]),
-            );
+            setClothes(true, PropKey.ears, toRaw(allEarings.value[index]));
         }
     } else if (tab === 3) {
         if (index !== internal.braceletIndex) {
             setInternal('braceletIndex', index);
-            events.emitClient(
-                CharacterCreatorEvents.toClient.updateClothes,
-                true,
-                PropKey.bracelet,
-                toRaw(allBracelets.value[index]),
-            );
+            setClothes(true, PropKey.bracelet, toRaw(allBracelets.value[index]));
         }
     }
 }
@@ -225,7 +202,7 @@ function autoScroll() {
 </script>
 
 <template>
-    <SidePanel position="right" class="gap-6  font-bold">
+    <SidePanel position="right" class="gap-6 font-bold">
         <div class="text-3xl font-bold">{{ title }}</div>
 
         <div class="flex w-full">

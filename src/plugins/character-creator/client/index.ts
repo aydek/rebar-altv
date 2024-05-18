@@ -7,16 +7,35 @@ import { Appearance } from '@Shared/types/appearance.js';
 import { DefaultAppearance, DefaultClothes } from '../shared/defaultAppearance.js';
 import { CharacterCreatorEvents } from '../shared/events.js';
 import { clone } from '@Shared/utility/index.js';
+import { ClothingComponent, ClothingItemData } from '@Shared/types/clothingComponent.js';
 
 const pedClone = useClonedPed();
 const webview = useWebview();
 
 let appearance: Appearance = clone.objectData(DefaultAppearance);
+let clothes: ClothingComponent[] = clone.arrayData(DefaultClothes);
+
+function updateClothes(isProp: boolean, id: number, data: ClothingItemData) {
+    const index = clothes.findIndex((item) => item.id === id && item.isProp === isProp);
+    if (index > -1) {
+        clothes[index].drawable = data.drawable;
+        clothes[index].dlc = alt.hash(data.dlc);
+        clothes[index].texture = data.texture;
+    }
+
+    pedClone.ped.update(appearance, clothes, {
+        pos: alt.Player.local.pos,
+        heading: 60,
+    });
+}
+
+function resetClothes() {
+    clothes = clone.arrayData(DefaultClothes);
+}
 
 function updateAppearance<T extends keyof Appearance>(key: T, value: Appearance[T]) {
     appearance[key] = value;
-    alt.log(key);
-    pedClone.ped.update(appearance, DefaultClothes, {
+    pedClone.ped.update(appearance, clothes, {
         pos: alt.Player.local.pos,
         heading: 60,
     });
@@ -32,7 +51,7 @@ async function handleToggleControls(value: boolean) {
         pedClone.camera.destroy();
     } else {
         alt.on('disconnect', pedClone.ped.destroy);
-        pedClone.ped.update(DefaultAppearance, DefaultClothes, {
+        pedClone.ped.update(DefaultAppearance, clothes, {
             pos: alt.Player.local.pos,
             heading: 60,
         });
@@ -46,8 +65,13 @@ function handleBack() {
     pedClone.camera.destroy();
     webview.hide('CharacterCreator');
     alt.emitServer(CharacterCreatorEvents.toServer.exit);
+
+    appearance = clone.objectData(DefaultAppearance);
+    clothes = clone.objectData(DefaultClothes);
 }
 
 alt.onServer(CharacterCreatorEvents.toClient.toggleControls, handleToggleControls);
 webview.on(CharacterCreatorEvents.toClient.back, handleBack);
 webview.on(CharacterCreatorEvents.toClient.updateAppearance, updateAppearance);
+webview.on(CharacterCreatorEvents.toClient.updateClothes, updateClothes);
+webview.on(CharacterCreatorEvents.toClient.resetClothes, resetClothes);

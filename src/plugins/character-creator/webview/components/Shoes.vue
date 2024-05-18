@@ -10,15 +10,12 @@ import { useKeyPress } from '@Composables/useKeyPress';
 import { useStore } from '../store';
 import { useAudio } from '@Composables/useAudio';
 import { useTranslate } from '@Shared/translate';
-import { useEvents } from '@Composables/useEvents';
-import { CharacterCreatorEvents } from '../../shared/events';
 import { ClothingKey } from '@Shared/data/clothing';
 import '../../translate/index';
 
-const { appearance, internal, setInternal } = useStore();
+const { appearance, internal, setInternal, setClothes } = useStore();
 const keys = useKeyPress();
 const audio = useAudio();
-const events = useEvents();
 const { t } = useTranslate();
 
 const title = t('character.creator.shoes');
@@ -28,7 +25,7 @@ const allItems = ref<ClothingItemData[]>([]);
 const scrollRef = ref(null);
 
 onMounted(() => {
-    if (appearance.sex === 0) {
+    if (appearance.sex === 1) {
         allItems.value = [
             {
                 id: -1,
@@ -80,12 +77,7 @@ function keyboardIndex(value: number) {
 function setIndex(index: number) {
     if (index !== internal.shoesIndex) {
         setInternal('shoesIndex', index);
-        events.emitClient(
-            CharacterCreatorEvents.toClient.updateClothes,
-            false,
-            ClothingKey.shoes,
-            toRaw(allItems.value[index]),
-        );
+        setClothes(false, ClothingKey.shoes, toRaw(allItems.value[index]));
     }
 }
 
@@ -108,7 +100,7 @@ function autoScroll() {
 </script>
 
 <template>
-    <SidePanel position="right" class="gap-6  font-bold">
+    <SidePanel position="right" class="gap-6 font-bold">
         <div class="text-3xl font-bold">{{ title }}</div>
 
         <div class="flex max-h-[50%] w-full flex-col gap-2 overflow-y-scroll pr-3 outline-none" :tabindex="-1">

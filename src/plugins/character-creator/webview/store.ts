@@ -1,32 +1,49 @@
 import { Appearance } from '@Shared/types/appearance.js';
-import { ref } from 'vue';
+import { ref, toRaw } from 'vue';
 import { DefaultAppearance, DefaultClothes } from '../shared/defaultAppearance.js';
 import { useEvents } from '@Composables/useEvents.js';
 import { CharacterCreatorEvents } from '../shared/events.js';
 import { IInternal, initialInternal } from './const/internalStateDefault.js';
+import { ClothingComponent, ClothingItemData } from '@Shared/types/clothingComponent.js';
 
 const events = useEvents();
 
 const appearance = ref<Appearance>(JSON.parse(JSON.stringify(DefaultAppearance)));
 const internal = ref<IInternal>(JSON.parse(JSON.stringify(initialInternal)));
 
+
 export function useStore() {
+    function resetStore() {
+        for (const _key in DefaultAppearance) {
+            appearance.value[_key] = DefaultAppearance[_key];
+        }
+
+        for (const _key in initialInternal) {
+            internal.value[_key] = initialInternal[_key];
+        }
+
+    }
+
+    function setClothes(isProp: boolean, id: number, data: ClothingItemData) {
+        events.emitClient(CharacterCreatorEvents.toClient.updateClothes, isProp, id, data);
+    }
+
     function setAppearance<T extends keyof Appearance>(key: T, value: Appearance[T]) {
         if (key === 'sex') {
             if (value === appearance.value.sex) return;
 
-            for (const _key in DefaultAppearance) {
-                appearance.value[_key] = DefaultAppearance[_key];
-            }
+            useStore().resetStore();
 
-            for (const _key in initialInternal) {
-                internal.value[_key] = initialInternal[_key];
-            }
+            events.emitClient(CharacterCreatorEvents.toClient.resetClothes);
 
             appearance.value[key] = value;
 
             for (const _key in appearance.value) {
-                events.emitClient(CharacterCreatorEvents.toClient.updateAppearance, _key, appearance.value[_key]);
+                events.emitClient(
+                    CharacterCreatorEvents.toClient.updateAppearance,
+                    _key,
+                    JSON.parse(JSON.stringify(appearance.value[_key])),
+                );
             }
 
             return;
@@ -44,5 +61,7 @@ export function useStore() {
         appearance: appearance.value,
         setAppearance,
         setInternal,
+        setClothes,
+        resetStore,
     };
 }
