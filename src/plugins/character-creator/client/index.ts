@@ -6,11 +6,16 @@ import { Appearance } from '@Shared/types/appearance.js';
 
 import { DefaultAppearance, DefaultClothes } from '../shared/defaultAppearance.js';
 import { CharacterCreatorEvents } from '../shared/events.js';
+import { clone } from '@Shared/utility/index.js';
 
 const pedClone = useClonedPed();
 const webview = useWebview();
 
-function updateAppearance(appearance: Appearance) {
+let appearance: Appearance = clone.objectData(DefaultAppearance);
+
+function updateAppearance<T extends keyof Appearance>(key: T, value: Appearance[T]) {
+    appearance[key] = value;
+    alt.log(key);
     pedClone.ped.update(appearance, DefaultClothes, {
         pos: alt.Player.local.pos,
         heading: 60,
@@ -45,3 +50,4 @@ function handleBack() {
 
 alt.onServer(CharacterCreatorEvents.toClient.toggleControls, handleToggleControls);
 webview.on(CharacterCreatorEvents.toClient.back, handleBack);
+webview.on(CharacterCreatorEvents.toClient.updateAppearance, updateAppearance);
