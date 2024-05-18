@@ -72,9 +72,9 @@ onMounted(() => {
 </script>
 
 <template>
-    <SidePanel class="px-28 font-bold">
+    <SidePanel class="font-bold">
         <div v-if="!isDeleting">
-            <div class="mb-20 text-4xl">{{ t('character.select.title') }}</div>
+            <div class="mb-20 w-full text-center text-5xl font-bold">{{ t('character.select.title') }}</div>
 
             <div v-if="!characters.length">{{ t('character.select.not.found') }}...</div>
 
@@ -123,7 +123,7 @@ onMounted(() => {
                         @click="setIndex(index)"
                         class="grid aspect-square place-items-center"
                     >
-                        <Icon :size="3" icon="icon-user" />
+                        <Icon :size="4" icon="icon-user" />
                     </Button>
 
                     <Button
@@ -131,7 +131,7 @@ onMounted(() => {
                         type="disabled"
                         class="grid aspect-square place-items-center"
                     >
-                        <Icon :size="3" icon="icon-add-user" />
+                        <Icon :size="4" icon="icon-add-user" />
                     </Button>
                 </div>
             </div>

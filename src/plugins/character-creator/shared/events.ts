@@ -5,8 +5,10 @@ export const CharacterCreatorEvents = {
         save: 'character:creator:toClient:save',
         back: 'character:creator:toClient:back',
         toggleRotation: 'character:creator:toClient:toggleRotation',
+        toggleControls: 'character:creator:toClient:toggleControls',
     },
     toServer: {
         nameCheck: 'character:creator:toServer:nameCheck',
+        exit: 'character:creator:toServer:exit',
     },
 };

@@ -147,12 +147,10 @@ function setSessionFinish(player: alt.Player) {
 
 async function setAccount(player: alt.Player, account: Account) {
     Rebar.document.account.useAccountBinder(player).bind(account);
-    const playerWorld = Rebar.player.useWorld(player);
     const view = Rebar.player.useWebview(player);
 
     const banAPI = await api.getAsync('ban-handler-api');
 
-    playerWorld.clearScreenFade(500);
     view.hide('DiscordAuth');
 
     const banned = await banAPI.checkBan(player);

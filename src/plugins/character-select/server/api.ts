@@ -3,15 +3,22 @@ import { useRebar } from '@Server/index.js';
 import { Character } from '@Shared/types/character.js';
 
 type PlayerCharacterCallback = (player: alt.Player, character: Character) => void;
+type CreatorOpenCallback = (player: alt.Player) => void;
 
-const API_NAME = 'character-select-apia';
 const Rebar = useRebar();
 
 const selectCallbacks: Array<PlayerCharacterCallback> = [];
+const openCreatorCallbacks: Array<CreatorOpenCallback> = [];
 
 export function invokeSelect(player: alt.Player, character: Character) {
     for (let cb of selectCallbacks) {
         cb(player, character);
+    }
+}
+
+export function invokeCreator(player: alt.Player) {
+    for (let cb of openCreatorCallbacks) {
+        cb(player);
     }
 }
 
@@ -20,15 +27,20 @@ function useApi() {
         selectCallbacks.push(callback);
     }
 
+    function onOpenCreator(callback: CreatorOpenCallback) {
+        openCreatorCallbacks.push(callback);
+    }
+
     return {
         onSelect,
+        onOpenCreator,
     };
 }
 
 declare global {
     export interface ServerPlugin {
-        [API_NAME]: ReturnType<typeof useApi>;
+        ['character-select-api']: ReturnType<typeof useApi>;
     }
 }
 
-Rebar.useApi().register(API_NAME, useApi());
+Rebar.useApi().register('character-select-api', useApi());

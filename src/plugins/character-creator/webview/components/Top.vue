@@ -236,7 +236,7 @@ function setTabIndex(index: number) {
 </script>
 
 <template>
-    <SidePanel position="right" class="gap-6 px-10 font-bold">
+    <SidePanel position="right" class="gap-6 font-bold">
         <div class="text-3xl font-bold">{{ title }}</div>
 
         <div class="flex w-full" v-if="allItems[internal.topsIndex]">

@@ -56,8 +56,8 @@ function handleBack() {
 }
 </script>
 <template>
-    <SidePanel class="gap-6 px-10">
-        <div class="w-full text-center text-5xl font-bold">{{ t('character.creator.title') }}</div>
+    <SidePanel class="gap-6">
+        <div class="mb-10 w-full text-center text-5xl font-bold">{{ t('character.creator.title') }}</div>
 
         <div class="flex w-full items-center gap-3">
             <div class="whitespace-nowrap text-2xl font-bold">{{ t('character.creator.sex') }}:</div>
@@ -112,7 +112,7 @@ function handleBack() {
         </div>
     </SidePanel>
     <Information v-if="internal.modalOpen" @setInternal="setInternal" :internal="internal" />
-    <div class="ml-3 flex w-[40rem] justify-center">
+    <div class="ml-3 flex justify-center">
         <component :is="navigationItems[internal.navIndex].component" />
     </div>
 </template>

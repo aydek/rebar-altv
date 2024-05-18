@@ -61,7 +61,7 @@ function reset() {
 }
 </script>
 <template>
-    <SidePanel position="right" class="gap-6 px-10">
+    <SidePanel position="right" class="gap-6 ">
         <div class="text-3xl font-bold">{{ title }}</div>
 
         <div class="relative">

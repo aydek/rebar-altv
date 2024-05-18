@@ -61,7 +61,7 @@ function reset() {
 </script>
 
 <template>
-    <SidePanel position="right" class="gap-6 px-10 font-bold">
+    <SidePanel position="right" class="gap-6  font-bold">
         <div class="text-4xl font-bold">{{ title }}</div>
 
         <template v-for="(item, index) in appearanceNames" :key="index + item">

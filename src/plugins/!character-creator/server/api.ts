@@ -3,7 +3,7 @@ import { useRebar } from '@Server/index.js';
 
 type PlayerCharacterCallback = (player: alt.Player) => void;
 
-const API_NAME = 'character-creator-api';
+const API_NAME = 'character-creator-apia';
 const Rebar = useRebar();
 
 const createCallbacks: Array<PlayerCharacterCallback> = [];

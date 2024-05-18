@@ -122,7 +122,7 @@ function autoScroll() {
 </script>
 
 <template>
-    <SidePanel position="right" class="gap-6 px-10 font-bold">
+    <SidePanel position="right" class="gap-6 font-bold">
         <div class="text-3xl font-bold">{{ title }}</div>
 
         <div class="flex max-h-[50%] w-full flex-col gap-2 overflow-y-scroll pr-3 outline-none" :tabindex="-1">

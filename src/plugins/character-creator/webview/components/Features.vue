@@ -37,7 +37,7 @@ function reset() {
 </script>
 
 <template>
-    <SidePanel position="right" class="gap-2 px-10 font-bold">
+    <SidePanel position="right" class="gap-2 font-bold">
         <div class="mb-5 text-3xl font-bold">{{ title }}</div>
 
         <div class="flex w-full items-center gap-3" v-for="(item, index) in structureNames" :key="index + item">

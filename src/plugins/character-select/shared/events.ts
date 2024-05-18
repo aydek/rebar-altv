@@ -5,6 +5,9 @@ export const CharacterSelectEvents = {
         syncAppearance: 'character:select:toServer:syncAppearance',
         delete: 'character:select:toServer:delete',
     },
+    toClient: {
+        toggleControls: 'character:select:toClient:toggleControls',
+    },
     toWebview: {
         setCharacters: 'character:select:toWebview:setCharacters',
     },
