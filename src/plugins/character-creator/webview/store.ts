@@ -25,16 +25,14 @@ export function useStore() {
 
             appearance.value[key] = value;
 
-            console.log(appearance.value);
-
             for (const _key in appearance.value) {
-                events.emitServer(CharacterCreatorEvents.toClient.updateAppearance, _key, appearance.value[_key]);
+                events.emitClient(CharacterCreatorEvents.toClient.updateAppearance, _key, appearance.value[_key]);
             }
 
             return;
         }
         appearance.value[key] = value;
-        events.emitServer(CharacterCreatorEvents.toClient.updateAppearance, key, JSON.parse(JSON.stringify(value)));
+        events.emitClient(CharacterCreatorEvents.toClient.updateAppearance, key, JSON.parse(JSON.stringify(value)));
     }
 
     function setInternal<T extends keyof IInternal>(key: T, value: IInternal[T]) {
