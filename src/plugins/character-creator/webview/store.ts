@@ -11,7 +11,6 @@ const events = useEvents();
 const appearance = ref<Appearance>(JSON.parse(JSON.stringify(DefaultAppearance)));
 const internal = ref<IInternal>(JSON.parse(JSON.stringify(initialInternal)));
 
-
 export function useStore() {
     function resetStore() {
         for (const _key in DefaultAppearance) {
@@ -21,7 +20,6 @@ export function useStore() {
         for (const _key in initialInternal) {
             internal.value[_key] = initialInternal[_key];
         }
-
     }
 
     function setClothes(isProp: boolean, id: number, data: ClothingItemData) {
@@ -53,6 +51,9 @@ export function useStore() {
     }
 
     function setInternal<T extends keyof IInternal>(key: T, value: IInternal[T]) {
+        if (key === 'navIndex') {
+            events.emitClient(CharacterCreatorEvents.toClient.setCamera, value);
+        }
         internal.value[key] = value;
     }
 

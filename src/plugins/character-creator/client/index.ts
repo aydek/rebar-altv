@@ -55,7 +55,7 @@ async function handleToggleControls(value: boolean) {
             pos: alt.Player.local.pos,
             heading: 60,
         });
-        await pedClone.camera.create({ bone: 'SKEL_Pelvis', fov: 60, zOffset: 0 });
+        await pedClone.camera.create({ bone: 'SKEL_Pelvis', fov: 60, zOffset: 0.3 });
     }
 }
 
@@ -70,8 +70,22 @@ function handleBack() {
     clothes = clone.objectData(DefaultClothes);
 }
 
+function setCamera(navIndex: number) {
+    // if (navIndex === 0) 
+    // if (navIndex === 1) webview.emit(CharCreatorEvents.setCamera, 0.6, 1.1);
+    // if (navIndex === 2) webview.emit(CharCreatorEvents.setCamera, 0.6, 0.7);
+    // if (navIndex === 3) webview.emit(CharCreatorEvents.setCamera, 0.6, 0.7);
+    // if (navIndex === 4) webview.emit(CharCreatorEvents.setCamera, 0.6, 0.7);
+    // if (navIndex === 5) webview.emit(CharCreatorEvents.setCamera, 0.3, 1.5);
+    // if (navIndex === 6) webview.emit(CharCreatorEvents.setCamera, -0.3, 1.5);
+    // if (navIndex === 7) webview.emit(CharCreatorEvents.setCamera, -0.7, 1.3);
+    // if (navIndex === 8) webview.emit(CharCreatorEvents.setCamera, 0.6, 1);
+    // if (navIndex === 9) webview.emit(CharCreatorEvents.setCamera, 0.4, 1.1);
+}
+
 alt.onServer(CharacterCreatorEvents.toClient.toggleControls, handleToggleControls);
 webview.on(CharacterCreatorEvents.toClient.back, handleBack);
 webview.on(CharacterCreatorEvents.toClient.updateAppearance, updateAppearance);
 webview.on(CharacterCreatorEvents.toClient.updateClothes, updateClothes);
 webview.on(CharacterCreatorEvents.toClient.resetClothes, resetClothes);
+webview.on(CharacterCreatorEvents.toClient.setCamera, setCamera);

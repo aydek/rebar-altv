@@ -7,6 +7,7 @@ export const CharacterCreatorEvents = {
         back: 'character:creator:toClient:back',
         toggleRotation: 'character:creator:toClient:toggleRotation',
         toggleControls: 'character:creator:toClient:toggleControls',
+        setCamera: 'character:creator:toClient:setCamera',
     },
     toServer: {
         nameCheck: 'character:creator:toServer:nameCheck',
