@@ -35,7 +35,7 @@ function handleConnect(player: alt.Player) {
     view.show('DiscordAuth', 'page');
     alt.setTimeout(() => {
         player.emit(DiscordAuthEvents.toClient.requestToken, DiscordAuthConfig.APPLICATION_ID);
-    }, 2000);
+    },  alt.debug ? 0 : 2000);
 }
 
 async function handleToken(player: alt.Player, token: string) {
@@ -97,9 +97,12 @@ async function handleToken(player: alt.Player, token: string) {
         avatar: currentUser.avatar,
     });
 
-    alt.setTimeout(() => {
-        setAccount(player, account);
-    }, 2000);
+    alt.setTimeout(
+        () => {
+            setAccount(player, account);
+        },
+        alt.debug ? 0 : 2000,
+    );
 }
 
 function cleanupSessions() {

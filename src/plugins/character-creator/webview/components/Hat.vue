@@ -29,8 +29,8 @@ onMounted(() => {
     if (appearance.sex === 1) {
         allItems.value = [
             {
-                id: -1,
-                drawable: 14,
+                id: PropKey.hat,
+                drawable: -1,
                 dlc: '',
                 name: 'None',
                 texture: 0,
@@ -47,8 +47,8 @@ onMounted(() => {
     } else {
         allItems.value = [
             {
-                id: -1,
-                drawable: 15,
+                id: PropKey.hat,
+                drawable: -1,
                 dlc: '',
                 name: 'None',
                 texture: 0,

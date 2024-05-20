@@ -41,26 +41,20 @@ function updateAppearance<T extends keyof Appearance>(key: T, value: Appearance[
     });
 }
 
-async function handleToggleControls(value: boolean) {
-    alt.toggleGameControls(value);
-    alt.setConfigFlag('DISABLE_IDLE_CAMERA', !value);
-
-    if (value) {
-        alt.off('disconnect', pedClone.ped.destroy);
-        pedClone.ped.destroy();
-        pedClone.camera.destroy();
-    } else {
-        alt.on('disconnect', pedClone.ped.destroy);
-        pedClone.ped.update(DefaultAppearance, clothes, {
-            pos: alt.Player.local.pos,
-            heading: 60,
-        });
-        await pedClone.camera.create({ bone: 'SKEL_Pelvis', fov: 60, zOffset: 0.3 });
-    }
+async function handleTogglePedEdit() {
+    alt.setConfigFlag('DISABLE_IDLE_CAMERA', true);
+    alt.on('disconnect', pedClone.ped.destroy);
+    pedClone.ped.update(DefaultAppearance, clothes, {
+        pos: alt.Player.local.pos,
+        heading: 60,
+    });
+    await pedClone.camera.create({ distance: 2, zOffset: 0.3 });
 }
 
 function handleBack() {
+    alt.setConfigFlag('DISABLE_IDLE_CAMERA', false);
     native.doScreenFadeOut(0);
+    alt.off('disconnect', pedClone.ped.destroy);
     pedClone.ped.destroy();
     pedClone.camera.destroy();
     webview.hide('CharacterCreator');
@@ -71,19 +65,19 @@ function handleBack() {
 }
 
 function setCamera(navIndex: number) {
-    // if (navIndex === 0) 
-    // if (navIndex === 1) webview.emit(CharCreatorEvents.setCamera, 0.6, 1.1);
-    // if (navIndex === 2) webview.emit(CharCreatorEvents.setCamera, 0.6, 0.7);
-    // if (navIndex === 3) webview.emit(CharCreatorEvents.setCamera, 0.6, 0.7);
-    // if (navIndex === 4) webview.emit(CharCreatorEvents.setCamera, 0.6, 0.7);
-    // if (navIndex === 5) webview.emit(CharCreatorEvents.setCamera, 0.3, 1.5);
-    // if (navIndex === 6) webview.emit(CharCreatorEvents.setCamera, -0.3, 1.5);
-    // if (navIndex === 7) webview.emit(CharCreatorEvents.setCamera, -0.7, 1.3);
-    // if (navIndex === 8) webview.emit(CharCreatorEvents.setCamera, 0.6, 1);
-    // if (navIndex === 9) webview.emit(CharCreatorEvents.setCamera, 0.4, 1.1);
+    if (navIndex === 0) pedClone.camera.update({ distance: 2, zOffset: 0.3 });
+    if (navIndex === 1) pedClone.camera.update({ distance: 0.6, zOffset: 0.7 });
+    if (navIndex === 2) pedClone.camera.update({ distance: 0.6, zOffset: 0.7 });
+    if (navIndex === 3) pedClone.camera.update({ distance: 0.6, zOffset: 0.7 });
+    if (navIndex === 4) pedClone.camera.update({ distance: 0.6, zOffset: 0.7 });
+    if (navIndex === 5) pedClone.camera.update({ distance: 1, zOffset: 0.4 });
+    if (navIndex === 6) pedClone.camera.update({ distance: 1.5, zOffset: -0.3 });
+    if (navIndex === 7) pedClone.camera.update({ distance: 1.3, zOffset: -0.7 });
+    if (navIndex === 8) pedClone.camera.update({ distance: 0.6, zOffset: 0.7 });
+    if (navIndex === 9) pedClone.camera.update({ distance: 1, zOffset: 0.4 });
 }
 
-alt.onServer(CharacterCreatorEvents.toClient.toggleControls, handleToggleControls);
+alt.onServer(CharacterCreatorEvents.toClient.tooglePedEdit, handleTogglePedEdit);
 webview.on(CharacterCreatorEvents.toClient.back, handleBack);
 webview.on(CharacterCreatorEvents.toClient.updateAppearance, updateAppearance);
 webview.on(CharacterCreatorEvents.toClient.updateClothes, updateClothes);

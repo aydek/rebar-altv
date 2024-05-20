@@ -9,7 +9,7 @@ const db = Rebar.database.useDatabase();
 
 async function showCreator(player: alt.Player) {
     const playerWorld = Rebar.player.useWorld(player);
-    player.emit(CharacterCreatorEvents.toClient.toggleControls, false);
+    player.emit(CharacterCreatorEvents.toClient.tooglePedEdit);
     player.visible = false;
     Rebar.player.useNative(player).invoke('displayRadar', false);
     const webview = Rebar.player.useWebview(player);

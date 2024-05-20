@@ -33,6 +33,7 @@ export function useStore() {
             useStore().resetStore();
 
             events.emitClient(CharacterCreatorEvents.toClient.resetClothes);
+            events.emitClient(CharacterCreatorEvents.toClient.setCamera, 0);
 
             appearance.value[key] = value;
 

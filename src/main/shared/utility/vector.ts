@@ -15,7 +15,7 @@ export function distance(vector1: alt.IVector3, vector2: alt.IVector3): number {
     }
 
     return Math.sqrt(
-        Math.pow(vector1.x - vector2.x, 2) + Math.pow(vector1.y - vector2.y, 2) + Math.pow(vector1.z - vector2.z, 2)
+        Math.pow(vector1.x - vector2.x, 2) + Math.pow(vector1.y - vector2.y, 2) + Math.pow(vector1.z - vector2.z, 2),
     );
 }
 
@@ -83,7 +83,7 @@ export function getClosestTypes<T extends { pos: alt.IVector3; valid: boolean }>
     elements: Array<T>,
     maxDistance: number,
     mustHaveProperties: Array<string> = [],
-    positionName: string = 'pos'
+    positionName: string = 'pos',
 ): Array<T> {
     const newElements: Array<T> = [];
 
@@ -172,7 +172,7 @@ export function getForwardVector(rot: alt.IVector3): alt.IVector3 {
  */
 export function getVectorInFrontOfPlayer(
     entity: { rot: alt.IVector3; pos: alt.IVector3 },
-    distance: number
+    distance: number,
 ): alt.Vector3 {
     const forwardVector = getForwardVector(entity.rot);
     const posFront = {
@@ -211,7 +211,7 @@ export function getClosestEntity<T>(
     rot: alt.IVector3,
     entities: Array<{ pos: alt.IVector3; valid?: boolean }>,
     dist: number,
-    checkBackwards: boolean = false
+    checkBackwards: boolean = false,
 ): T | null {
     const fwdVector = getForwardVector(rot);
     let position;
@@ -298,7 +298,7 @@ function fwdZ(x: number): number {
 export function getClosestOfType<T = { pos: alt.IVector3 }>(
     pos: alt.IVector3,
     elements: readonly (T & { pos: alt.IVector3 })[],
-    lastDistance = 100
+    lastDistance = 100,
 ): T | undefined {
     let lastClosest;
 

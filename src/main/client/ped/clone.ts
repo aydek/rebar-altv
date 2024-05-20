@@ -4,19 +4,17 @@ import { Appearance } from '../../shared/types/appearance.js';
 import { PedBones } from '../../shared/data/pedBones.js';
 import { ClothingComponent } from '../../shared/types/clothingComponent.js';
 
-type CameraOptions = { fov: number; zOffset: number; bone: keyof typeof PedBones };
-
-let interval: number;
-
-function tick() {
-    native.setUseHiDof();
-}
+type CameraOptions = { distance: number; zOffset: number };
 
 export function useClonedPed() {
     let ped: number;
     let lastModel: number;
     let camera: number;
     let lastCameraOptions: CameraOptions;
+    let initialHeading: number;
+    let interval: number;
+
+    let fwd: alt.IVector3;
 
     function destroyPed() {
         lastModel = undefined;
@@ -128,6 +126,9 @@ export function useClonedPed() {
         // Default Clothes for Even Customization
         for (let component of clothing) {
             if (component.isProp) {
+                if (component.drawable === -1) {
+                    alt.clearPedProp(ped, component.id);
+                }
                 if (component.dlc != 0) {
                     alt.setPedDlcProp(ped, component.dlc, component.id, component.drawable, component.texture);
                     continue;
@@ -157,27 +158,42 @@ export function useClonedPed() {
                 component.palette ?? 0,
             );
         }
-
-        updateCamera();
     }
 
-    async function updateCamera() {
+    async function updateCamera(options: CameraOptions, delay: number = 500) {
         if (!lastCameraOptions || !camera) {
             return;
         }
 
         await alt.Utils.waitFor(() => native.doesEntityExist(ped), 5000);
 
-        native.pointCamAtPedBone(camera, ped, PedBones[lastCameraOptions.bone], 0, 0, 0, false);
+        lastCameraOptions = options;
+
+        const targetPosition = native.getEntityCoords(ped, true);
+        const pos = targetPosition.add(fwd.x * options.distance, fwd.y * options.distance, options.zOffset);
+
+        const c2 = native.createCamWithParams('DEFAULT_SCRIPTED_CAMERA', pos.x, pos.y, pos.z, 0, 0, 0, 60, false, 1);
+
+        native.setCamActive(c2, true);
+
+        native.pointCamAtCoord(c2, targetPosition.x, targetPosition.y, targetPosition.z + options.zOffset);
+        native.setCamActiveWithInterp(c2, camera, delay, 1, 1);
+        native.renderScriptCams(true, true, delay, false, false, 0);
+
+        await alt.Utils.wait(delay);
+
+        if (!camera) {
+            if (c2) {
+                native.destroyCam(c2, true);
+            }
+            return;
+        }
+
+        native.destroyCam(camera, true);
+        camera = c2;
     }
 
-    async function createCamera(
-        options: CameraOptions = {
-            fov: 30,
-            zOffset: 0.8,
-            bone: 'IK_Head',
-        },
-    ) {
+    async function createCamera(options: CameraOptions) {
         if (camera) {
             return;
         }
@@ -186,25 +202,22 @@ export function useClonedPed() {
 
         lastCameraOptions = options;
 
-        const fwd = native.getEntityForwardVector(ped);
+        fwd = native.getEntityForwardVector(ped);
+
         const targetPosition = native.getEntityCoords(ped, true);
-        const pos = targetPosition.add(fwd.x * 2, fwd.y * 2, options.zOffset);
+        const pos = targetPosition.add(fwd.x * options.distance, fwd.y * options.distance, options.zOffset);
+        camera = native.createCamWithParams('DEFAULT_SCRIPTED_CAMERA', pos.x, pos.y, pos.z, 0, 0, 0, 60, false, 1);
 
-        camera = native.createCamWithParams('DEFAULT_SCRIPTED_CAMERA', pos.x, pos.y, pos.z, 0, 0, 0, 55, false, 1);
-
-        native.setCamUseShallowDofMode(camera, true);
-        native.setCamFov(camera, options.fov);
-        native.setCamNearDof(camera, 0.2);
-        native.setCamFarDof(camera, 3.5);
-        native.setCamDofStrength(camera, 1);
         native.setCamActive(camera, true);
-
-        native.pointCamAtPedBone(camera, ped, PedBones[options.bone], 0, 0, 0, false);
+        native.pointCamAtCoord(camera, targetPosition.x, targetPosition.y, targetPosition.z + options.zOffset);
         native.renderScriptCams(true, true, 1000, false, false, 0);
+
+        initialHeading = native.getEntityHeading(ped);
 
         if (typeof interval === 'undefined') {
             interval = alt.setInterval(tick, 0);
         }
+        alt.toggleGameControls(true);
     }
 
     function destroyCamera() {
@@ -215,6 +228,38 @@ export function useClonedPed() {
         native.setCamActive(camera, false);
         native.renderScriptCams(false, false, 0, false, false, 0);
         camera = undefined;
+    }
+
+    function tick() {
+        native.hideHudAndRadarThisFrame();
+        native.disableAllControlActions(0);
+        native.disableAllControlActions(1);
+        native.disableControlAction(0, 0, true);
+        native.disableControlAction(0, 1, true);
+        native.disableControlAction(0, 2, true);
+        native.disableControlAction(0, 24, true);
+        native.disableControlAction(0, 25, true);
+        native.disableControlAction(0, 32, true); // w
+        native.disableControlAction(0, 33, true); // s
+        native.disableControlAction(0, 34, true); // a
+        native.disableControlAction(0, 35, true); // d
+        native.disableControlAction(0, 22, true); //space bar
+
+        if (camera === null || camera === undefined) {
+            return;
+        }
+
+        // d
+        if (native.isDisabledControlPressed(0, 35)) {
+            const newHeading = (initialHeading += 2);
+            native.setEntityHeading(ped, newHeading);
+        }
+
+        // a
+        if (native.isDisabledControlPressed(0, 34)) {
+            const newHeading = (initialHeading -= 2);
+            native.setEntityHeading(ped, newHeading);
+        }
     }
 
     return {

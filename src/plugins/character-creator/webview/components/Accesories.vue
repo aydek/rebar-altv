@@ -36,50 +36,76 @@ const allGlasses = ref<ClothingItemData[]>([]);
 const tabIndex = ref(0);
 const scrollRef = ref(null);
 
-const noneItem = { id: -1, drawable: -1, dlc: '', name: 'None', texture: 0 };
-
 onMounted(() => {
     if (appearance.sex === 1) {
         allWatches.value = [
             {
-                ...noneItem,
+                id: PropKey.watch,
+                drawable: -1,
+                dlc: '',
+                name: 'None',
+                texture: 0,
             },
             ...maleWatches.filter((item, index) => item.dlc !== '' && index < 40),
         ];
         allBracelets.value = [
             {
-                ...noneItem,
+                id: PropKey.bracelet,
+                drawable: -1,
+                dlc: '',
+                name: 'None',
+                texture: 0,
             },
             ...maleBracelets,
         ];
         allEarings.value = [
             {
-                ...noneItem,
+                id: PropKey.ears,
+                drawable: -1,
+                dlc: '',
+                name: 'None',
+                texture: 0,
             },
             ...maleEars.filter((item, index) => !item.name.includes('Earpiece') && index < 40),
         ];
         allGlasses.value = [
             {
-                ...noneItem,
+                id: PropKey.glasses,
+                drawable: -1,
+                dlc: '',
+                name: 'None',
+                texture: 0,
             },
             ...maleGlasses.filter((item) => item.dlc === ''),
         ];
     } else {
         allWatches.value = [
             {
-                ...noneItem,
+                id: PropKey.watch,
+                drawable: -1,
+                dlc: '',
+                name: 'None',
+                texture: 0,
             },
             ...femaleWatches.filter((_item, index) => index < 20),
         ];
         allBracelets.value = [
             {
-                ...noneItem,
+                id: PropKey.bracelet,
+                drawable: -1,
+                dlc: '',
+                name: 'None',
+                texture: 0,
             },
             ...femaleBracelets,
         ];
         allEarings.value = [
             {
-                ...noneItem,
+                id: PropKey.ears,
+                drawable: -1,
+                dlc: '',
+                name: 'None',
+                texture: 0,
             },
             ...femaleEars.filter(
                 (item, index) => !item.name.includes('Earpiece') && !item.name.includes('Earphones') && index < 40,
@@ -87,7 +113,11 @@ onMounted(() => {
         ];
         allGlasses.value = [
             {
-                ...noneItem,
+                id: PropKey.glasses,
+                drawable: -1,
+                dlc: '',
+                name: 'None',
+                texture: 0,
             },
             ...femaleGlasses.filter((item) => item.dlc === ''),
         ];
