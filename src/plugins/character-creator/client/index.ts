@@ -8,9 +8,15 @@ import { DefaultAppearance, DefaultClothes } from '../shared/defaultAppearance.j
 import { CharacterCreatorEvents } from '../shared/events.js';
 import { clone } from '@Shared/utility/index.js';
 import { ClothingComponent, ClothingItemData } from '@Shared/types/clothingComponent.js';
+import { useClientApi } from '@Client/api/index.js';
+
+import '../translate/index.js';
+import { useTranslate } from '@Shared/translate.js';
 
 const pedClone = useClonedPed();
 const webview = useWebview();
+const api = useClientApi();
+const { t } = useTranslate();
 
 let appearance: Appearance = clone.objectData(DefaultAppearance);
 let clothes: ClothingComponent[] = clone.arrayData(DefaultClothes);
@@ -49,9 +55,17 @@ async function handleTogglePedEdit() {
         heading: 160,
     });
     await pedClone.camera.create({ distance: 2, zOffset: 0.3 });
+    const keys = await api.getAsync('instruction-keys-api');
+    keys.showInstructionKeys([
+        { key: 'A', text: '' },
+        { key: 'D', text: t('character.creator.rotate') },
+        { key: 'W', text: '' },
+        { key: 'S', text: t('character.creator.updown') },
+        { key: 'icon-cartwheel', text: t('character.creator.zoom') },
+    ]);
 }
 
-function handleBack() {
+async function handleBack() {
     alt.setConfigFlag('DISABLE_IDLE_CAMERA', false);
     native.doScreenFadeOut(0);
     alt.off('disconnect', pedClone.ped.destroy);
@@ -62,6 +76,9 @@ function handleBack() {
 
     appearance = clone.objectData(DefaultAppearance);
     clothes = clone.objectData(DefaultClothes);
+
+    const keys = await api.getAsync('instruction-keys-api');
+    keys.hideInstructionKeys();
 }
 
 function setCamera(navIndex: number) {

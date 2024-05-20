@@ -46,6 +46,10 @@ setBulk({
         'character.creator.name.taken': 'Name is already taken',
         'character.creator.name.error': 'Invalid name format',
         'character.creator.day.error': 'Age must be form 18 to 99',
+
+        'character.creator.rotate': 'Rotate',
+        'character.creator.updown': 'Up / Down',
+        'character.creator.zoom': 'Zoom in / out',
     },
     lt: {
         'character.creator.title': 'Veikėjo kūrimas',
@@ -91,5 +95,9 @@ setBulk({
         'character.creator.name.taken': 'Vardas jau užimtas',
         'character.creator.name.error': 'Netinkamas vardo formatas',
         'character.creator.day.error': 'Amžius privalo būti tarp 18 ir 99',
+
+        'character.creator.rotate': 'Pasukti',
+        'character.creator.updown': 'Aukštyn / Žemyn',
+        'character.creator.zoom': 'Pritraukti arčiau / toliau',
     },
 });
