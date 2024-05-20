@@ -13,6 +13,7 @@ export function useClonedPed() {
     let lastCameraOptions: CameraOptions;
     let initialHeading: number;
     let interval: number;
+    let enableKeys: boolean;
 
     let fwd: alt.IVector3;
 
@@ -218,11 +219,16 @@ export function useClonedPed() {
         native.renderScriptCams(true, true, 1000, false, false, 0);
 
         initialHeading = native.getEntityHeading(ped);
+        enableKeys = true;
 
         if (typeof interval === 'undefined') {
             interval = alt.setInterval(tick, 0);
         }
         alt.toggleGameControls(true);
+    }
+
+    function setKeysEnabled(state: boolean) {
+        enableKeys = state;
     }
 
     function destroyCamera() {
@@ -251,6 +257,10 @@ export function useClonedPed() {
         native.disableControlAction(0, 22, true); //space bar
 
         if (camera === null || camera === undefined) {
+            return;
+        }
+
+        if (!enableKeys) {
             return;
         }
 
@@ -383,6 +393,7 @@ export function useClonedPed() {
         camera: {
             create: createCamera,
             destroy: destroyCamera,
+            setKeysEnabled,
             get() {
                 return camera;
             },
