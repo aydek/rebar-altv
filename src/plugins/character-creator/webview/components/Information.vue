@@ -76,7 +76,7 @@ const handleCheckReturn = (foundDoc: boolean) => {
 };
 
 onMounted(() => {
-    events.emitClient(CharacterCreatorEvents.toClient.toggleRotation, true);
+    events.emitClient(CharacterCreatorEvents.toClient.toggleRotation, false);
     events.on(CharacterCreatorEvents.toServer.nameCheck, handleCheckReturn);
 });
 
@@ -107,7 +107,7 @@ const ageChange = (_val: number) => {
 };
 
 const handleClose = () => {
-    events.emitClient(CharacterCreatorEvents.toClient.toggleRotation, false);
+    events.emitClient(CharacterCreatorEvents.toClient.toggleRotation, true);
     setInternal('modalOpen', false);
 };
 </script>
