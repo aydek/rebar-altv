@@ -1,7 +1,6 @@
 import * as alt from 'alt-client';
 import * as native from 'natives';
 import { Appearance } from '../../shared/types/appearance.js';
-import { PedBones } from '../../shared/data/pedBones.js';
 import { ClothingComponent } from '../../shared/types/clothingComponent.js';
 
 type CameraOptions = { distance: number; zOffset: number };
@@ -11,7 +10,7 @@ export function useClonedPed() {
     let lastModel: number;
     let camera: number;
     let lastCameraOptions: CameraOptions;
-    let initialHeading: number;
+    let currentHeading: number;
     let interval: number;
     let enableKeys: boolean;
 
@@ -46,6 +45,8 @@ export function useClonedPed() {
 
         const model = appearance.sex === 0 ? alt.hash('mp_f_freemode_01') : alt.hash('mp_m_freemode_01');
 
+        currentHeading = options.heading;
+
         if (lastModel !== model) {
             destroyPed();
             lastModel = model;
@@ -53,8 +54,8 @@ export function useClonedPed() {
             native.setEntityCoordsNoOffset(ped, options.pos.x, options.pos.y, options.pos.z, false, false, false);
             native.freezeEntityPosition(ped, true);
             native.setEntityInvincible(ped, true);
-            native.setEntityRotation(ped, 0, 0, options.heading, 1, false);
-            native.setPedDesiredHeading(ped, options.heading);
+            native.setEntityRotation(ped, 0, 0, currentHeading, 1, false);
+            native.setPedDesiredHeading(ped, currentHeading);
             native.taskSetBlockingOfNonTemporaryEvents(ped, true);
             native.setBlockingOfNonTemporaryEvents(ped, true);
             native.setPedFleeAttributes(ped, 0, true);
@@ -218,7 +219,6 @@ export function useClonedPed() {
         native.pointCamAtCoord(camera, targetPosition.x, targetPosition.y, targetPosition.z + options.zOffset);
         native.renderScriptCams(true, true, 1000, false, false, 0);
 
-        initialHeading = native.getEntityHeading(ped);
         enableKeys = true;
 
         if (typeof interval === 'undefined') {
@@ -266,13 +266,13 @@ export function useClonedPed() {
 
         // d
         if (native.isDisabledControlPressed(0, 35)) {
-            const newHeading = (initialHeading += 2);
+            const newHeading = (currentHeading += 2);
             native.setEntityHeading(ped, newHeading);
         }
 
         // a
         if (native.isDisabledControlPressed(0, 34)) {
-            const newHeading = (initialHeading -= 2);
+            const newHeading = (currentHeading -= 2);
             native.setEntityHeading(ped, newHeading);
         }
 
@@ -387,6 +387,9 @@ export function useClonedPed() {
             destroy: destroyPed,
             get() {
                 return ped;
+            },
+            currentHeading() {
+                return currentHeading;
             },
             update: updatePed,
         },
