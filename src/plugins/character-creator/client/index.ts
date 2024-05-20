@@ -66,7 +66,7 @@ function handleBack() {
 
 function setCamera(navIndex: number) {
     if (navIndex === 0) pedClone.camera.update({ distance: 2, zOffset: 0.3 });
-    if (navIndex === 1) pedClone.camera.update({ distance: 0.6, zOffset: 0.7 });
+    if (navIndex === 1) pedClone.camera.update({ distance: 1, zOffset: 0.4 });
     if (navIndex === 2) pedClone.camera.update({ distance: 0.6, zOffset: 0.7 });
     if (navIndex === 3) pedClone.camera.update({ distance: 0.6, zOffset: 0.7 });
     if (navIndex === 4) pedClone.camera.update({ distance: 0.6, zOffset: 0.7 });
