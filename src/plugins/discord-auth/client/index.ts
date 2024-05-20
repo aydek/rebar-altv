@@ -1,7 +1,6 @@
 import * as alt from 'alt-client';
 import { DiscordAuthEvents } from '../shared/events.js';
 
-
 async function getDiscordToken(applicationIdentifier: string) {
     let bearerToken: string;
 
@@ -13,6 +12,7 @@ async function getDiscordToken(applicationIdentifier: string) {
     }
 
     alt.emitServer(DiscordAuthEvents.toServer.pushToken, bearerToken);
+    alt.offServer(DiscordAuthEvents.toClient.requestToken, getDiscordToken);
 }
 
 alt.onServer(DiscordAuthEvents.toClient.requestToken, getDiscordToken);
