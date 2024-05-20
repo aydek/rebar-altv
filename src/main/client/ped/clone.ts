@@ -101,6 +101,11 @@ export function useClonedPed() {
         native.setPedHeadOverlay(ped, 1, appearance.facialHair, appearance.facialHairOpacity);
         native.setPedHeadOverlayTint(ped, 1, 1, appearance.facialHairColor1, appearance.facialHairColor1);
 
+        if (appearance.chestHair !== null && appearance.chestHair !== undefined) {
+            native.setPedHeadOverlay(ped, 10, appearance.chestHair, appearance.chestHairOpacity);
+            native.setPedHeadOverlayTint(ped, 10, 1, appearance.chestHairColor1, appearance.chestHairColor1);
+        }
+
         for (let i = 0; i < appearance.structure.length; i++) {
             native.setPedMicroMorph(ped, i, appearance.structure[i]);
         }
