@@ -15,7 +15,7 @@ export const DefaultAppearance: Appearance = {
     eyebrowsOpacity: 1,
     eyebrowsColor1: 0,
     chestHair: 17,
-    chestHairOpacity: 0,
+    chestHairOpacity: 1,
     chestHairColor1: 0,
     facialHair: 29,
     facialHairOpacity: 1,
