@@ -260,6 +260,111 @@ export function useClonedPed() {
             const newHeading = (initialHeading -= 2);
             native.setEntityHeading(ped, newHeading);
         }
+
+        const [_d, width, _] = native.getActualScreenResolution(0, 0);
+        const cursor = alt.getCursorPos();
+        const _x = cursor.x;
+        const startPosition = native.getEntityCoords(ped, true);
+
+        //Space bar
+        if (native.isDisabledControlPressed(0, 22) && alt.debug) {
+            alt.log(`zOffset: ${lastCameraOptions.zOffset} distance: ${lastCameraOptions.distance}`);
+        }
+
+        // Scroll Up
+        if (native.isDisabledControlPressed(0, 15)) {
+            if (_x < width / 2 + 250 && _x > width / 2 - 250) {
+                lastCameraOptions.distance -= 0.05;
+
+                if (lastCameraOptions.distance < 0.7) {
+                    lastCameraOptions.distance = 0.7;
+                }
+
+                const newFwd: alt.Vector3 = {
+                    x: startPosition.x + fwd.x * lastCameraOptions.distance,
+                    y: startPosition.y + fwd.y * lastCameraOptions.distance,
+                    z: startPosition.z,
+                } as alt.Vector3;
+
+                native.setCamCoord(camera, newFwd.x, newFwd.y, newFwd.z + lastCameraOptions.zOffset);
+                native.setCamActive(camera, true);
+                native.renderScriptCams(true, false, 0, true, false, 0);
+            }
+        }
+
+        // SCroll Down
+        if (native.isDisabledControlPressed(0, 16)) {
+            if (_x < width / 2 + 250 && _x > width / 2 - 250) {
+                lastCameraOptions.distance += 0.05;
+
+                if (lastCameraOptions.distance > 2.5) {
+                    lastCameraOptions.distance = 2.5;
+                }
+
+                const newFwd: alt.Vector3 = {
+                    x: startPosition.x + fwd.x * lastCameraOptions.distance,
+                    y: startPosition.y + fwd.y * lastCameraOptions.distance,
+                    z: startPosition.z,
+                } as alt.Vector3;
+
+                native.setCamCoord(camera, newFwd.x, newFwd.y, newFwd.z + lastCameraOptions.zOffset);
+                native.setCamActive(camera, true);
+                native.renderScriptCams(true, false, 0, true, false, 0);
+            }
+        }
+        // W
+        if (native.isDisabledControlPressed(0, 32)) {
+            lastCameraOptions.zOffset += 0.01;
+
+            if (lastCameraOptions.zOffset > 1) {
+                lastCameraOptions.zOffset = 1;
+            }
+
+            const newFwd: alt.Vector3 = {
+                x: startPosition.x + fwd.x * lastCameraOptions.distance,
+                y: startPosition.y + fwd.y * lastCameraOptions.distance,
+                z: startPosition.z,
+            } as alt.Vector3;
+
+            native.setCamCoord(camera, newFwd.x, newFwd.y, newFwd.z + lastCameraOptions.zOffset);
+            native.pointCamAtCoord(
+                camera,
+                startPosition.x,
+                startPosition.y,
+                startPosition.z + lastCameraOptions.zOffset,
+            );
+            native.setCamActive(camera, true);
+            native.renderScriptCams(true, false, 0, true, false, 0);
+        }
+        // S
+        if (native.isDisabledControlPressed(0, 33)) {
+            lastCameraOptions.zOffset -= 0.01;
+
+            if (lastCameraOptions.zOffset < -0.8) {
+                lastCameraOptions.zOffset = -0.8;
+            }
+
+            const forwardCameraPosition: alt.Vector3 = {
+                x: startPosition.x + fwd.x * lastCameraOptions.distance,
+                y: startPosition.y + fwd.y * lastCameraOptions.distance,
+                z: startPosition.z,
+            } as alt.Vector3;
+
+            native.setCamCoord(
+                camera,
+                forwardCameraPosition.x,
+                forwardCameraPosition.y,
+                forwardCameraPosition.z + lastCameraOptions.zOffset,
+            );
+            native.pointCamAtCoord(
+                camera,
+                startPosition.x,
+                startPosition.y,
+                startPosition.z + lastCameraOptions.zOffset,
+            );
+            native.setCamActive(camera, true);
+            native.renderScriptCams(true, false, 0, true, false, 0);
+        }
     }
 
     return {
