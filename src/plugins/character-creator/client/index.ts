@@ -77,9 +77,14 @@ function setCamera(navIndex: number) {
     if (navIndex === 9) pedClone.camera.update({ distance: 1, zOffset: 0.4 });
 }
 
+function toggleRotation(state: boolean) {
+    pedClone.camera.setKeysEnabled(state);
+}
+
 alt.onServer(CharacterCreatorEvents.toClient.tooglePedEdit, handleTogglePedEdit);
 webview.on(CharacterCreatorEvents.toClient.back, handleBack);
 webview.on(CharacterCreatorEvents.toClient.updateAppearance, updateAppearance);
 webview.on(CharacterCreatorEvents.toClient.updateClothes, updateClothes);
 webview.on(CharacterCreatorEvents.toClient.resetClothes, resetClothes);
 webview.on(CharacterCreatorEvents.toClient.setCamera, setCamera);
+webview.on(CharacterCreatorEvents.toClient.toggleRotation, toggleRotation);
