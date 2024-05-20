@@ -25,7 +25,7 @@ function updateClothes(isProp: boolean, id: number, data: ClothingItemData) {
 
     pedClone.ped.update(appearance, clothes, {
         pos: alt.Player.local.pos,
-        heading: 60,
+        heading: pedClone.ped.currentHeading(),
     });
 }
 
@@ -37,7 +37,7 @@ function updateAppearance<T extends keyof Appearance>(key: T, value: Appearance[
     appearance[key] = value;
     pedClone.ped.update(appearance, clothes, {
         pos: alt.Player.local.pos,
-        heading: 60,
+        heading: pedClone.ped.currentHeading(),
     });
 }
 
@@ -46,7 +46,7 @@ async function handleTogglePedEdit() {
     alt.on('disconnect', pedClone.ped.destroy);
     pedClone.ped.update(DefaultAppearance, clothes, {
         pos: alt.Player.local.pos,
-        heading: 60,
+        heading: 160,
     });
     await pedClone.camera.create({ distance: 2, zOffset: 0.3 });
 }
