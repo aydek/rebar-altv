@@ -39,44 +39,55 @@ const Rebar = useRebar();
 
 const commands: Command[] = [];
 const callbacks: PlayerMessageCallback[] = [];
+let endCommandRegistrationTime = Date.now();
 
 export function useMessenger() {
     function registerCommand(command: Command) {
+        command.name = command.name.replaceAll('/', '');
+        command.name = command.name.toLowerCase();
+
         const index = commands.findIndex((x) => x.name === command.name);
         if (index >= 1) {
             throw new Error(`${command.name} is already a registered command.`);
         }
 
-        command.name = command.name.replaceAll('/', '');
         commands.push(command);
+        endCommandRegistrationTime = Date.now() + 5000;
     }
 
     function onMessage(cb: PlayerMessageCallback) {
         callbacks.push(cb);
     }
 
+    function hasCommandPermission(player: alt.Player, command: Command) {
+        const permissions = Rebar.permission.usePermission(player);
+        if (!command.options.accountPermissions && !command.options.permissions) {
+            return true;
+        }
+
+        if (permissions.hasOne('account', command.options.accountPermissions)) {
+            return true;
+        }
+
+        if (permissions.hasOne('character', command.options.permissions)) {
+            return true;
+        }
+
+        return false;
+    }
+
     function invokeCommand(player: alt.Player, cmdName: string, ...args: any[]): boolean {
+        cmdName = cmdName.replace('/', '');
+        cmdName = cmdName.toLowerCase();
+
         const index = commands.findIndex((x) => x.name === cmdName);
         if (index <= -1) {
             return false;
         }
 
         const command = commands[index];
-        if (command.options) {
-            const permissions = Rebar.permission.usePermission(player);
-
-            let allValid = true;
-            if (command.options.accountPermissions) {
-                allValid = permissions.hasOne('account', command.options.accountPermissions);
-            }
-
-            if (command.options.permissions) {
-                allValid = permissions.hasOne('character', command.options.permissions);
-            }
-
-            if (!allValid) {
-                return false;
-            }
+        if (command.options && !hasCommandPermission(player, command)) {
+            return false;
         }
 
         try {
@@ -92,10 +103,37 @@ export function useMessenger() {
         webview.emit(Events.systems.messenger.send, message);
     }
 
+    /**
+     * Get all commands a player has access to, including permissioned commands.
+     *
+     * @param {alt.Player} player
+     */
+    async function getCommands(player: alt.Player) {
+        await alt.Utils.waitFor(() => Date.now() > endCommandRegistrationTime, 5000);
+
+        const availableCommands: Omit<Command, 'callback' | 'options'>[] = [];
+        for (let command of commands) {
+            if (!command.options) {
+                availableCommands.push({ desc: command.desc, name: command.name });
+                continue;
+            }
+
+            if (command.options && !hasCommandPermission(player, command)) {
+                continue;
+            }
+
+            availableCommands.push({ desc: command.desc, name: command.name });
+        }
+
+        return availableCommands;
+    }
+
     return {
         commands: {
             invoke: invokeCommand,
             register: registerCommand,
+            getCommands: getCommands,
+            hasCommandPermission,
         },
         message: {
             on: onMessage,
@@ -126,20 +164,28 @@ function cleanMessage(msg: string): string {
  * @return
  */
 function processMessage(player: alt.Player, msg: string) {
-    const messageSystem = useMessenger();
-    msg = cleanMessage(msg);
+    if (!player.valid) {
+        return;
+    }
 
+    if (!Rebar.player.useStatus(player).hasCharacter()) {
+        return;
+    }
+
+    const messageSystem = useMessenger();
     if (msg.charAt(0) !== '/') {
+        msg = cleanMessage(msg);
         for (let cb of callbacks) {
             cb(player, msg);
         }
 
+        Rebar.events.useEvents().invoke('message', player, msg);
         return;
     }
 
     const args = msg.split(' ');
     const commandName = args.shift();
-    messageSystem.commands.invoke(player, commandName.toLowerCase(), args);
+    messageSystem.commands.invoke(player, commandName, ...args);
 }
 
 alt.onClient(Events.systems.messenger.process, processMessage);
