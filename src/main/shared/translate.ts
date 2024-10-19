@@ -1,6 +1,7 @@
 const translations = {};
+const defaultLang = 'lt';
 
-export function useTranslate(lang: string = 'en') {
+export function useTranslate(lang: string = defaultLang) {
     function replaceVariables(text: string, vars: { [key: string]: string }): string {
         return text.replace(/{{\s*([^}]+)\s*}}/g, (_, key) => vars[key.trim()] || '');
     }
