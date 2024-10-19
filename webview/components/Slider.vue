@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAudio } from '@Composables/useAudio';
+import { useAudio } from '../composables/useAudio';
 import { twMerge } from 'tailwind-merge';
 import { ref, watch } from 'vue';
 
