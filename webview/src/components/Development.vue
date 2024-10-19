@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { PLUGIN_IMPORTS } from '../../pages/plugins';
 import { usePages } from '../../composables/usePages';
+
+import Button from '../../components/Button.vue';
 
 const { show, hide } = usePages();
 
@@ -17,46 +19,64 @@ function togglePage(pageName: string) {
     if (isVisible) {
         hide(pageName);
     } else {
-        show(pageName, 'page');
+        show(pageName, 'overlay');
     }
     visiblePages.value[pageName] = isVisible ? false : true;
+    localStorage.setItem('openVuepages', JSON.stringify(visiblePages.value));
 }
 
 const pages = computed(() => {
     return Object.keys(PLUGIN_IMPORTS);
 });
+
+const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.shiftKey && event.key === 'F') {
+        showToolbar.value = !showToolbar.value;
+        localStorage.setItem('showToolbar', showToolbar.value ? 'Y' : 'N');
+    }
+};
+
+onMounted(() => {
+    setTimeout(() => {
+        for (let page of Object.keys(PLUGIN_IMPORTS)) {
+            visiblePages.value[page] = false;
+        }
+        const toolbarState = localStorage.getItem('showToolbar');
+        if (toolbarState && toolbarState === 'Y') {
+            showToolbar.value = true;
+        }
+        const storage = localStorage.getItem('openVuepages');
+        if (storage) {
+            const parsed = JSON.parse(storage);
+            for (let pageName of Object.keys(parsed)) {
+                if (parsed[pageName]) {
+                    show(pageName, 'overlay');
+                }
+            }
+
+            visiblePages.value = parsed;
+        }
+    }, 100);
+    document.addEventListener('keydown', handleKeyDown);
+});
+
+onUnmounted(() => {
+    document.removeEventListener('keydown', handleKeyDown);
+});
 </script>
 
 <template>
-    <div class="fixed right-0 top-0">
+    <div class="fixed right-0 top-0 z-50">
         <div v-if="showToolbar" class="items-center justify-center p-4">
-            <div class="flex w-72 flex-col rounded bg-neutral-100 p-4 shadow-lg">
-                <div class="max-h-[calc(100vh-7rem)] overflow-y-auto">
-                    <div class="flex flex-col gap-2">
-                        <div
-                            v-for="(pageName, index) in pages"
-                            :key="index"
-                            class="flex w-full justify-between rounded p-2 hover:cursor-pointer hover:opacity-50"
-                            :class="isVisible(pageName) ? ['bg-green-200'] : ['bg-red-200']"
-                            @click="togglePage(pageName)"
-                        >
-                            <span class="text-sm font-bold">{{ pageName }}</span>
-                        </div>
-                    </div>
-                </div>
-                <div
-                    class="mt-2 rounded p-2 text-right text-sm font-bold text-neutral-600 hover:cursor-pointer hover:bg-neutral-200"
-                    @click="showToolbar = false"
+            <div class="flex w-72 flex-col gap-2">
+                <Button
+                    v-for="(pageName, index) in pages"
+                    :key="index"
+                    :type="isVisible(pageName) ? 'primary' : 'secondary'"
+                    @click="togglePage(pageName)"
                 >
-                    Close
-                </div>
-            </div>
-        </div>
-        <div v-else @click="showToolbar = true" class="p-4">
-            <div
-                class="rounded-md bg-neutral-100 px-2 py-1 text-sm font-bold shadow hover:cursor-pointer hover:bg-neutral-200"
-            >
-                &lt;
+                    {{ pageName }}
+                </Button>
             </div>
         </div>
     </div>
