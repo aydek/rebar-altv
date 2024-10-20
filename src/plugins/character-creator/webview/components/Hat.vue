@@ -3,55 +3,36 @@ import SidePanel from '@Components/SidePanel.vue';
 import Button from '@Components/Button.vue';
 import Icon from '@Components/Icon.vue';
 import { nextTick, onMounted, ref, toRaw } from 'vue';
-import maleShoes from '@Shared/json/clothing/maleShoes.json';
-import femaleShoes from '@Shared/json/clothing/femaleShoes.json';
-import { ClothingItemData } from '@Shared/types';
 import { useKeyPress } from '@Composables/useKeyPress';
 import { useStore } from '../store';
 import { useAudio } from '@Composables/useAudio';
 import { useTranslate } from '@Shared/translate';
-import { ClothingKey } from '@Shared/data/clothing';
 import '../../translate/index';
+import { PropKey } from '@Shared/data/clothingKeys';
+import { getListFromDlc } from '@Shared/data/clothingNames/clothingNames';
 
 const { appearance, internal, setInternal, setClothes } = useStore();
 const keys = useKeyPress();
 const audio = useAudio();
+
 const { t } = useTranslate();
 
-const title = t('character.creator.shoes');
+const title = t('character.creator.hat');
 
-const allItems = ref<ClothingItemData[]>([]);
+const allItems = getListFromDlc(
+    appearance.sex,
+    true,
+    PropKey.hat,
+    ['', 'mp_f_lowrider_01', 'mp_f_heist4', 'mp_m_lowrider_01', 'mp_m_heist4'],
+    ['Helmet', 'Defenders', 'Advanced', 'Headphones', 'Dunce'],
+);
 
 const scrollRef = ref(null);
 
 onMounted(() => {
-    if (appearance.sex === 1) {
-        allItems.value = [
-            {
-                id: -1,
-                drawable: 14,
-                dlc: '',
-                name: 'None',
-                texture: 0,
-            },
-            ...maleShoes.filter((item) => item.dlc === ''),
-        ];
-    } else {
-        allItems.value = [
-            {
-                id: -1,
-                drawable: 15,
-                dlc: '',
-                name: 'None',
-                texture: 0,
-            },
-            ...femaleShoes.filter((item) => item.dlc === ''),
-        ];
-    }
-
     setTimeout(() => {
         autoScroll();
-    }, 600);
+    }, 10);
 });
 
 keys.onKeyDown('ArrowDown', () => {
@@ -65,24 +46,24 @@ keys.onKeyDown('ArrowUp', () => {
 });
 
 function keyboardIndex(value: number) {
-    let current = internal.shoesIndex;
+    let current = internal.hatIndex;
     current += value;
-    if (current > allItems.value.length - 1) current = 0;
-    if (current < 0) current = allItems.value.length - 1;
+    if (current > allItems.length - 1) current = 0;
+    if (current < 0) current = allItems.length - 1;
     setIndex(current);
     audio.play('/sounds/select.ogg');
     autoScroll();
 }
 
 function setIndex(index: number) {
-    if (index !== internal.shoesIndex) {
-        setInternal('shoesIndex', index);
-        setClothes(false, ClothingKey.shoes, toRaw(allItems.value[index]));
+    if (index !== internal.hatIndex) {
+        setInternal('hatIndex', index);
+        setClothes(true, PropKey.hat, toRaw(allItems[index]));
     }
 }
 
 function random() {
-    setIndex(Math.floor(Math.random() * allItems.value.length));
+    setIndex(Math.floor(Math.random() * allItems.length));
     autoScroll();
 }
 
@@ -105,10 +86,10 @@ function autoScroll() {
 
         <div class="flex max-h-[50%] w-full flex-col gap-2 overflow-y-scroll pr-3 outline-none" :tabindex="-1">
             <template v-for="(item, index) in allItems" :key="index + item.name">
-                <Button @click="setIndex(index)" :type="internal.shoesIndex === index ? 'primary' : 'secondary'">{{
+                <Button @click="setIndex(index)" :type="internal.hatIndex === index ? 'primary' : 'secondary'">{{
                     item.name
                 }}</Button>
-                <div class="-m-1" v-if="internal.shoesIndex === index" ref="scrollRef"></div>
+                <div class="-m-1" v-if="internal.hatIndex === index" ref="scrollRef"></div>
             </template>
         </div>
 

@@ -3,15 +3,14 @@ import SidePanel from '@Components/SidePanel.vue';
 import Button from '@Components/Button.vue';
 import Icon from '@Components/Icon.vue';
 import { nextTick, onMounted, ref, toRaw } from 'vue';
-import maleLegs from '@Shared/json/clothing/maleLegs.json';
-import femaleLegs from '@Shared/json/clothing/femaleLegs.json';
-import { ClothingItemData } from '@Shared/types';
+
 import { useKeyPress } from '@Composables/useKeyPress';
 import { useStore } from '../store';
 import { useAudio } from '@Composables/useAudio';
 import { useTranslate } from '@Shared/translate';
-import { ClothingKey } from '@Shared/data/clothing';
 import '../../translate/index';
+import { getListFromDlc } from '@Shared/data/clothingNames/clothingNames';
+import { ClothingKey } from '@Shared/data/clothingKeys';
 
 const { appearance, internal, setInternal, setClothes } = useStore();
 const keys = useKeyPress();
@@ -21,38 +20,14 @@ const { t } = useTranslate();
 
 const title = t('character.creator.legs');
 
-const allItems = ref<ClothingItemData[]>([]);
+const allItems = getListFromDlc(appearance.sex, false, ClothingKey.legs, ['']);
 
 const scrollRef = ref(null);
 
 onMounted(() => {
-    if (appearance.sex === 1) {
-        allItems.value = [
-            {
-                id: -1,
-                drawable: 14,
-                dlc: '',
-                name: 'None',
-                texture: 0,
-            },
-            ...maleLegs.filter((item) => item.dlc === ''),
-        ];
-    } else {
-        allItems.value = [
-            {
-                id: -1,
-                drawable: 15,
-                dlc: '',
-                name: 'None',
-                texture: 0,
-            },
-            ...femaleLegs.filter((item) => item.dlc === ''),
-        ];
-    }
-
     setTimeout(() => {
         autoScroll();
-    }, 600);
+    }, 10);
 });
 
 keys.onKeyDown('ArrowDown', () => {
@@ -68,8 +43,8 @@ keys.onKeyDown('ArrowUp', () => {
 function keyboardIndex(value: number) {
     let current = internal.legsIndex;
     current += value;
-    if (current > allItems.value.length - 1) current = 0;
-    if (current < 0) current = allItems.value.length - 1;
+    if (current > allItems.length - 1) current = 0;
+    if (current < 0) current = allItems.length - 1;
     setIndex(current);
     audio.play('/sounds/select.ogg');
     autoScroll();
@@ -78,12 +53,12 @@ function keyboardIndex(value: number) {
 function setIndex(index: number) {
     if (index !== internal.legsIndex) {
         setInternal('legsIndex', index);
-        setClothes(false, ClothingKey.legs, toRaw(allItems.value[index]));
+        setClothes(false, ClothingKey.legs, toRaw(allItems[index]));
     }
 }
 
 function random() {
-    setIndex(Math.floor(Math.random() * allItems.value.length));
+    setIndex(Math.floor(Math.random() * allItems.length));
     autoScroll();
 }
 

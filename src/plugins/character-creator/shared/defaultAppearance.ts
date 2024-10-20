@@ -1,4 +1,4 @@
-import { ClothingKey, PropKey } from '@Shared/data/clothing.js';
+import { ClothingKey, PropKey } from '@Shared/data/clothingKeys.js';
 import { Appearance } from '@Shared/types/appearance.js';
 import { ClothingComponent } from '@Shared/types/clothingComponent.js';
 
@@ -48,11 +48,11 @@ export const DefaultClothes: Array<ClothingComponent> = [
     { id: PropKey.glasses, dlc: 0, drawable: -1, texture: 0, palette: 0, isProp: true },
     /** Clothes */
     { id: ClothingKey.mask, dlc: 0, drawable: 0, texture: 0, palette: 0, isProp: false },
-    { id: ClothingKey.armour, dlc: 0, drawable: 0, texture: 0, palette: 0, isProp: false },
+    { id: ClothingKey.bodyarmor, dlc: 0, drawable: 0, texture: 0, palette: 0, isProp: false },
     { id: ClothingKey.bag, dlc: 0, drawable: 0, texture: 0, palette: 0, isProp: false },
     { id: ClothingKey.legs, dlc: 0, drawable: 14, texture: 0, palette: 0, isProp: false },
     { id: ClothingKey.shoes, dlc: 0, drawable: 5, texture: 0, palette: 0, isProp: false },
-    { id: ClothingKey.top, dlc: 0, drawable: 15, texture: 0, palette: 0, isProp: false },
+    { id: ClothingKey.tops, dlc: 0, drawable: 15, texture: 0, palette: 0, isProp: false },
     { id: ClothingKey.torso, dlc: 0, drawable: 15, texture: 0, palette: 0, isProp: false },
-    { id: ClothingKey.undershirt, dlc: 0, drawable: 15, texture: 0, palette: 0, isProp: false },
+    { id: ClothingKey.undershirts, dlc: 0, drawable: 15, texture: 0, palette: 0, isProp: false },
 ];

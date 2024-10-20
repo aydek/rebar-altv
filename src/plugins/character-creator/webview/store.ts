@@ -4,7 +4,8 @@ import { DefaultAppearance, DefaultClothes } from '../shared/defaultAppearance.j
 import { useEvents } from '@Composables/useEvents.js';
 import { CharacterCreatorEvents } from '../shared/events.js';
 import { IInternal, initialInternal } from './const/internalStateDefault.js';
-import { ClothingComponent, ClothingItemData } from '@Shared/types/clothingComponent.js';
+import { ClothingComponent } from '@Shared/types/clothingComponent.js';
+import { ClothingItemData } from '@Shared/data/clothingNames/clothingNames.js';
 
 const events = useEvents();
 

@@ -7,7 +7,7 @@ import { Appearance } from '@Shared/types/appearance.js';
 import { DefaultAppearance, DefaultClothes } from '../shared/defaultAppearance.js';
 import { CharacterCreatorEvents } from '../shared/events.js';
 import { clone } from '@Shared/utility/index.js';
-import { ClothingComponent, ClothingItemData } from '@Shared/types/clothingComponent.js';
+import { ClothingComponent } from '@Shared/types/clothingComponent.js';
 import { useClientApi } from '@Client/api/index.js';
 
 import '../translate/index.js';
@@ -21,14 +21,13 @@ const { t } = useTranslate();
 let appearance: Appearance = clone.objectData(DefaultAppearance);
 let clothes: ClothingComponent[] = clone.arrayData(DefaultClothes);
 
-function updateClothes(isProp: boolean, id: number, data: ClothingItemData) {
+function updateClothes(isProp: boolean, id: number, data: { drawable: number; dlc: string; texture: number }) {
     const index = clothes.findIndex((item) => item.id === id && item.isProp === isProp);
     if (index > -1) {
         clothes[index].drawable = data.drawable;
         clothes[index].dlc = alt.hash(data.dlc);
         clothes[index].texture = data.texture;
     }
-
     pedClone.ped.update(appearance, clothes, {
         pos: alt.Player.local.pos,
         heading: pedClone.ped.currentHeading(),

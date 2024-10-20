@@ -3,22 +3,13 @@ import SidePanel from '@Components/SidePanel.vue';
 import Button from '@Components/Button.vue';
 import Icon from '@Components/Icon.vue';
 import { nextTick, onMounted, ref, toRaw, watch } from 'vue';
-
-import maleTops from '@Shared/json/clothing/maleTops.json';
-import femaleTops from '@Shared/json/clothing/femaleTops.json';
-import maleUndershirts from '@Shared/json/clothing/maleUndershirts.json';
-import femaleUndershirts from '@Shared/json/clothing/femaleUndershirts.json';
-import maleTorsos from '@Shared/json/clothing/maleTorsos.json';
-import femaleTorsos from '@Shared/json/clothing/femaleTorsos.json';
-
 import '../../translate/index';
 import { useStore } from '../store';
 import { useTranslate } from '@Shared/translate';
-import { ClothingItemData, ClothingTopItemData } from '@Shared/types';
 import { useKeyPress } from '@Composables/useKeyPress';
 import { useAudio } from '@Composables/useAudio';
-import { ClothingKey } from '@Shared/data/clothing';
-import '../../translate/index';
+import { ClothingItemData, ClothingTopItemData, getListFromDlc } from '@Shared/data/clothingNames/clothingNames';
+import { ClothingKey } from '@Shared/data/clothingKeys';
 
 const { appearance, internal, setInternal, setClothes } = useStore();
 
@@ -29,55 +20,37 @@ const audio = useAudio();
 const title = t('character.creator.top');
 
 const tabIndex = ref(0);
-const allItems = ref<ClothingTopItemData[]>([]);
-const allUndershirts = ref<ClothingItemData[]>([]);
+const allItems: ClothingTopItemData[] = getListFromDlc(
+    appearance.sex,
+    false,
+    ClothingKey.tops,
+    [''],
+    ['None'],
+) as ClothingTopItemData[];
+
+const allUndershirts = getListFromDlc(appearance.sex, false, ClothingKey.undershirts, 'all');
+const allTorsos = getListFromDlc(appearance.sex, false, ClothingKey.torso, 'all');
+const availableUndershirts = ref<ClothingItemData[]>([]);
 
 const scrollRef = ref(null);
 
 onMounted(() => {
-    if (appearance.sex === 1) {
-        allItems.value = [
-            {
-                id: -1,
-                drawable: 15,
-                dlc: '',
-                name: 'None',
-                texture: 0,
-                combos: [{ undershirt: 152, torso: 15, armour: 5 }],
-            },
-            ...maleTops.filter((item) => item.dlc === '' && item.name !== 'None'),
-        ];
-    } else {
-        allItems.value = [
-            {
-                id: -1,
-                drawable: 15,
-                dlc: '',
-                name: 'None',
-                texture: 0,
-                combos: [{ undershirt: 33, torso: 15, armour: 1 }],
-            },
-            ...femaleTops.filter((item) => item.dlc === '' && item.name !== 'None'),
-        ];
-    }
-
     setTimeout(() => {
         autoScroll();
-    }, 600);
+    }, 20);
 });
 
 watch(
     () => internal.topsIndex,
     (val) => {
-        allUndershirts.value = [];
-        const target: ClothingTopItemData = allItems.value[val];
+        availableUndershirts.value = [];
+        const target: ClothingTopItemData = allItems[val];
         const newValue = [];
         if (target && target.combos.length > 1) {
             for (const combo of target.combos) {
-                const allUnderItems = appearance.sex === 1 ? maleUndershirts : femaleUndershirts;
-                newValue.push(allUnderItems.find((item) => item.id === combo.undershirt));
+                newValue.push(allUndershirts.find((item) => item.id === combo.undershirt));
             }
-            allUndershirts.value = toRaw(newValue);
+            availableUndershirts.value = toRaw(newValue);
         }
     },
 );
@@ -102,7 +75,7 @@ keys.onKeyDown('ArrowLeft', (ev: KeyboardEvent) => {
 
 keys.onKeyDown('ArrowRight', (ev: KeyboardEvent) => {
     if (internal.modalOpen) return;
-    if (allUndershirts.value.length > 0) {
+    if (availableUndershirts.value.length > 0) {
         tabIndex.value = 1;
         autoScroll();
     }
@@ -112,14 +85,14 @@ function keyboardIndex(value: number, tabindex: number) {
     if (tabindex === 0) {
         let current = internal.topsIndex;
         current += value;
-        if (current > allItems.value.length - 1) current = 0;
-        if (current < 0) current = allItems.value.length - 1;
+        if (current > allItems.length - 1) current = 0;
+        if (current < 0) current = allItems.length - 1;
         setIndex(current, tabindex);
     } else if (tabindex === 1) {
         let current = internal.undershirtIndex;
         current += value;
-        if (current > allUndershirts.value.length - 1) current = 0;
-        if (current < 0) current = allUndershirts.value.length - 1;
+        if (current > availableUndershirts.value.length - 1) current = 0;
+        if (current < 0) current = availableUndershirts.value.length - 1;
         setIndex(current, tabindex);
     }
 
@@ -129,26 +102,23 @@ function keyboardIndex(value: number, tabindex: number) {
 function setIndex(index: number, tabindex: number) {
     if (tabindex === 0) {
         if (index !== internal.topsIndex) {
-            const alltorsos = appearance.sex === 1 ? maleTorsos : femaleTorsos;
-            const allUnderItems = appearance.sex === 1 ? maleUndershirts : femaleUndershirts;
-
-            const combos = allItems.value[index].combos;
+            const combos = allItems[index].combos;
 
             let torsoItem: ClothingItemData = undefined;
             let undershirtItem: ClothingItemData = undefined;
 
             if (combos[0]) {
-                torsoItem = alltorsos.find((i) => i.id === combos[0].torso);
-                undershirtItem = allUnderItems.find((i) => i.id === combos[0].undershirt);
+                torsoItem = allTorsos.find((i) => i.id === combos[0].torso);
+                undershirtItem = allUndershirts.find((i) => i.id === combos[0].undershirt);
             }
 
             setInternal('topsIndex', index);
             setInternal('undershirtIndex', 0);
 
-            setClothes(false, ClothingKey.top, toRaw(allItems.value[index]));
+            setClothes(false, ClothingKey.tops, toRaw(allItems[index]));
 
             if (undershirtItem) {
-                setClothes(false, ClothingKey.undershirt, toRaw(undershirtItem));
+                setClothes(false, ClothingKey.undershirts, toRaw(undershirtItem));
             }
 
             if (torsoItem) {
@@ -156,20 +126,18 @@ function setIndex(index: number, tabindex: number) {
             }
         }
     } else if (tabindex === 1) {
-        if (index !== internal.undershirtIndex && allUndershirts.value.length > 0) {
+        if (index !== internal.undershirtIndex && availableUndershirts.value.length > 0) {
             setInternal('undershirtIndex', index);
 
-            const alltorsos = appearance.sex === 1 ? maleTorsos : femaleTorsos;
-
-            const combos = allItems.value[internal.topsIndex].combos;
+            const combos = allItems[internal.topsIndex].combos;
 
             let torsoItem: ClothingItemData = undefined;
 
             if (combos[index]) {
-                torsoItem = alltorsos.find((i) => i.id === combos[index].torso);
+                torsoItem = allTorsos.find((i) => i.id === combos[index].torso);
             }
 
-            setClothes(false, ClothingKey.undershirt, toRaw(allUndershirts.value[index]));
+            setClothes(false, ClothingKey.undershirts, toRaw(availableUndershirts.value[index]));
 
             if (torsoItem) {
                 setClothes(false, ClothingKey.torso, toRaw(torsoItem));
@@ -180,9 +148,9 @@ function setIndex(index: number, tabindex: number) {
 
 function random() {
     tabIndex.value = 0;
-    setIndex(Math.floor(Math.random() * allItems.value.length), 0);
+    setIndex(Math.floor(Math.random() * allItems.length), 0);
     nextTick(() => {
-        setIndex(Math.floor(Math.random() * allUndershirts.value.length), 1);
+        setIndex(Math.floor(Math.random() * availableUndershirts.value.length), 1);
     });
 
     autoScroll();
@@ -221,7 +189,7 @@ function setTabIndex(index: number) {
             </Button>
 
             <Button
-                :type="allUndershirts.length < 2 ? 'disabled' : tabIndex === 1 ? 'primary' : 'secondary'"
+                :type="availableUndershirts.length < 2 ? 'disabled' : tabIndex === 1 ? 'primary' : 'secondary'"
                 class="w-full rounded-none border-l-0"
                 @click="setTabIndex(1)"
             >
@@ -234,7 +202,7 @@ function setTabIndex(index: number) {
             :tabindex="-1"
             v-if="tabIndex === 1"
         >
-            <template v-for="(item, index) in allUndershirts" :key="index + item.name">
+            <template v-for="(item, index) in availableUndershirts" :key="index + item.name">
                 <Button
                     @click="setIndex(index, 1)"
                     :type="internal.undershirtIndex === index ? 'primary' : 'secondary'"

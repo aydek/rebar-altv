@@ -62,8 +62,8 @@ function openCreator(player: alt.Player) {
 
 async function init() {
     const auth = await api.getAsync('discord-auth-api');
-    // const creator = await api.getAsync('character-creator-api');
-    // creator.onExit(showSelection);
+     const creator = await api.getAsync('character-creator-api');
+    creator.onExit(showSelection);
     auth.onLogin(handleLogin);
     alt.onClient(CharacterSelectEvents.toServer.openCreator, openCreator);
 }

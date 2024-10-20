@@ -5,21 +5,13 @@ import Icon from '@Components/Icon.vue';
 
 import { nextTick, onMounted, ref, toRaw } from 'vue';
 
-import maleWatches from '@Shared/json/clothing/maleWatches.json';
-import femaleWatches from '@Shared/json/clothing/femaleWatches.json';
-import maleGlasses from '@Shared/json/clothing/maleGlasses.json';
-import femaleGlasses from '@Shared/json/clothing/femaleGlasses.json';
-import maleBracelets from '@Shared/json/clothing/maleBracelets.json';
-import femaleBracelets from '@Shared/json/clothing/femaleBracelets.json';
-import maleEars from '@Shared/json/clothing/maleEars.json';
-import femaleEars from '@Shared/json/clothing/femaleEars.json';
-import { ClothingItemData } from '@Shared/types';
 import { useStore } from '../store';
 import { useKeyPress } from '@Composables/useKeyPress';
 import { useAudio } from '@Composables/useAudio';
 import { useTranslate } from '@Shared/translate';
 import '../../translate/index';
-import { PropKey } from '@Shared/data/clothing';
+import { PropKey } from '@Shared/data/clothingKeys';
+import { getListFromDlc } from '@Shared/data/clothingNames/clothingNames';
 
 const { appearance, internal, setInternal, setClothes } = useStore();
 const keys = useKeyPress();
@@ -28,104 +20,18 @@ const { t } = useTranslate();
 
 const title = t('character.creator.accesories');
 
-const allWatches = ref<ClothingItemData[]>([]);
-const allBracelets = ref<ClothingItemData[]>([]);
-const allEarings = ref<ClothingItemData[]>([]);
-const allGlasses = ref<ClothingItemData[]>([]);
+const allWatches = getListFromDlc(appearance.sex, true, PropKey.watch, 'all');
+const allBracelets = getListFromDlc(appearance.sex, true, PropKey.bracelet, 'all');
+const allEarings = getListFromDlc(appearance.sex, true, PropKey.ears, 'all', ['Earpiece']);
+const allGlasses = getListFromDlc(appearance.sex, true, PropKey.glasses, ['']);
 
 const tabIndex = ref(0);
 const scrollRef = ref(null);
 
 onMounted(() => {
-    if (appearance.sex === 1) {
-        allWatches.value = [
-            {
-                id: PropKey.watch,
-                drawable: -1,
-                dlc: '',
-                name: 'None',
-                texture: 0,
-            },
-            ...maleWatches.filter((item, index) => item.dlc !== '' && index < 40),
-        ];
-        allBracelets.value = [
-            {
-                id: PropKey.bracelet,
-                drawable: -1,
-                dlc: '',
-                name: 'None',
-                texture: 0,
-            },
-            ...maleBracelets,
-        ];
-        allEarings.value = [
-            {
-                id: PropKey.ears,
-                drawable: -1,
-                dlc: '',
-                name: 'None',
-                texture: 0,
-            },
-            ...maleEars.filter((item, index) => !item.name.includes('Earpiece') && index < 40),
-        ];
-        allGlasses.value = [
-            {
-                id: PropKey.glasses,
-                drawable: -1,
-                dlc: '',
-                name: 'None',
-                texture: 0,
-            },
-            ...maleGlasses.filter((item) => item.dlc === ''),
-        ];
-    } else {
-        allWatches.value = [
-            {
-                id: PropKey.watch,
-                drawable: -1,
-                dlc: '',
-                name: 'None',
-                texture: 0,
-            },
-            ...femaleWatches.filter((_item, index) => index < 20),
-        ];
-        allBracelets.value = [
-            {
-                id: PropKey.bracelet,
-                drawable: -1,
-                dlc: '',
-                name: 'None',
-                texture: 0,
-            },
-            ...femaleBracelets,
-        ];
-        allEarings.value = [
-            {
-                id: PropKey.ears,
-                drawable: -1,
-                dlc: '',
-                name: 'None',
-                texture: 0,
-            },
-            ...femaleEars.filter(
-                (item, index) => !item.name.includes('Earpiece') && !item.name.includes('Earphones') && index < 40,
-            ),
-        ];
-        allGlasses.value = [
-            {
-                id: PropKey.glasses,
-                drawable: -1,
-                dlc: '',
-                name: 'None',
-                texture: 0,
-            },
-            ...femaleGlasses.filter((item) => item.dlc === ''),
-        ];
-    }
-
     setTimeout(() => {
         autoScroll();
-    }, 600);
+    }, 20);
 });
 
 keys.onKeyDown('ArrowLeft', () => {
@@ -159,23 +65,23 @@ function keyboardIndex(value: number) {
     if (tabIndex.value === 0) {
         current = internal.glassesIndex;
         current += value;
-        if (current > allGlasses.value.length - 1) current = 0;
-        if (current < 0) current = allGlasses.value.length - 1;
+        if (current > allGlasses.length - 1) current = 0;
+        if (current < 0) current = allGlasses.length - 1;
     } else if (tabIndex.value === 1) {
         current = internal.watchIndex;
         current += value;
-        if (current > allWatches.value.length - 1) current = 0;
-        if (current < 0) current = allWatches.value.length - 1;
+        if (current > allWatches.length - 1) current = 0;
+        if (current < 0) current = allWatches.length - 1;
     } else if (tabIndex.value === 2) {
         current = internal.earingIndex;
         current += value;
-        if (current > allEarings.value.length - 1) current = 0;
-        if (current < 0) current = allEarings.value.length - 1;
+        if (current > allEarings.length - 1) current = 0;
+        if (current < 0) current = allEarings.length - 1;
     } else if (tabIndex.value === 3) {
         current = internal.braceletIndex;
         current += value;
-        if (current > allBracelets.value.length - 1) current = 0;
-        if (current < 0) current = allBracelets.value.length - 1;
+        if (current > allBracelets.length - 1) current = 0;
+        if (current < 0) current = allBracelets.length - 1;
     }
 
     setIndex(tabIndex.value, current);
@@ -187,31 +93,31 @@ function setIndex(tab: number, index: number) {
     if (tab === 0) {
         if (index !== internal.glassesIndex) {
             setInternal('glassesIndex', index);
-            setClothes(true, PropKey.glasses, toRaw(allGlasses.value[index]));
+            setClothes(true, PropKey.glasses, toRaw(allGlasses[index]));
         }
     } else if (tab === 1) {
         if (index !== internal.watchIndex) {
             setInternal('watchIndex', index);
-            setClothes(true, PropKey.watch, toRaw(allWatches.value[index]));
+            setClothes(true, PropKey.watch, toRaw(allWatches[index]));
         }
     } else if (tab === 2) {
         if (index !== internal.earingIndex) {
             setInternal('earingIndex', index);
-            setClothes(true, PropKey.ears, toRaw(allEarings.value[index]));
+            setClothes(true, PropKey.ears, toRaw(allEarings[index]));
         }
     } else if (tab === 3) {
         if (index !== internal.braceletIndex) {
             setInternal('braceletIndex', index);
-            setClothes(true, PropKey.bracelet, toRaw(allBracelets.value[index]));
+            setClothes(true, PropKey.bracelet, toRaw(allBracelets[index]));
         }
     }
 }
 
 function random() {
-    if (tabIndex.value === 0) setIndex(0, Math.floor(Math.random() * allGlasses.value.length));
-    if (tabIndex.value === 1) setIndex(1, Math.floor(Math.random() * allWatches.value.length));
-    if (tabIndex.value === 2) setIndex(2, Math.floor(Math.random() * allEarings.value.length));
-    if (tabIndex.value === 3) setIndex(3, Math.floor(Math.random() * allBracelets.value.length));
+    if (tabIndex.value === 0) setIndex(0, Math.floor(Math.random() * allGlasses.length));
+    if (tabIndex.value === 1) setIndex(1, Math.floor(Math.random() * allWatches.length));
+    if (tabIndex.value === 2) setIndex(2, Math.floor(Math.random() * allEarings.length));
+    if (tabIndex.value === 3) setIndex(3, Math.floor(Math.random() * allBracelets.length));
     autoScroll();
 }
 

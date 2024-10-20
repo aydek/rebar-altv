@@ -1,22 +1,20 @@
 import * as alt from 'alt-client';
 import * as native from 'natives';
 import { Appearance } from '../../shared/types/appearance.js';
-import { PedBones } from '../../shared/data/pedBones.js';
 import { ClothingComponent } from '../../shared/types/clothingComponent.js';
 
-type CameraOptions = { fov: number; zOffset: number; bone: keyof typeof PedBones };
-
-let interval: number;
-
-function tick() {
-    native.setUseHiDof();
-}
+type CameraOptions = { distance: number; zOffset: number };
 
 export function useClonedPed() {
     let ped: number;
     let lastModel: number;
     let camera: number;
     let lastCameraOptions: CameraOptions;
+    let currentHeading: number;
+    let interval: number;
+    let enableKeys: boolean;
+
+    let fwd: alt.IVector3;
 
     function destroyPed() {
         lastModel = undefined;
@@ -47,6 +45,8 @@ export function useClonedPed() {
 
         const model = appearance.sex === 0 ? alt.hash('mp_f_freemode_01') : alt.hash('mp_m_freemode_01');
 
+        currentHeading = options.heading;
+
         if (lastModel !== model) {
             destroyPed();
             lastModel = model;
@@ -54,8 +54,8 @@ export function useClonedPed() {
             native.setEntityCoordsNoOffset(ped, options.pos.x, options.pos.y, options.pos.z, false, false, false);
             native.freezeEntityPosition(ped, true);
             native.setEntityInvincible(ped, true);
-            native.setEntityRotation(ped, 0, 0, options.heading, 1, false);
-            native.setPedDesiredHeading(ped, options.heading);
+            native.setEntityRotation(ped, 0, 0, currentHeading, 1, false);
+            native.setPedDesiredHeading(ped, currentHeading);
             native.taskSetBlockingOfNonTemporaryEvents(ped, true);
             native.setBlockingOfNonTemporaryEvents(ped, true);
             native.setPedFleeAttributes(ped, 0, true);
@@ -72,11 +72,11 @@ export function useClonedPed() {
         native.setPedHeadBlendData(ped, 0, 0, 0, 0, 0, 0, 0, 0, 0, false);
         native.setPedHeadBlendData(
             ped,
-            appearance.faceFather,
             appearance.faceMother,
+            appearance.faceFather,
             0,
-            appearance.skinFather,
             appearance.skinMother,
+            appearance.skinFather,
             0,
             appearance.faceMix,
             appearance.skinMix,
@@ -103,6 +103,11 @@ export function useClonedPed() {
         native.setPedHeadOverlay(ped, 1, appearance.facialHair, appearance.facialHairOpacity);
         native.setPedHeadOverlayTint(ped, 1, 1, appearance.facialHairColor1, appearance.facialHairColor1);
 
+        if (appearance.chestHair !== null && appearance.chestHair !== undefined) {
+            native.setPedHeadOverlay(ped, 10, appearance.chestHair, appearance.chestHairOpacity);
+            native.setPedHeadOverlayTint(ped, 10, 1, appearance.chestHairColor1, appearance.chestHairColor1);
+        }
+
         for (let i = 0; i < appearance.structure.length; i++) {
             native.setPedMicroMorph(ped, i, appearance.structure[i]);
         }
@@ -125,12 +130,12 @@ export function useClonedPed() {
 
         native.setHeadBlendEyeColor(ped, appearance.eyes);
 
-        // Clearing all props
-        native.clearAllPedProps(ped, 0);
-
         // Default Clothes for Even Customization
         for (let component of clothing) {
             if (component.isProp) {
+                if (component.drawable === -1) {
+                    alt.clearPedProp(ped, component.id);
+                }
                 if (component.dlc != 0) {
                     alt.setPedDlcProp(ped, component.dlc, component.id, component.drawable, component.texture);
                     continue;
@@ -160,27 +165,42 @@ export function useClonedPed() {
                 component.palette ?? 0,
             );
         }
-
-        updateCamera();
     }
 
-    async function updateCamera() {
+    async function updateCamera(options: CameraOptions, delay: number = 500) {
         if (!lastCameraOptions || !camera) {
             return;
         }
 
         await alt.Utils.waitFor(() => native.doesEntityExist(ped), 5000);
 
-        native.pointCamAtPedBone(camera, ped, PedBones[lastCameraOptions.bone], 0, 0, 0, false);
+        lastCameraOptions = options;
+
+        const targetPosition = native.getEntityCoords(ped, true);
+        const pos = targetPosition.add(fwd.x * options.distance, fwd.y * options.distance, options.zOffset);
+
+        const c2 = native.createCamWithParams('DEFAULT_SCRIPTED_CAMERA', pos.x, pos.y, pos.z, 0, 0, 0, 60, false, 1);
+
+        native.setCamActive(c2, true);
+
+        native.pointCamAtCoord(c2, targetPosition.x, targetPosition.y, targetPosition.z + options.zOffset);
+        native.setCamActiveWithInterp(c2, camera, delay, 1, 1);
+        native.renderScriptCams(true, true, delay, false, false, 0);
+
+        await alt.Utils.wait(delay);
+
+        if (!camera) {
+            if (c2) {
+                native.destroyCam(c2, true);
+            }
+            return;
+        }
+
+        native.destroyCam(camera, true);
+        camera = c2;
     }
 
-    async function createCamera(
-        options: CameraOptions = {
-            fov: 30,
-            zOffset: 0.8,
-            bone: 'IK_Head',
-        },
-    ) {
+    async function createCamera(options: CameraOptions) {
         if (camera) {
             return;
         }
@@ -189,25 +209,26 @@ export function useClonedPed() {
 
         lastCameraOptions = options;
 
-        const fwd = native.getEntityForwardVector(ped);
+        fwd = native.getEntityForwardVector(ped);
+
         const targetPosition = native.getEntityCoords(ped, true);
-        const pos = targetPosition.add(fwd.x * 2, fwd.y * 2, options.zOffset);
+        const pos = targetPosition.add(fwd.x * options.distance, fwd.y * options.distance, options.zOffset);
+        camera = native.createCamWithParams('DEFAULT_SCRIPTED_CAMERA', pos.x, pos.y, pos.z, 0, 0, 0, 60, false, 1);
 
-        camera = native.createCamWithParams('DEFAULT_SCRIPTED_CAMERA', pos.x, pos.y, pos.z, 0, 0, 0, 55, false, 1);
-
-        native.setCamUseShallowDofMode(camera, true);
-        native.setCamFov(camera, options.fov);
-        native.setCamNearDof(camera, 0.2);
-        native.setCamFarDof(camera, 3.5);
-        native.setCamDofStrength(camera, 1);
         native.setCamActive(camera, true);
-
-        native.pointCamAtPedBone(camera, ped, PedBones[options.bone], 0, 0, 0, false);
+        native.pointCamAtCoord(camera, targetPosition.x, targetPosition.y, targetPosition.z + options.zOffset);
         native.renderScriptCams(true, true, 1000, false, false, 0);
+
+        enableKeys = true;
 
         if (typeof interval === 'undefined') {
             interval = alt.setInterval(tick, 0);
         }
+        alt.toggleGameControls(true);
+    }
+
+    function setKeysEnabled(state: boolean) {
+        enableKeys = state;
     }
 
     function destroyCamera() {
@@ -220,17 +241,162 @@ export function useClonedPed() {
         camera = undefined;
     }
 
+    function tick() {
+        native.hideHudAndRadarThisFrame();
+        native.disableAllControlActions(0);
+        native.disableAllControlActions(1);
+        native.disableControlAction(0, 0, true);
+        native.disableControlAction(0, 1, true);
+        native.disableControlAction(0, 2, true);
+        native.disableControlAction(0, 24, true);
+        native.disableControlAction(0, 25, true);
+        native.disableControlAction(0, 32, true); // w
+        native.disableControlAction(0, 33, true); // s
+        native.disableControlAction(0, 34, true); // a
+        native.disableControlAction(0, 35, true); // d
+        native.disableControlAction(0, 22, true); //space bar
+
+        if (camera === null || camera === undefined) {
+            return;
+        }
+
+        if (!enableKeys) {
+            return;
+        }
+
+        // d
+        if (native.isDisabledControlPressed(0, 35)) {
+            const newHeading = (currentHeading += 2);
+            native.setEntityHeading(ped, newHeading);
+        }
+
+        // a
+        if (native.isDisabledControlPressed(0, 34)) {
+            const newHeading = (currentHeading -= 2);
+            native.setEntityHeading(ped, newHeading);
+        }
+
+        const [_d, width, _] = native.getActualScreenResolution(0, 0);
+        const cursor = alt.getCursorPos();
+        const _x = cursor.x;
+        const startPosition = native.getEntityCoords(ped, true);
+
+        //Space bar
+        if (native.isDisabledControlPressed(0, 22) && alt.debug) {
+            alt.log(`zOffset: ${lastCameraOptions.zOffset} distance: ${lastCameraOptions.distance}`);
+        }
+
+        // Scroll Up
+        if (native.isDisabledControlPressed(0, 15)) {
+            if (_x < width / 2 + 250 && _x > width / 2 - 250) {
+                lastCameraOptions.distance -= 0.05;
+
+                if (lastCameraOptions.distance < 0.7) {
+                    lastCameraOptions.distance = 0.7;
+                }
+
+                const newFwd: alt.Vector3 = {
+                    x: startPosition.x + fwd.x * lastCameraOptions.distance,
+                    y: startPosition.y + fwd.y * lastCameraOptions.distance,
+                    z: startPosition.z,
+                } as alt.Vector3;
+
+                native.setCamCoord(camera, newFwd.x, newFwd.y, newFwd.z + lastCameraOptions.zOffset);
+                native.setCamActive(camera, true);
+                native.renderScriptCams(true, false, 0, true, false, 0);
+            }
+        }
+
+        // SCroll Down
+        if (native.isDisabledControlPressed(0, 16)) {
+            if (_x < width / 2 + 250 && _x > width / 2 - 250) {
+                lastCameraOptions.distance += 0.05;
+
+                if (lastCameraOptions.distance > 2.5) {
+                    lastCameraOptions.distance = 2.5;
+                }
+
+                const newFwd: alt.Vector3 = {
+                    x: startPosition.x + fwd.x * lastCameraOptions.distance,
+                    y: startPosition.y + fwd.y * lastCameraOptions.distance,
+                    z: startPosition.z,
+                } as alt.Vector3;
+
+                native.setCamCoord(camera, newFwd.x, newFwd.y, newFwd.z + lastCameraOptions.zOffset);
+                native.setCamActive(camera, true);
+                native.renderScriptCams(true, false, 0, true, false, 0);
+            }
+        }
+        // W
+        if (native.isDisabledControlPressed(0, 32)) {
+            lastCameraOptions.zOffset += 0.01;
+
+            if (lastCameraOptions.zOffset > 1) {
+                lastCameraOptions.zOffset = 1;
+            }
+
+            const newFwd: alt.Vector3 = {
+                x: startPosition.x + fwd.x * lastCameraOptions.distance,
+                y: startPosition.y + fwd.y * lastCameraOptions.distance,
+                z: startPosition.z,
+            } as alt.Vector3;
+
+            native.setCamCoord(camera, newFwd.x, newFwd.y, newFwd.z + lastCameraOptions.zOffset);
+            native.pointCamAtCoord(
+                camera,
+                startPosition.x,
+                startPosition.y,
+                startPosition.z + lastCameraOptions.zOffset,
+            );
+            native.setCamActive(camera, true);
+            native.renderScriptCams(true, false, 0, true, false, 0);
+        }
+        // S
+        if (native.isDisabledControlPressed(0, 33)) {
+            lastCameraOptions.zOffset -= 0.01;
+
+            if (lastCameraOptions.zOffset < -0.8) {
+                lastCameraOptions.zOffset = -0.8;
+            }
+
+            const forwardCameraPosition: alt.Vector3 = {
+                x: startPosition.x + fwd.x * lastCameraOptions.distance,
+                y: startPosition.y + fwd.y * lastCameraOptions.distance,
+                z: startPosition.z,
+            } as alt.Vector3;
+
+            native.setCamCoord(
+                camera,
+                forwardCameraPosition.x,
+                forwardCameraPosition.y,
+                forwardCameraPosition.z + lastCameraOptions.zOffset,
+            );
+            native.pointCamAtCoord(
+                camera,
+                startPosition.x,
+                startPosition.y,
+                startPosition.z + lastCameraOptions.zOffset,
+            );
+            native.setCamActive(camera, true);
+            native.renderScriptCams(true, false, 0, true, false, 0);
+        }
+    }
+
     return {
         ped: {
             destroy: destroyPed,
             get() {
                 return ped;
             },
+            currentHeading() {
+                return currentHeading;
+            },
             update: updatePed,
         },
         camera: {
             create: createCamera,
             destroy: destroyCamera,
+            setKeysEnabled,
             get() {
                 return camera;
             },
