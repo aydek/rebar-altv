@@ -28,9 +28,9 @@ onMounted(() => {
                 'z-0 transition-all',
                 !show && 'opacity-0',
 
-                props.position === 'left' && 'left-0 items-start bg-gradient-to-r',
-                props.position === 'right' && 'right-0 items-center bg-gradient-to-l',
-                'absolute flex h-screen w-[40rem] flex-col justify-center from-black  via-[#00000099] to-transparent px-20',
+                props.position === 'left' && 'left-panel left-0 items-start bg-gradient-to-r',
+                props.position === 'right' && 'right-panel right-0 items-center bg-gradient-to-l',
+                'absolute flex h-screen w-[40rem] flex-col justify-center from-black  via-[#00000099] to-transparent px-20 ',
                 props.class,
             )
         "
