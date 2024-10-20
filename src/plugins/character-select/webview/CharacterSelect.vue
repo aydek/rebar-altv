@@ -37,6 +37,7 @@ function setIndex(index: number) {
 function handleCharacters(data: Character[]) {
     characters.value = data;
     loading.value = false;
+    events.emitServer(CharacterSelectEvents.toServer.syncAppearance, selectIndex.value);
 }
 
 function handlePlay() {
@@ -63,6 +64,7 @@ function doNotDelete() {
 
 function deleteCharacterForSure() {
     loading.value = true;
+    isDeleting.value = false;
     events.emitServer(CharacterSelectEvents.toServer.delete, selectIndex.value);
 }
 
