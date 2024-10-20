@@ -27,8 +27,9 @@ function updatePlayers() {
         for (let weapon of player.weapons) {
             ammo[weapon.hash] = player.getAmmo(weapon.hash);
         }
+        
 
-        Rebar.player.useWeapon(player).saveAmmo();
+        Rebar.player.useWeapon(player).save();
         Rebar.player.useState(player).save();
     }
 
