@@ -38,9 +38,6 @@ function handleCharacters(data: Character[]) {
     characters.value = data;
     loading.value = false;
     events.emitServer(CharacterSelectEvents.toServer.syncAppearance, characters.value[selectIndex.value]._id);
-    console.log(characters.value[selectIndex.value]._id);
-    console.log(JSON.stringify(characters.value));
-}
 
 function handlePlay() {
     if (loading.value) return;

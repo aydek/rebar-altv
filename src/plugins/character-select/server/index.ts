@@ -30,7 +30,6 @@ async function getCharacters(player: alt.Player): Promise<Character[] | undefine
 }
 
 async function getCharacter(player: alt.Player, id: string): Promise<Character | undefined> {
-    alt.log(id);
     if (!player.getMeta(sessionKey)) {
         return undefined;
     }
@@ -102,7 +101,6 @@ async function handleDelete(player: alt.Player, id: string) {
 }
 
 async function syncAppearance(player: alt.Player, id: string) {
-    alt.log(id);
     if (!player.getMeta(sessionKey)) {
         return;
     }
