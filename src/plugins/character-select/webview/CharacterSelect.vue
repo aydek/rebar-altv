@@ -20,10 +20,10 @@ const characters = ref<Character[]>(
     'alt' in window
         ? []
         : [
-              { account_id: 'a', cash: 5000, name: 'Jonas Valanciunas', secondsPlayed: 4000 },
+              { account_id: 'a', cash: 5000, name: 'Jonasddsdsadad Valanciunasadadsasd', secondsPlayed: 4000 },
               { account_id: 'a', cash: 532, name: 'Jonas sdd', secondsPlayed: 50000 },
               { account_id: 'a', cash: 5054200, name: 'Jonas 2231', secondsPlayed: 50000 },
-              { account_id: 'a', cash: 50553200, name: 'Jonas Valanddasaciunas', secondsPlayed: 50000 },
+              { account_id: 'a', cash: 50553200, name: 'Jonassssssssssssssss_Valanddasaciunas', secondsPlayed: 50000 },
               { account_id: 'a', cash: 5033300, name: 'Jonas Valandeeeciunas', secondsPlayed: 50000 },
           ],
 );
@@ -35,8 +35,20 @@ function setIndex(index: number) {
     events.emitServer(CharacterSelectEvents.toServer.syncAppearance, characters.value[selectIndex.value]._id);
 }
 
+function capitalizeFirstLetterOfEachWord(name: string) {
+    return name
+        .split(/[\s_]+/)
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
+
 function handleCharacters(data: Character[]) {
-    characters.value = data;
+    characters.value = data.map((item) => {
+        return {
+            ...item,
+            name: capitalizeFirstLetterOfEachWord(item.name),
+        };
+    });
     loading.value = false;
     if (characters.value.length < 1) return;
     events.emitServer(CharacterSelectEvents.toServer.syncAppearance, characters.value[selectIndex.value]._id);

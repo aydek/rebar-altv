@@ -44,9 +44,10 @@ const checkName = () => {
         if (first.value.error || last.value.error || age.value.error) {
             return;
         }
-
+        const fixedFirstName = first.value.name.charAt(0).toUpperCase() + first.value.name.slice(1);
+        const fixedLastName = last.value.name.charAt(0).toUpperCase() + last.value.name.slice(1);
         checkingName.value = true;
-        events.emitServer(CharacterCreatorEvents.toServer.nameCheck, first.value.name, last.value.name);
+        events.emitServer(CharacterCreatorEvents.toServer.nameCheck, fixedFirstName, fixedLastName);
     }, 100);
 };
 
@@ -58,9 +59,10 @@ const finish = () => {
         if (first.value.error || last.value.error || age.value.error) {
             return;
         }
-
+        const fixedFirstName = first.value.name.charAt(0).toUpperCase() + first.value.name.slice(1);
+        const fixedLastName = last.value.name.charAt(0).toUpperCase() + last.value.name.slice(1);
         checkingName.value = true;
-        events.emitClient(CharacterCreatorEvents.toClient.save, first.value.name, last.value.name, age.value.val);
+        events.emitClient(CharacterCreatorEvents.toClient.save, fixedFirstName, fixedLastName, age.value.val);
     }, 100);
 };
 
