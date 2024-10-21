@@ -80,6 +80,9 @@ async function handleSave(
             appearance: appearance,
             clothing: fClothes,
             newCharacter: true,
+            secondsPlayed: 0,
+            lastPlayed: Date.now(),
+            cash: 0,
         },
         CollectionNames.Characters,
     );
