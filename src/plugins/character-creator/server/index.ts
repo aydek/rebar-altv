@@ -14,7 +14,7 @@ const sessionKey = 'character-creator';
 
 declare module '@Shared/types/character.js' {
     export interface Character {
-        age: number;
+        age?: number;
     }
 }
 
@@ -26,6 +26,7 @@ async function showCreator(player: alt.Player) {
 
     const webview = Rebar.player.useWebview(player);
     webview.show('CharacterCreator', 'page');
+
 
     await alt.Utils.wait(500);
     playerWorld.clearScreenFade(500);

@@ -7,7 +7,7 @@ import '../translate/index';
 import { useTranslate } from '@Shared/translate';
 import { useEvents } from '@Composables/useEvents';
 import { Character } from '@Shared/types';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, toRaw } from 'vue';
 import { CharacterSelectEvents } from '../shared/events';
 
 const { t } = useTranslate();
@@ -31,19 +31,21 @@ const characters = ref<Character[]>(
 function setIndex(index: number) {
     if (loading.value) return;
     selectIndex.value = index;
-    events.emitServer(CharacterSelectEvents.toServer.syncAppearance, index);
+    events.emitServer(CharacterSelectEvents.toServer.syncAppearance, characters.value[selectIndex.value]._id);
 }
 
 function handleCharacters(data: Character[]) {
     characters.value = data;
     loading.value = false;
-    events.emitServer(CharacterSelectEvents.toServer.syncAppearance, selectIndex.value);
+    events.emitServer(CharacterSelectEvents.toServer.syncAppearance, characters.value[selectIndex.value]._id);
+    console.log(characters.value[selectIndex.value]._id);
+    console.log(JSON.stringify(characters.value));
 }
 
 function handlePlay() {
     if (loading.value) return;
     loading.value = true;
-    events.emitServer(CharacterSelectEvents.toServer.handlePlay, selectIndex.value);
+    events.emitServer(CharacterSelectEvents.toServer.handlePlay, characters.value[selectIndex.value]._id);
 }
 
 function openCreator() {
@@ -65,7 +67,8 @@ function doNotDelete() {
 function deleteCharacterForSure() {
     loading.value = true;
     isDeleting.value = false;
-    events.emitServer(CharacterSelectEvents.toServer.delete, selectIndex.value);
+    events.emitServer(CharacterSelectEvents.toServer.delete, characters.value[selectIndex.value]._id);
+    selectIndex.value = 0;
 }
 
 onMounted(() => {

@@ -48,7 +48,6 @@ function updateAppearance<T extends keyof Appearance>(key: T, value: Appearance[
 
 async function handleCharacterSave(firstName: string, lastName: string, age: number) {
     native.doScreenFadeOut(0);
-    webview.hide('CharacterCreator');
     alt.emitServerRaw(CharacterCreatorEvents.toServer.save, firstName, lastName, age, appearance, clothes);
 }
 
@@ -77,13 +76,13 @@ async function handleBack() {
     pedClone.ped.destroy();
     pedClone.camera.destroy();
     webview.hide('CharacterCreator');
-    alt.emitServer(CharacterCreatorEvents.toServer.exit);
 
     appearance = clone.objectData(DefaultAppearance);
     clothes = clone.objectData(DefaultClothes);
 
     const keys = await api.getAsync('instruction-keys-api');
     keys.hideInstructionKeys();
+    alt.emitServer(CharacterCreatorEvents.toServer.exit);
 }
 
 function setCamera(navIndex: number) {

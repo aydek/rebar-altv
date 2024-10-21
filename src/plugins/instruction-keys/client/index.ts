@@ -10,7 +10,6 @@ export async function showInstructionKeys(keys: IKeys[]) {
     webview.show('InstructionKeys', 'persistent');
     await alt.Utils.wait(200);
     webview.emit(InstructionKeysEvents.toWebview.set, keys);
-    alt.setWatermarkPosition(4);
 }
 
 export function hideInstructionKeys() {
