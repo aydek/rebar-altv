@@ -26,7 +26,14 @@ async function getCharacters(player: alt.Player): Promise<Character[] | undefine
         return undefined;
     }
 
-    return await db.getMany<Character>({ account_id: accDocument.getField('_id') }, CollectionNames.Characters);
+    const characters = await db.getMany<Character>(
+        { account_id: accDocument.getField('_id') },
+        CollectionNames.Characters,
+    );
+
+    characters.sort((a, b) => b.lastPlayed - a.lastPlayed);
+
+    return characters;
 }
 
 async function getCharacter(player: alt.Player, id: string): Promise<Character | undefined> {
@@ -48,7 +55,6 @@ async function showSelection(player: alt.Player) {
         return;
     }
     const playerWorld = Rebar.player.useWorld(player);
-    Rebar.player.useNative(player).invoke('displayRadar', false);
     player.emit(CharacterSelectEvents.toClient.toggleControls, false);
 
     const characters = await getCharacters(player);
