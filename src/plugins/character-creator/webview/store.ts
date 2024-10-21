@@ -1,10 +1,9 @@
 import { Appearance } from '@Shared/types/appearance.js';
-import { ref, toRaw } from 'vue';
-import { DefaultAppearance, DefaultClothes } from '../shared/defaultAppearance.js';
+import { ref } from 'vue';
+import { DefaultAppearance } from '../shared/defaultAppearance.js';
 import { useEvents } from '@Composables/useEvents.js';
 import { CharacterCreatorEvents } from '../shared/events.js';
 import { IInternal, initialInternal } from './const/internalStateDefault.js';
-import { ClothingComponent } from '@Shared/types/clothingComponent.js';
 import { ClothingItemData } from '@Shared/data/clothingNames/clothingNames.js';
 
 const events = useEvents();

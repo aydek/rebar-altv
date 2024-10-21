@@ -46,6 +46,12 @@ function updateAppearance<T extends keyof Appearance>(key: T, value: Appearance[
     });
 }
 
+async function handleCharacterSave(firstName: string, lastName: string, age: number) {
+    native.doScreenFadeOut(0);
+    webview.hide('CharacterCreator');
+    alt.emitServerRaw(CharacterCreatorEvents.toServer.save, firstName, lastName, age, appearance, clothes);
+}
+
 async function handleTogglePedEdit() {
     alt.setConfigFlag('DISABLE_IDLE_CAMERA', true);
     alt.on('disconnect', pedClone.ped.destroy);
@@ -98,9 +104,11 @@ function toggleRotation(state: boolean) {
 }
 
 alt.onServer(CharacterCreatorEvents.toClient.tooglePedEdit, handleTogglePedEdit);
+alt.onServer(CharacterCreatorEvents.toClient.creationDone, handleBack);
 webview.on(CharacterCreatorEvents.toClient.back, handleBack);
 webview.on(CharacterCreatorEvents.toClient.updateAppearance, updateAppearance);
 webview.on(CharacterCreatorEvents.toClient.updateClothes, updateClothes);
 webview.on(CharacterCreatorEvents.toClient.resetClothes, resetClothes);
 webview.on(CharacterCreatorEvents.toClient.setCamera, setCamera);
 webview.on(CharacterCreatorEvents.toClient.toggleRotation, toggleRotation);
+webview.on(CharacterCreatorEvents.toClient.save, handleCharacterSave);

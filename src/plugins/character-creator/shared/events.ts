@@ -8,9 +8,11 @@ export const CharacterCreatorEvents = {
         toggleRotation: 'character:creator:toClient:toggleRotation',
         tooglePedEdit: 'character:creator:toClient:tooglePedEdit',
         setCamera: 'character:creator:toClient:setCamera',
+        creationDone: 'character:creator:toClient:creationDone',
     },
     toServer: {
         nameCheck: 'character:creator:toServer:nameCheck',
         exit: 'character:creator:toServer:exit',
+        save: 'character:creator:toServer:save',
     },
 };
