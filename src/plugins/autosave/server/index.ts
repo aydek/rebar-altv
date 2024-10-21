@@ -2,6 +2,13 @@ import * as alt from 'alt-server';
 
 import { useRebar } from '@Server/index.js';
 
+declare module '@Shared/types/character.js' {
+    export interface Character {
+        lastPlayed?: number;
+        secondsPlayed?: number;
+    }
+}
+
 const Rebar = useRebar();
 let isUpdatingVehicles = false;
 let isUpdatingPlayers = false;
@@ -27,10 +34,17 @@ function updatePlayers() {
         for (let weapon of player.weapons) {
             ammo[weapon.hash] = player.getAmmo(weapon.hash);
         }
-        
+
+        let currentSeconds = document.getField('secondsPlayed');
+
+        if (!currentSeconds || currentSeconds === null) {
+            currentSeconds = 0;
+        }
 
         Rebar.player.useWeapon(player).save();
         Rebar.player.useState(player).save();
+        document.set('lastPlayed', Date.now());
+        document.set('secondsPlayed', currentSeconds + 5);
     }
 
     isUpdatingPlayers = false;
