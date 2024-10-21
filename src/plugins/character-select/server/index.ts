@@ -121,12 +121,9 @@ async function syncAppearance(player: alt.Player, id: string) {
 }
 
 async function handleSpawnCharacter(player: alt.Player, id: string) {
-    const clothing = Rebar.player.useClothing(player);
-    const appearance = Rebar.player.usePlayerAppearance(player);
     const webview = Rebar.player.useWebview(player);
-    const native = Rebar.player.useNative(player);
+
     const world = Rebar.player.useWorld(player);
-    const state = Rebar.player.useState(player);
 
     const character = await getCharacter(player, id);
 
@@ -137,25 +134,17 @@ async function handleSpawnCharacter(player: alt.Player, id: string) {
 
     world.setScreenFade(0);
 
-    await alt.Utils.wait(200);
-
     Rebar.document.character.useCharacterBinder(player).bind(character);
 
-    native.invoke('displayRadar', true);
     webview.hide('CharacterSelect');
+
+    await alt.Utils.wait(200);
 
     player.dimension = 0;
 
-    appearance.sync();
-    clothing.sync();
-    state.sync();
-
-    player.frozen = false;
-    player.visible = true;
     player.emit(CharacterSelectEvents.toClient.toggleControls, true);
     player.deleteMeta(sessionKey);
     PluginAPI.invokeSelect(player, character);
-    world.clearScreenFade(500);
 }
 
 async function init() {
