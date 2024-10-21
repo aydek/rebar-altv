@@ -30,6 +30,7 @@ const characters = ref<Character[]>(
 
 function setIndex(index: number) {
     if (loading.value) return;
+    if (characters.value.length < 1) return;
     selectIndex.value = index;
     events.emitServer(CharacterSelectEvents.toServer.syncAppearance, characters.value[selectIndex.value]._id);
 }
@@ -37,11 +38,13 @@ function setIndex(index: number) {
 function handleCharacters(data: Character[]) {
     characters.value = data;
     loading.value = false;
+    if (characters.value.length < 1) return;
     events.emitServer(CharacterSelectEvents.toServer.syncAppearance, characters.value[selectIndex.value]._id);
 }
 
 function handlePlay() {
     if (loading.value) return;
+    if (characters.value.length < 1) return;
     loading.value = true;
     events.emitServer(CharacterSelectEvents.toServer.handlePlay, characters.value[selectIndex.value]._id);
 }
@@ -63,6 +66,7 @@ function doNotDelete() {
 }
 
 function deleteCharacterForSure() {
+    if (characters.value.length < 1) return;
     loading.value = true;
     isDeleting.value = false;
     events.emitServer(CharacterSelectEvents.toServer.delete, characters.value[selectIndex.value]._id);
