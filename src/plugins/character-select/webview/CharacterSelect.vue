@@ -38,6 +38,7 @@ function handleCharacters(data: Character[]) {
     characters.value = data;
     loading.value = false;
     events.emitServer(CharacterSelectEvents.toServer.syncAppearance, characters.value[selectIndex.value]._id);
+}
 
 function handlePlay() {
     if (loading.value) return;
