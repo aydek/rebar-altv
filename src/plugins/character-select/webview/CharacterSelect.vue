@@ -20,11 +20,11 @@ const characters = ref<Character[]>(
     'alt' in window
         ? []
         : [
-              { account_id: 'a', cash: 5000, name: 'Jonas Valanciunas', hours: 4000 },
-              { account_id: 'a', cash: 532, name: 'Jonas sdd', hours: 50000 },
-              { account_id: 'a', cash: 5054200, name: 'Jonas 2231', hours: 50000 },
-              { account_id: 'a', cash: 50553200, name: 'Jonas Valanddasaciunas', hours: 50000 },
-              { account_id: 'a', cash: 5033300, name: 'Jonas Valandeeeciunas', hours: 50000 },
+              { account_id: 'a', cash: 5000, name: 'Jonas Valanciunas', secondsPlayed: 4000 },
+              { account_id: 'a', cash: 532, name: 'Jonas sdd', secondsPlayed: 50000 },
+              { account_id: 'a', cash: 5054200, name: 'Jonas 2231', secondsPlayed: 50000 },
+              { account_id: 'a', cash: 50553200, name: 'Jonas Valanddasaciunas', secondsPlayed: 50000 },
+              { account_id: 'a', cash: 5033300, name: 'Jonas Valandeeeciunas', secondsPlayed: 50000 },
           ],
 );
 
@@ -96,7 +96,9 @@ onMounted(() => {
 
                 <div class="flex w-full space-x-2">
                     <div class="text-neutral-500">{{ t('character.select.played') }}:</div>
-                    <div class="text-accent-600">{{ (characters[selectIndex].hours / 60 / 60).toFixed() }} h</div>
+                    <div class="text-accent-600">
+                        {{ (characters[selectIndex].secondsPlayed / 60 / 60).toFixed() }} h
+                    </div>
                 </div>
 
                 <div class="mt-10 flex w-full flex-col gap-2">
