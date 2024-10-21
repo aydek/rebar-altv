@@ -19,7 +19,6 @@ async function handleSpawn(player: alt.Player, character: Character) {
     appearance.sync();
     clothing.sync();
     state.sync();
-    native.invoke('displayRadar', true);
 
     if (character.newCharacter) {
         player.pos = spawnCoords;
