@@ -97,6 +97,8 @@ async function handleDelete(player: alt.Player, id: string) {
 
     characters = await getCharacters(player);
 
+    player.visible = false;
+
     webview.emit(CharacterSelectEvents.toWebview.setCharacters, characters);
 }
 
