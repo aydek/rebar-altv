@@ -1,4 +1,5 @@
 import * as alt from 'alt-client';
+import * as native from 'natives';
 import { useCamera } from '@Client/player/camera.js';
 import { CharacterSelectEvents } from '../shared/events.js';
 
@@ -13,6 +14,7 @@ function handleToggleControls(value: boolean) {
     } else {
         camera.create({ fov: 60, bone: 'SKEL_Pelvis', zOffset: 0.7 });
     }
+
 }
 
 alt.onServer(CharacterSelectEvents.toClient.toggleControls, handleToggleControls);
