@@ -77,6 +77,9 @@ export function usePlayerAppearance(player: alt.Player) {
             for (let i = 0; i < data.headOverlays.length; i++) {
                 const overlay = data.headOverlays[i];
                 const color2 = overlay.color2 ? overlay.color2 : overlay.color1;
+                if (overlay.value < 0) {
+                    continue;
+                }
 
                 player.setHeadOverlay(overlay.id, overlay.value, parseFloat(overlay.opacity.toString()));
                 player.setHeadOverlayColor(overlay.id, 1, overlay.color1, color2);
