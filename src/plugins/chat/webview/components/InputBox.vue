@@ -9,6 +9,8 @@ import { chatConfig } from '@Plugins/chat/shared/config';
 import { useMessenger } from '@Composables/useMessenger';
 import { useEvents } from '@Composables/useEvents';
 import { ChatEvents } from '@Plugins/chat/shared/events';
+import { useTranslate } from '@Shared/translate';
+import '../../translate/index';
 
 const inputText = ref('');
 const inputRef = ref(null);
@@ -19,6 +21,8 @@ const historyIndex = ref(0);
 const store = useStore();
 const messenger = useMessenger();
 const events = useEvents();
+
+const { t } = useTranslate();
 
 const props = defineProps<{
     prefix: string;
@@ -119,7 +123,7 @@ onUnmounted(() => {
         <EmojiBox v-if="emojisOpen" @closeContainer="() => (emojisOpen = false)" @addEmoji="handleEmoji" />
         <input
             v-model="inputText"
-            :placeholder="'Type your message'"
+            :placeholder="t('chat:placeholder')"
             type="text"
             name="textbox"
             @input="handleInput"
