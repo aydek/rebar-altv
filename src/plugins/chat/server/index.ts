@@ -15,6 +15,7 @@ async function showChat(player: alt.Player) {
     const webview = Rebar.player.useWebview(player);
     webview.show('Chat', 'overlay');
     await webview.isReady('Chat', 'overlay');
+    await alt.Utils.wait(1000);
 
     const commands = await messenger.commands.getCommands(player);
     webview.emit(ChatEvents.toWebview.commands, commands);
@@ -36,5 +37,5 @@ function handlePlayerMessage(player: alt.Player, msg: string) {
     }
 }
 
-alt.on('rebar:playerCharacterBound',  showChat);
+alt.on('rebar:playerCharacterBound', showChat);
 alt.on('rebar:playerSendMessage', handlePlayerMessage);
