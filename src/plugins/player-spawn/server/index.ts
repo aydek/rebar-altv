@@ -14,7 +14,6 @@ async function handleSpawn(player: alt.Player, character: Character) {
     const clothing = Rebar.player.useClothing(player);
     const appearance = Rebar.player.usePlayerAppearance(player);
     const state = Rebar.player.useState(player);
-    const native = Rebar.player.useNative(player);
 
     appearance.sync();
     clothing.sync();
