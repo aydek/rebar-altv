@@ -13,7 +13,13 @@ const events = useEvents();
 const suggestions = ref<CommandInfo[]>(altInWindow() ? [] : dummySuggestions);
 const inputHistory = ref<string[]>([]);
 const focus = ref<boolean>(false);
-const settings = ref<ChatSettings>(chatConfig.chatSettings);
+const settings = ref<ChatSettings>({
+    width: window.screen.availWidth / 3,
+    height: window.screen.availHeight / 2.5,
+    timestamps: !('alt' in window),
+    autohide: true,
+    fontsize: 1.2,
+});
 
 export function useStore() {
     function addChatHistory(message: string) {
