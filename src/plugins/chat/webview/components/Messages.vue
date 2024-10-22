@@ -10,8 +10,6 @@ import { useStore } from '@Plugins/chat/store';
 const messenger = useMessenger();
 const store = useStore();
 
-
-
 function colorify(text: string | null) {
     let matches = [];
     let m = null;
@@ -55,25 +53,25 @@ function getMessageStyling(message: Message) {
     let icon = '';
     switch (message.type) {
         case 'info': {
-            classes = 'bg-blue-500 p-2 bg-opacity-40 rounded-lg';
+            classes = 'bg-gradient-to-r from-blue-500/40 to-transperant p-2 bg-opacity-40 rounded-lg';
             icon = 'icon-info3';
             break;
         }
 
         case 'warning': {
-            classes = 'bg-amber-500 p-2 bg-opacity-40 rounded-lg';
+            classes = 'bg-gradient-to-r from-amber-500/40 to-transperant p-2 bg-opacity-40 rounded-lg';
             icon = 'icon-warning3';
             break;
         }
 
         case 'system': {
-            classes = 'bg-gray-500 p-2 bg-opacity-40 rounded-lg';
+            classes = 'bg-gradient-to-r from-gray-500/40 to-transperant p-2 bg-opacity-40 rounded-lg';
             icon = 'icon-bell';
             break;
         }
 
         case 'alert': {
-            classes = 'bg-red-500 p-2 bg-opacity-40 rounded-lg';
+            classes = 'bg-gradient-to-r from-red-500/40 to-transperant p-2 bg-opacity-40 rounded-lg';
             icon = 'icon-error_outline';
             break;
         }
