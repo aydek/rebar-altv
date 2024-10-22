@@ -14,8 +14,6 @@ function useApi() {
     function setSettings(settings: ChatSettings) {
         const current: ChatSettings = alt.LocalStorage.get(settingsKey);
         if (!current) {
-            alt.LocalStorage.set(settingsKey, chatConfig.chatSettings);
-            alt.LocalStorage.save();
             return;
         }
         alt.LocalStorage.set(settingsKey, settings);
@@ -23,8 +21,15 @@ function useApi() {
         webview.emit(ChatEvents.toWebview.setSettings, current);
     }
 
+    function getSettings() {
+        const current: ChatSettings = alt.LocalStorage.get(settingsKey);
+
+        return current;
+    }
+
     return {
-        setSettings,
+        set: setSettings,
+        get: getSettings,
     };
 }
 
