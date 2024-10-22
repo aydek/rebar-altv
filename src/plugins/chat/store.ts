@@ -3,8 +3,12 @@ import { ref } from 'vue';
 import { dummySuggestions } from './webview/utils/dummy.js';
 import { chatConfig } from './shared/config.js';
 import { ChatSettings } from './shared/types.js';
+import { useEvents } from '@Composables/useEvents.js';
+import { ChatEvents } from './shared/events.js';
 
 export type CommandInfo = { name: string; desc: string };
+
+const events = useEvents();
 
 const suggestions = ref<CommandInfo[]>(altInWindow() ? [] : dummySuggestions);
 const inputHistory = ref<string[]>([]);
@@ -35,3 +39,5 @@ export function useStore() {
         },
     };
 }
+
+events.on(ChatEvents.toWebview.setSettings, (data: ChatSettings) => useStore().setSettings(data));

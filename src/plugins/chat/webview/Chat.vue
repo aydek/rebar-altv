@@ -49,7 +49,6 @@ onMounted(() => {
         store.setFocus(true);
         prefix.value = command;
     });
-    events.on(ChatEvents.toWebview.setSettings, (data: ChatSettings) => store.setSettings(data));
     events.on(ChatEvents.toWebview.unfocus, () => store.setFocus(false));
     events.emitClient(ChatEvents.toClient.getSettings);
 });
