@@ -2,18 +2,14 @@ import { altInWindow } from '@Composables/altInWindow.js';
 import { ref } from 'vue';
 import { dummySuggestions } from './webview/utils/dummy.js';
 import { chatConfig } from './shared/config.js';
+import { ChatSettings } from './shared/types.js';
 
 export type CommandInfo = { name: string; desc: string };
 
 const suggestions = ref<CommandInfo[]>(altInWindow() ? [] : dummySuggestions);
 const inputHistory = ref<string[]>([]);
 const focus = ref<boolean>(false);
-const settings = ref({
-    width: window.screen.availWidth / 3,
-    height: window.screen.availHeight / 2.5,
-    timestamps: !('alt' in window),
-    autohide: true,
-});
+const settings = ref<ChatSettings>(chatConfig.chatSettings);
 
 export function useStore() {
     function addChatHistory(message: string) {
@@ -34,7 +30,7 @@ export function useStore() {
             focus.value = value;
         },
         settings,
-        setSettings: (val: typeof settings.value) => {
+        setSettings: (val: ChatSettings) => {
             settings.value = val;
         },
     };

@@ -10,6 +10,7 @@ import InputBox from './components/InputBox.vue';
 import { CommandInfo, useStore } from '../store';
 import { useEvents } from '@Composables/useEvents';
 import { ChatEvents } from '../shared/events';
+import { ChatSettings } from '../shared/types';
 
 const autoScroll = ref(null);
 
@@ -48,7 +49,9 @@ onMounted(() => {
         store.setFocus(true);
         prefix.value = command;
     });
+    events.on(ChatEvents.toWebview.setSettings, (data: ChatSettings) => store.setSettings(data));
     events.on(ChatEvents.toWebview.unfocus, () => store.setFocus(false));
+    events.emitClient(ChatEvents.toClient.getSettings);
 });
 
 function mockMessages() {

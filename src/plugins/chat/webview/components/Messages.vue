@@ -81,13 +81,17 @@ function getMessageStyling(message: Message) {
 }
 </script>
 <template>
-    <div :class="twMerge('text-shadow flex select-text items-center py-1 font-semibold tracking-wide  ')" v-for="message of messenger.messages.value">
+    <div
+        :class="twMerge('text-shadow flex select-text items-center py-1  font-semibold tracking-wide  ')"
+        :style="{ fontSize: store.settings.value.fontsize + 'rem' }"
+        v-for="message of messenger.messages.value"
+    >
         <span v-if="store.settings.value.timestamps" :class="twMerge('mr-1 rounded-lg p-1 transition-all', !store.focus.value && 'bg-black bg-opacity-50')">{{
             convertTimestampToTime(message.timestamp)
         }}</span>
         <div :class="twMerge('flex w-full items-center', getMessageStyling(message).classes)">
             <Icon :icon="getMessageStyling(message).icon" v-if="getMessageStyling(message).icon.length > 0" :size="2" class="mr-2"></Icon>
-            <span v-if="message.author" class="text-xl">{{ message.author }}:&nbsp;</span>
+            <span v-if="message.author">{{ message.author }}:&nbsp;</span>
             <span v-html="colorify(useSanitizeInput(replaceEmoji(message.content)))"></span>
         </div>
     </div>
