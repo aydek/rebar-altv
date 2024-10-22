@@ -4,6 +4,7 @@ import { chatConfig } from '../shared/config.js';
 import { ChatEvents } from '../shared/events.js';
 import { ChatSettings } from '../shared/types.js';
 import './api.js';
+import { useApi } from './api.js';
 
 const Rebar = useRebarClient();
 const messenger = Rebar.messenger.useMessenger();
@@ -73,5 +74,15 @@ function handleGetSettings(initial: ChatSettings) {
     webview.emit(ChatEvents.toWebview.setSettings, current);
 }
 
+function setSettings(data: ChatSettings) {
+    const current: ChatSettings = alt.LocalStorage.get(settingsKey);
+    if (!current) {
+        return;
+    }
+    alt.LocalStorage.set(settingsKey, data);
+    alt.LocalStorage.save();
+}
+
+webview.on(ChatEvents.toClient.setSettings, setSettings);
 webview.on(ChatEvents.toClient.unfocus, unfocusChat);
 webview.on(ChatEvents.toClient.getSettings, handleGetSettings);

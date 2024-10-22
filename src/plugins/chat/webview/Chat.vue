@@ -30,6 +30,7 @@ function getMixMax() {
 
 function handleEnd(props) {
     const { height, width } = props;
+    store.setSettings({ ...store.settings.value, width, height });
     autoScroll.value?.scrollIntoView({ block: 'end' });
 }
 

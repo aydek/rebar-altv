@@ -5,6 +5,7 @@ export const ChatEvents = {
     toClient: {
         unfocus: 'chatevents:unfocus',
         getSettings: 'chatevents:toclient:getsettings',
+        setSettings: 'chatevents:toCliente:setsettings',
     },
     toWebview: {
         focus: 'webview:chat:focus',

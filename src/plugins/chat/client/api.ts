@@ -10,7 +10,7 @@ const settingsKey = 'chat-settings';
 const Rebar = useRebarClient();
 const webview = Rebar.webview.useWebview();
 
-function useApi() {
+export function useApi() {
     function setSettings(settings: ChatSettings) {
         const current: ChatSettings = alt.LocalStorage.get(settingsKey);
         if (!current) {

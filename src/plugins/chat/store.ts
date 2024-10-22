@@ -42,6 +42,7 @@ export function useStore() {
         settings,
         setSettings: (val: ChatSettings) => {
             settings.value = val;
+            events.emitClient(ChatEvents.toClient.setSettings, settings.value);
         },
     };
 }
