@@ -4,16 +4,17 @@ import * as alt from 'alt-server';
 import { StartupEvents } from '../shared/events.js';
 
 const Rebar = useRebar();
-const api = Rebar.useApi();
 const config = Rebar.useServerConfig();
 
-function handleSelect(player: alt.Player, character: Character) {
+function loadIpls(player: alt.Player) {
     alt.emitClient(player, StartupEvents.toClient.loadIpls);
 }
 
+alt.on('rebar:playerCharacterBound',  loadIpls);
+
 async function init() {
-    const charSelect = await api.getAsync('character-select-api');
-    charSelect.onSelect(handleSelect);
+   
+ 
 
     config.set('disableCriticalHits', true);
     config.set('disablePistolWhip', true);
