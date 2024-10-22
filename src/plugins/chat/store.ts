@@ -1,5 +1,5 @@
 import { altInWindow } from '@Composables/altInWindow.js';
-import { ref } from 'vue';
+import {  ref } from 'vue';
 import { dummySuggestions } from './webview/utils/dummy.js';
 import { chatConfig } from './shared/config.js';
 import { ChatSettings } from './shared/types.js';
@@ -20,6 +20,9 @@ const settings = ref<ChatSettings>({
     autohide: true,
     fontsize: 1.2,
 });
+const hidden = ref({ state: false, time: Date.now() + 7000 });
+
+
 
 export function useStore() {
     function addChatHistory(message: string) {
@@ -27,6 +30,13 @@ export function useStore() {
         if (inputHistory.value.length > chatConfig.maxHistoryMessages) {
             inputHistory.value.pop();
         }
+    }
+
+    function resetHide() {
+        hidden.value = {
+            state: false,
+            time: Date.now() + 7000,
+        };
     }
     return {
         suggestions,
@@ -44,6 +54,8 @@ export function useStore() {
             settings.value = val;
             events.emitClient(ChatEvents.toClient.setSettings, settings.value);
         },
+        resetHide,
+        hidden,
     };
 }
 

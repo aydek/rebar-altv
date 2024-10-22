@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import Resizable from './components/Resizable.vue';
 import { altInWindow } from '@Composables/altInWindow';
 import { useMessenger } from '@Composables/useMessenger';
@@ -37,6 +37,7 @@ function handleEnd(props) {
 messenger.onUpdate(() => {
     setTimeout(() => {
         autoScroll.value?.scrollIntoView({ block: 'end' });
+        store.resetHide();
     }, 50);
 });
 
@@ -44,17 +45,39 @@ function setCommands(data: CommandInfo[]) {
     store.setSuggestions(data);
 }
 
+function emitInterval() {
+    if (!store.settings.value.autohide) {
+        return;
+    }
+
+    if (store.focus.value) {
+        useStore().resetHide();
+        return;
+    }
+
+    if (!store.hidden.value.state && store.hidden.value.time < Date.now()) {
+        store.hidden.value.state = true;
+    }
+}
+
 onMounted(() => {
     events.on(ChatEvents.toWebview.commands, setCommands);
     events.on(ChatEvents.toWebview.focus, (command: string) => {
         store.setFocus(true);
         prefix.value = command;
+        store.resetHide();
     });
-    events.on(ChatEvents.toWebview.unfocus, () => store.setFocus(false));
+    events.on(ChatEvents.toWebview.unfocus, () => {
+        store.resetHide();
+        store.setFocus(false);
+    });
     events.emitClient(ChatEvents.toClient.getSettings, store.settings.value);
     setTimeout(() => {
         autoScroll.value?.scrollIntoView({ block: 'end' });
     }, 50);
+    const interval = setInterval(emitInterval, 1000);
+
+    onUnmounted(() => clearInterval(interval));
 });
 
 function mockMessages() {
@@ -71,28 +94,30 @@ function mockMessages() {
         <Button @click="mockMessages()">Add message</Button>
         <Button @click="store.setFocus(!store.focus.value)">Toggle focus</Button>
     </div>
-    <Resizable
-        :width="store.settings.value.width"
-        :height="store.settings.value.height"
-        :minWidth="getMixMax().minWidth"
-        :minHeight="getMixMax().minHeight"
-        :maxWidth="getMixMax().maxWidth"
-        :maxHeight="getMixMax().maxHeight"
-        :active="['rb']"
-        @resize:end="handleEnd"
-    >
-        <div :class="twMerge('relative  m-2 h-full   w-full  rounded-lg transition-all', store.focus.value && 'bg-black bg-opacity-50')">
-            <div :class="twMerge('absolute bottom-0 left-0 max-h-full w-full overflow-hidden p-1', store.focus.value && 'overflow-y-scroll ')">
-                <Messages />
-                <div ref="autoScroll" class="h-px"></div>
+    <div :class="twMerge('opacity-100 transition-opacity', store.hidden.value.state && 'opacity-0')">
+        <Resizable
+            :width="store.settings.value.width"
+            :height="store.settings.value.height"
+            :minWidth="getMixMax().minWidth"
+            :minHeight="getMixMax().minHeight"
+            :maxWidth="getMixMax().maxWidth"
+            :maxHeight="getMixMax().maxHeight"
+            :active="['rb']"
+            @resize:end="handleEnd"
+        >
+            <div :class="twMerge('relative  m-2 h-full   w-full  rounded-lg transition-all', store.focus.value && 'bg-black bg-opacity-50')">
+                <div :class="twMerge('absolute bottom-0 left-0 max-h-full w-full overflow-hidden p-1', store.focus.value && 'overflow-y-scroll ')">
+                    <Messages />
+                    <div ref="autoScroll" class="h-px"></div>
+                </div>
+                <InputBox v-if="store.focus.value" :prefix="prefix" />
             </div>
-            <InputBox v-if="store.focus.value" :prefix="prefix" />
-        </div>
 
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute bottom-0 right-0 h-10 w-10 fill-white" v-if="store.focus.value">
-            <title>resize-bottom-right</title>
-            <path d="M22,22H20V20H22V22M22,18H20V16H22V18M18,22H16V20H18V22M18,18H16V16H18V18M14,22H12V20H14V22M22,14H20V12H22V14Z" />
-        </svg>
-    </Resizable>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute bottom-0 right-0 h-10 w-10 fill-white" v-if="store.focus.value">
+                <title>resize-bottom-right</title>
+                <path d="M22,22H20V20H22V22M22,18H20V16H22V18M18,22H16V20H18V22M18,18H16V16H18V18M14,22H12V20H14V22M22,14H20V12H22V14Z" />
+            </svg>
+        </Resizable>
+    </div>
 </template>
 <style scoped></style>
