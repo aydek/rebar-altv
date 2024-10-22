@@ -4,7 +4,6 @@ import { chatConfig } from '../shared/config.js';
 import { ChatEvents } from '../shared/events.js';
 import { ChatSettings } from '../shared/types.js';
 import './api.js';
-import { useApi } from './api.js';
 
 const Rebar = useRebarClient();
 const messenger = Rebar.messenger.useMessenger();
