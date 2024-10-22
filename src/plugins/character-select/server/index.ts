@@ -26,10 +26,7 @@ async function getCharacters(player: alt.Player): Promise<Character[] | undefine
         return undefined;
     }
 
-    const characters = await db.getMany<Character>(
-        { account_id: accDocument.getField('_id') },
-        CollectionNames.Characters,
-    );
+    const characters = await db.getMany<Character>({ account_id: accDocument.getField('_id') }, CollectionNames.Characters);
 
     characters.sort((a, b) => b.lastPlayed - a.lastPlayed);
 
@@ -140,11 +137,11 @@ async function handleSpawnCharacter(player: alt.Player, id: string) {
 
     world.setScreenFade(0);
 
+    await alt.Utils.wait(500);
+
     Rebar.document.character.useCharacterBinder(player).bind(character);
 
     webview.hide('CharacterSelect');
-
-    await alt.Utils.wait(200);
 
     player.dimension = 0;
 
