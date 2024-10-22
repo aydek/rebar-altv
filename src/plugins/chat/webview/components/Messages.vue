@@ -87,7 +87,7 @@ function getMessageStyling(message: Message) {
         }}</span>
         <div :class="twMerge('flex w-full items-center', getMessageStyling(message).classes)">
             <Icon :icon="getMessageStyling(message).icon" v-if="getMessageStyling(message).icon.length > 0" :size="2" class="mr-2"></Icon>
-            <span v-if="message.author" class="text-xl">{{ message.author }}: </span>
+            <span v-if="message.author" class="text-xl">{{ message.author }}:&nbsp;</span>
             <span v-html="colorify(useSanitizeInput(replaceEmoji(message.content)))"></span>
         </div>
     </div>

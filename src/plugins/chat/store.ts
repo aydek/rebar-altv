@@ -24,12 +24,18 @@ export function useStore() {
     }
     return {
         suggestions,
-        setSuggestions: (data: CommandInfo[]) => (suggestions.value = data),
+        setSuggestions: (data: CommandInfo[]) => {
+            suggestions.value = data;
+        },
         inputHistory,
         addHistory: addChatHistory,
         focus,
-        setFocus: (value: boolean) => (focus.value = value),
+        setFocus: (value: boolean) => {
+            focus.value = value;
+        },
         settings,
-        setSettings: (val: typeof settings.value) => (settings.value = val),
+        setSettings: (val: typeof settings.value) => {
+            settings.value = val;
+        },
     };
 }

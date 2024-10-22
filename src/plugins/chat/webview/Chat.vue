@@ -16,6 +16,7 @@ const autoScroll = ref(null);
 const store = useStore();
 const messenger = useMessenger();
 const events = useEvents();
+const prefix = ref('');
 
 function getMixMax() {
     return {
@@ -43,8 +44,11 @@ function setCommands(data: CommandInfo[]) {
 
 onMounted(() => {
     events.on(ChatEvents.toWebview.commands, setCommands);
-    events.on(ChatEvents.toWebview.focus, store.setFocus(true));
-    events.on(ChatEvents.toWebview.unfocus, store.setFocus(false));
+    events.on(ChatEvents.toWebview.focus, (command: string) => {
+        store.setFocus(true);
+        prefix.value = command;
+    });
+    events.on(ChatEvents.toWebview.unfocus, () => store.setFocus(false));
 });
 
 function mockMessages() {
@@ -76,10 +80,10 @@ function mockMessages() {
                 <Messages />
                 <div ref="autoScroll" class="h-px"></div>
             </div>
-            <InputBox v-if="store.focus.value" />
+            <InputBox v-if="store.focus.value" :prefix="prefix" />
         </div>
 
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute bottom-0 right-0 h-10 w-10 fill-white" v-if="store.focus">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="absolute bottom-0 right-0 h-10 w-10 fill-white" v-if="store.focus.value">
             <title>resize-bottom-right</title>
             <path d="M22,22H20V20H22V22M22,18H20V16H22V18M18,22H16V20H18V22M18,18H16V16H18V18M14,22H12V20H14V22M22,14H20V12H22V14Z" />
         </svg>

@@ -20,6 +20,10 @@ const store = useStore();
 const messenger = useMessenger();
 const events = useEvents();
 
+const props = defineProps<{
+    prefix: string;
+}>();
+
 function handleInput(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.value.length > chatConfig.maxInputSize) {
@@ -65,8 +69,8 @@ async function handleKeyDown(event: KeyboardEvent) {
     }
 
     if (event.key === 'Enter') {
+        events.emitClient(ChatEvents.toClient.unfocus);
         if (inputText.value.length < 1) {
-            store.setFocus(false);
             return;
         }
 
@@ -75,8 +79,6 @@ async function handleKeyDown(event: KeyboardEvent) {
         } else {
             messenger.mock({ content: inputText.value, author: 'Aydek', type: 'player' });
         }
-
-        events.emitClient(ChatEvents.toWebview.unfocus);
 
         store.addHistory(inputText.value);
 
@@ -98,6 +100,7 @@ function handleInserCommand(command: string) {
 onMounted(() => {
     window.addEventListener('keydown', handleKeyDown);
     inputRef.value.focus();
+    inputText.value = props.prefix;
 });
 
 onUnmounted(() => {
@@ -122,7 +125,7 @@ onUnmounted(() => {
             @input="handleInput"
             ref="inputRef"
             autocomplete="off"
-            class="h-full w-full bg-transparent text-lg"
+            class="h-full w-full bg-transparent text-lg outline-none"
         />
         <div class="top-0 mx-2 flex h-full items-center gap-2 whitespace-nowrap">
             <div>{{ inputText.length }} / {{ chatConfig.maxInputSize }}</div>
