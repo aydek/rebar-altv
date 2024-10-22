@@ -50,7 +50,10 @@ onMounted(() => {
         prefix.value = command;
     });
     events.on(ChatEvents.toWebview.unfocus, () => store.setFocus(false));
-    events.emitClient(ChatEvents.toClient.getSettings);
+    events.emitClient(ChatEvents.toClient.getSettings, store.settings.value);
+    setTimeout(() => {
+        autoScroll.value?.scrollIntoView({ block: 'end' });
+    }, 50);
 });
 
 function mockMessages() {
