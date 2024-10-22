@@ -8,18 +8,28 @@ const messages = ref<Message[]>([{ type: 'info', content: 'Rebar Started', times
 const events = useEvents();
 let isInit = false;
 
+type UpdateCallback = () => void;
+
+let onUpdateCallbacks: UpdateCallback[] = [];
+
 function processMessage(message: Message) {
     if (!message.timestamp) {
         message.timestamp = Date.now();
     }
 
-    messages.value.unshift(message);
+    messages.value.push(message);
 
     if (messages.value.length >= MAXIMUM_MESSAGES) {
         messages.value.pop();
     }
-
+    invokeUpdate();
     console.log(JSON.stringify(message));
+}
+
+function invokeUpdate() {
+    for (let cb of onUpdateCallbacks) {
+        cb();
+    }
 }
 
 export function useMessenger() {
@@ -44,8 +54,18 @@ export function useMessenger() {
         alt.emit(Events.view.emitServer, Events.systems.messenger.process, msg);
     }
 
+    function mock(message: Message) {
+        processMessage(message);
+    }
+
+    function onUpdate(callback: UpdateCallback) {
+        onUpdateCallbacks.push(callback);
+    }
+
     return {
         emit,
         messages,
+        mock,
+        onUpdate,
     };
 }
