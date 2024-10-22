@@ -24,7 +24,6 @@ function processMessage(message: Message) {
         messages.value.pop();
     }
     invokeUpdate();
-    console.log(JSON.stringify(message));
 }
 
 function invokeUpdate() {
