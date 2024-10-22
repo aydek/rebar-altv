@@ -47,6 +47,10 @@ alt.on('keyup', (key: number) => {
         return;
     }
 
+    if (alt.isConsoleOpen()) {
+        return;
+    }
+
     if (key === chatConfig.keybinds.open) {
         focusChat();
     }
@@ -59,10 +63,10 @@ alt.on('keyup', (key: number) => {
     }
 });
 
-function handleGetSettings() {
+function handleGetSettings(initial: ChatSettings) {
     const current: ChatSettings = alt.LocalStorage.get(settingsKey);
     if (!current) {
-        alt.LocalStorage.set(settingsKey, chatConfig.chatSettings);
+        alt.LocalStorage.set(settingsKey, initial);
         alt.LocalStorage.save();
         return;
     }
