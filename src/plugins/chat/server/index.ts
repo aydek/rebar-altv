@@ -10,9 +10,8 @@ import './api.js';
 
 const Rebar = useRebar();
 const messenger = Rebar.messenger.useMessenger();
-const api = Rebar.useApi();
 
-async function handleSpawn(player: alt.Player, character: Character) {
+async function showChat(player: alt.Player) {
     const webview = Rebar.player.useWebview(player);
     webview.show('Chat', 'overlay');
     await webview.isReady('Chat', 'overlay');
@@ -37,10 +36,5 @@ function handlePlayerMessage(player: alt.Player, msg: string) {
     }
 }
 
-async function init() {
-    const charSelect = await api.getAsync('character-select-api');
-    charSelect.onSelect(handleSpawn);
-    alt.on('rebar:playerSendMessage', handlePlayerMessage);
-}
-
-init();
+alt.on('rebar:playerCharacterBound',  showChat);
+alt.on('rebar:playerSendMessage', handlePlayerMessage);
