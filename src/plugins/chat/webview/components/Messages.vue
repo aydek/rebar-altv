@@ -10,6 +10,8 @@ import { useStore } from '@Plugins/chat/store';
 const messenger = useMessenger();
 const store = useStore();
 
+
+
 function colorify(text: string | null) {
     let matches = [];
     let m = null;
