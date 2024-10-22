@@ -2,9 +2,10 @@ import { ref } from 'vue';
 import { useEvents } from './useEvents.js';
 import { Events } from '../../src/main/shared/events/index.js';
 import { Message } from '../../src/main/shared/types/message.js';
+import { altInWindow } from './altInWindow.js';
 
 const MAXIMUM_MESSAGES = 256;
-const messages = ref<Message[]>([{ type: 'info', content: 'Rebar Started', timestamp: Date.now() }]);
+const messages = ref<Message[]>(altInWindow() ? [] : [{ type: 'info', content: 'Rebar Started', timestamp: Date.now() }]);
 const events = useEvents();
 let isInit = false;
 
