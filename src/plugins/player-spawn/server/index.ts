@@ -5,7 +5,6 @@ import { CollectionNames } from '@Server/document/shared.js';
 
 const Rebar = useRebar();
 const db = Rebar.database.useDatabase();
-const api = Rebar.useApi();
 
 const spawnCoords = new alt.Vector3(0, 0, 72);
 
@@ -29,9 +28,7 @@ async function handleSpawn(player: alt.Player, character: Character) {
     world.clearScreenFade(500);
 }
 
-async function init() {
-    const charSelect = await api.getAsync('character-select-api');
-    charSelect.onSelect(handleSpawn);
-}
+alt.on('rebar:playerCharacterBound',  handleSpawn);
 
-init();
+
+
