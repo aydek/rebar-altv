@@ -74,10 +74,6 @@ function handleGetSettings(initial: ChatSettings) {
 }
 
 function setSettings(data: ChatSettings) {
-    const current: ChatSettings = alt.LocalStorage.get(settingsKey);
-    if (!current) {
-        return;
-    }
     alt.LocalStorage.set(settingsKey, data);
     alt.LocalStorage.save();
 }

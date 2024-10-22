@@ -17,7 +17,7 @@ const events = useEvents();
 const menuIndex = ref(0);
 const settings = ref<ISettings[]>(altInWindow() ? [] : dummyData);
 
-function handleSlider(val: number, index: number, key: string) {
+function handleSetting(val: any, index: number, key: string) {
     settings.value[menuIndex.value].options[index].value = val;
     events.emitClient(SettingsEvents.toClient.setSetting, 'chat', key, val);
 }
@@ -46,7 +46,7 @@ onMounted(() => {
                     <CheckBox
                         v-if="item.type === 'boolean'"
                         :checked="item.value"
-                        v-on:on-toggle="(checked: boolean) => events.emitClient(SettingsEvents.toClient.setSetting, 'chat', item.key, checked)"
+                        v-on:on-toggle="(val: boolean) => handleSetting(val, index, item.key)"
                     />
                     <Slider
                         v-if="item.type === 'slider'"
@@ -54,7 +54,7 @@ onMounted(() => {
                         :max="item.max"
                         :step="0.1"
                         :value="settings[menuIndex].options[index].value"
-                        v-on:on-change="(val: number) => handleSlider(val, index, item.key)"
+                        v-on:on-change="(val: number) => handleSetting(val, index, item.key)"
                     />
                 </div>
             </div>

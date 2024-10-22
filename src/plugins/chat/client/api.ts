@@ -18,7 +18,7 @@ export function useApi() {
         }
         alt.LocalStorage.set(settingsKey, settings);
         alt.LocalStorage.save();
-        webview.emit(ChatEvents.toWebview.setSettings, current);
+
     }
 
     function getSettings() {
