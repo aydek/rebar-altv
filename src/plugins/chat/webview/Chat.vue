@@ -86,7 +86,7 @@ function mockMessages() {
     messenger.mock({ content: 'This is info message', type: 'info', timestamp: Date.now() });
     messenger.mock({ content: 'This is warning message', type: 'warning', timestamp: Date.now() });
     messenger.mock({ content: 'This is custom message', type: 'custom', timestamp: Date.now() });
-    messenger.mock({ content: 'This is player message', type: 'player', timestamp: Date.now(), author: 'Jonas_Valanciunas (2)' });
+    messenger.mock({ content: 'This is player {ff0000} message', type: 'player', timestamp: Date.now(), author: 'Jonas_Valanciunas (2)' });
 }
 </script>
 <template>

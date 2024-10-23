@@ -82,7 +82,7 @@ function getMessageStyling(message: Message) {
 </script>
 <template>
     <div
-        :class="twMerge('text-shadow flex select-text items-center py-1  font-semibold tracking-wide  ')"
+        :class="twMerge('text-shadow flex select-text items-center py-1  font-semibold tracking-wider  ')"
         :style="{ fontSize: store.settings.value.fontsize + 'rem' }"
         v-for="message of messenger.messages.value"
     >
@@ -100,11 +100,11 @@ function getMessageStyling(message: Message) {
 <style scoped>
 .text-shadow {
     text-shadow:
-        #000 0px 0px 1px,
-        #000 0px 0px 1px,
-        #000 0px 0px 1px,
-        #000 0px 0px 1px,
-        #000 0px 0px 1px,
-        #000 0px 0px 1px;
+        1px 1px 1px black,
+        /* Shadow to the right-bottom */ -1px -1px 1px black,
+        /* Shadow to the left-top */ -1px 1px 1px black,
+        /* Shadow to the left-bottom */ 1px -1px 1px black,
+        /* Shadow to the right-top */ 2px 2px 2px rgba(0, 0, 0, 0.5),
+        /* Softer outer shadow for smoothness */ -2px -2px 2px rgba(0, 0, 0, 0.5); /* Softer outer shadow in opposite direction */
 }
 </style>

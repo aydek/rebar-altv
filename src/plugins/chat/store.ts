@@ -1,5 +1,5 @@
 import { altInWindow } from '@Composables/altInWindow.js';
-import {  ref } from 'vue';
+import { ref } from 'vue';
 import { dummySuggestions } from './webview/utils/dummy.js';
 import { chatConfig } from './shared/config.js';
 import { ChatSettings } from './shared/types.js';
@@ -17,12 +17,10 @@ const settings = ref<ChatSettings>({
     width: window.screen.availWidth / 3,
     height: window.screen.availHeight / 2.5,
     timestamps: !('alt' in window),
-    autohide: true,
+    autohide: altInWindow(),
     fontsize: 1.2,
 });
 const hidden = ref({ state: false, time: Date.now() + 7000 });
-
-
 
 export function useStore() {
     function addChatHistory(message: string) {
