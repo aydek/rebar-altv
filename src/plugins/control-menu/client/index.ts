@@ -11,7 +11,7 @@ async function init() {
     const keybindApi = await api.getAsync('keybind-controller');
 
     keybindApi.add({
-        key: 113, // f2
+        key: 18, // alt
         identifier: 'control-menu-key',
         description: 'Open control menu',
         keyDown: handleOpen,
@@ -25,9 +25,13 @@ async function init() {
 }
 
 alt.on('keyup', (key: alt.KeyCode) => {
-    if (key === 113 && alt.getMeta('control-menu-open')) {
+    if (key === 18 && alt.getMeta('control-menu-open')) {
         handleClose();
     }
+});
+
+alt.on('windowFocusChange', (isFocused: boolean) => {
+    handleClose();
 });
 
 init();
