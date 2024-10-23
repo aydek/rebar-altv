@@ -50,7 +50,7 @@ onMounted(() => {
 });
 </script>
 <template>
-    <div class="fixed inset-0 z-50" @click.self="subMenuOpen = -1">
+    <div class="fixed inset-0" @click.self="subMenuOpen = -1">
         <div v-if="!altInWindow()">
             <Button type="primary" @click="handleToggle">Toggle</Button>
         </div>
