@@ -1,6 +1,6 @@
 import { useRebarClient } from '@Client/index.js';
-
 import { SettingsEvents } from '../shared/events.js';
+import './api.js';
 
 const Rebar = useRebarClient();
 const api = Rebar.useClientApi();

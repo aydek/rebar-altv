@@ -5,21 +5,20 @@ import { getSettings } from './settings.js';
 const Rebar = useRebarClient();
 const api = Rebar.useClientApi();
 const webview = Rebar.webview.useWebview();
-let isOpen = false;
 
 export function useSettingsAPI() {
-    async function open() {
-        if (!isOpen) {
+    function open() {
+        if (!alt.getMeta('settings-open')) {
             alt.toggleGameControls(false);
             webview.show('Settings', 'page', true);
-            await alt.Utils.wait(50);
+            alt.setMeta('settings-open', true);
             getSettings();
         }
     }
 
     function close() {
-        if (isOpen) {
-            isOpen = false;
+        if (alt.getMeta('settings-open')) {
+            alt.deleteMeta('settings-open');
             alt.toggleGameControls(true);
         }
     }
@@ -31,11 +30,11 @@ export function useSettingsAPI() {
 
 declare global {
     export interface ClientPlugin {
-        ['setting-api']: ReturnType<typeof useSettingsAPI>;
+        ['settings-api']: ReturnType<typeof useSettingsAPI>;
     }
 }
 
-api.register('setting-api', useSettingsAPI());
+api.register('settings-api', useSettingsAPI());
 
 webview.onClose('Settings', () => {
     useSettingsAPI().close();
