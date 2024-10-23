@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<IProps>(), {
 </script>
 
 <template>
-    <div :class="twMerge('flex items-center justify-center h-full translate-y-0.5', props.class)">
-        <span :class="twMerge(props.icon, 'p-0 m-0 text-center ')" :style="{ fontSize: `${props.size}rem` }"></span>
+    <div :class="twMerge('flex h-full items-center justify-center', props.class)">
+        <span :class="twMerge(props.icon, 'm-0 p-0 text-center ')" :style="{ fontSize: `${props.size}rem` }"></span>
     </div>
 </template>
