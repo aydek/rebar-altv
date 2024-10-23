@@ -82,7 +82,7 @@ function getMessageStyling(message: Message) {
 </script>
 <template>
     <div
-        :class="twMerge('text-shadow flex select-text items-center py-1  font-semibold tracking-wider  ')"
+        :class="twMerge(' flex select-text items-center py-1  font-medium tracking-wider  ')"
         :style="{ fontSize: store.settings.value.fontsize + 'rem' }"
         v-for="message of messenger.messages.value"
     >
@@ -91,20 +91,8 @@ function getMessageStyling(message: Message) {
         }}</span>
         <div :class="twMerge('flex w-full items-center', getMessageStyling(message).classes)">
             <Icon :icon="getMessageStyling(message).icon" v-if="getMessageStyling(message).icon.length > 0" :size="2" class="mr-2"></Icon>
-            <span v-if="message.author">{{ message.author }}:&nbsp;</span>
-            <span v-html="colorify(useSanitizeInput(replaceEmoji(message.content)))"></span>
+            <span v-if="message.author" class="text-shadow">{{ message.author }}:&nbsp;</span>
+            <span v-html="colorify(useSanitizeInput(replaceEmoji(message.content)))" class="text-shadow"></span>
         </div>
     </div>
 </template>
-
-<style scoped>
-.text-shadow {
-    text-shadow:
-        1px 1px 1px black,
-        /* Shadow to the right-bottom */ -1px -1px 1px black,
-        /* Shadow to the left-top */ -1px 1px 1px black,
-        /* Shadow to the left-bottom */ 1px -1px 1px black,
-        /* Shadow to the right-top */ 2px 2px 2px rgba(0, 0, 0, 0.5),
-        /* Softer outer shadow for smoothness */ -2px -2px 2px rgba(0, 0, 0, 0.5); /* Softer outer shadow in opposite direction */
-}
-</style>
