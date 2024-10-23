@@ -6,7 +6,7 @@ declare global {
          * @type {boolean}
          */
         isOnFoot?: boolean;
-    
+
         /**
          * Player must be in any vehicle to use this key bind.
          * Accessible by anyone in the vehicle.
@@ -14,21 +14,21 @@ declare global {
          * @type {boolean}
          */
         isVehicle?: boolean;
-    
+
         /**
          * Player must be in a vehicle as a passenger. Not the driver.
          *
          * @type {boolean}
          */
         isVehiclePassenger?: boolean;
-    
+
         /**
          * Player must be the driver of the vehicle.
          *
          * @type {boolean}
          */
         isVehicleDriver?: boolean;
-    
+
         /**
          * Player must be aiming a weapon of some sort to trigger this key bind.
          *
@@ -36,7 +36,7 @@ declare global {
          *
          */
         isAiming?: boolean;
-    
+
         /**
          * Player must be swimming to be able to trigger this key bind.
          *
@@ -44,7 +44,7 @@ declare global {
          *
          */
         isSwimming?: boolean;
-    
+
         /**
          * Create an array of vehicle model hashes that this key bind only works under.
          * Example: `[alt.hash('infernus'), alt.hash('police2')]`
@@ -52,7 +52,7 @@ declare global {
          * @type {(Array<number>)}
          */
         vehicleModels?: Array<number>;
-    
+
         /**
          * Create an array of weapon model hashes that this key bind only works under.
          * Example: `[alt.hash('w_ar_advancedrifle')]`
@@ -62,7 +62,7 @@ declare global {
          */
         weaponModels?: Array<number>;
     }
-    
+
     export interface KeyInfo extends BaseKeyInfo {
         /**
          * Call this function when the key is pressed down once.
@@ -71,7 +71,7 @@ declare global {
          *
          */
         keyDown?: Function;
-    
+
         /**
          * Only triggered when `msToTrigger` is also specified for this key bind.
          *
@@ -85,7 +85,7 @@ declare global {
              * @type {Function}
              */
             callback: Function;
-    
+
             /**
              * Milliseconds needed to trigger this keybind.
              * Used for triggering if the key is held long enough.
@@ -96,7 +96,7 @@ declare global {
              */
             msToTrigger?: number;
         };
-    
+
         /**
          * Call this function when the key is let go.
          * This function is only called when a key is released.
@@ -105,7 +105,7 @@ declare global {
          *
          */
         keyUp?: Function;
-    
+
         /**
          * Call this function on repeat while this key is held down.
          * Equivalent to an everyTick.
@@ -114,7 +114,7 @@ declare global {
          *
          */
         whilePressed?: Function;
-    
+
         /**
          * Set a key as disabled, preventing all function callbacks.
          *
@@ -123,7 +123,7 @@ declare global {
          */
         disabled?: boolean;
     }
-    
+
     export interface BaseKeyInfo {
         /**
          * The primary key for this keybind.
@@ -132,7 +132,7 @@ declare global {
          *
          */
         key: number;
-    
+
         /**
          * Describe what this keybind is meant to do.
          *
@@ -140,7 +140,7 @@ declare global {
          *
          */
         description: string;
-    
+
         /**
          * Give a keybind an identifier, like a unique id.
          *
@@ -148,7 +148,7 @@ declare global {
          *
          */
         identifier: string;
-    
+
         /**
          * Only triggered when `msToTrigger` is also specified for this key bind.
          *
@@ -166,7 +166,7 @@ declare global {
              */
             msToTrigger?: number;
         };
-    
+
         /**
          * Call this function when the key is let go.
          * This function is only called when a key is released.
@@ -175,7 +175,7 @@ declare global {
          *
          */
         keyUp?: Function;
-    
+
         /**
          * Call this function on repeat while this key is held down.
          * Equivalent to an everyTick.
@@ -184,7 +184,7 @@ declare global {
          *
          */
         whilePressed?: Function;
-    
+
         /**
          * Specify a modifier for this key to trigger
          *
@@ -192,23 +192,23 @@ declare global {
          *
          */
         modifier?: 'shift' | 'ctrl' | 'alt';
-    
+
         /**
          * If set to true, any page / menu will allow triggering this keybind.
          *
          * @type {boolean}
          *
          */
-        allowInAnyMenu?: true;
-    
+        allowInAnyMenu?: boolean;
+
         /**
          * Allow using the keybind even if the player is dead.
          *
          * @type {true}
          * @memberof BaseKeyInfo
          */
-        allowIfDead?: true;
-    
+        allowIfDead?: boolean;
+
         /**
          * Allows the keybind to be ignore menu checks if in a specific page.
          *
@@ -216,7 +216,7 @@ declare global {
          *
          */
         allowInSpecificPage?: string;
-    
+
         /**
          * The amount of milliseconds before this hotkey can be pressed again.
          *
@@ -224,13 +224,13 @@ declare global {
          *
          */
         spamPreventionInMs?: number;
-    
+
         /**
          * Restrictions to apply to this key bind.
          * These are all optional. By default key binds work regardless of setting these values.
          */
         restrictions?: KeyBindRestrictions;
-    
+
         /**
          * Prevent his key from being rebound?
          *
@@ -238,5 +238,5 @@ declare global {
          *
          */
         doNotAllowRebind?: boolean;
-    }    
+    }
 }
