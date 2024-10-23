@@ -1,5 +1,10 @@
 export interface IMenuItem {
     name: string;
     icon: string;
-    callback?: any;
+    onClick?: () => void;
+    submenus?: {
+        name: string;
+        icon?: string;
+        onClick?: () => void;
+    }[];
 }

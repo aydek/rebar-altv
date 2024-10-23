@@ -1,6 +1,6 @@
 import * as alt from 'alt-client';
 import { useRebarClient } from '@Client/index.js';
-import { handleClick, handleClose, handleOpen, parseItemsToWebview } from './functions.js';
+import { handleClick, handleClose, handleOpen, handleSubClick, parseItemsToWebview } from './functions.js';
 import { controlMenuEvents } from '../shared/events.js';
 
 const Rebar = useRebarClient();
@@ -21,6 +21,7 @@ async function init() {
 
     webview.on(controlMenuEvents.toClient.getItems, parseItemsToWebview);
     webview.on(controlMenuEvents.toClient.onClick, handleClick);
+    webview.on(controlMenuEvents.toClient.onSubClick, handleSubClick);
 }
 
 alt.on('keyup', (key: alt.KeyCode) => {
