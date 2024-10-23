@@ -35,7 +35,7 @@ class Keybinds {
 
     /**
      * Checks provided restrictions against player state.
-     * 
+     *
      * @param {KeyBindRestrictions} data Restrictions to check
      * @returns {boolean}
      */
@@ -47,8 +47,7 @@ class Keybinds {
             if (!alt.Player.local.vehicle) return false;
             if (data.isVehicleDriver && alt.Player.local.seat !== 1) return false;
             if (data.isVehiclePassenger && alt.Player.local.seat === 1) return false;
-            if (data.vehicleModels && !data.vehicleModels.find((veh) => veh === alt.Player.local.vehicle.model))
-                return false;
+            if (data.vehicleModels && !data.vehicleModels.find((veh) => veh === alt.Player.local.vehicle.model)) return false;
         }
         if (data.isSwimming && !native.isPedSwimming(alt.Player.local.scriptID)) return false;
         if (data.weaponModels && !data.weaponModels.find((x) => alt.Player.local.currentWeapon)) return false;
@@ -57,32 +56,32 @@ class Keybinds {
 
     /**
      * Get an index of keybind.
-     * 
+     *
      * @param {number | string} keyOrIdentifier Key or keybind identifier.
      * @returns {number}
      */
     static getIndexByKeyOrIdentifier(keyOrIdentifier: number | string): number {
         const accessor: 'key' | 'identifier' = typeof keyOrIdentifier === 'string' ? 'identifier' : 'key';
         const index = keyMappings.findIndex((keyMapping) => keyMapping[accessor] === keyOrIdentifier);
-        return index
+        return index;
     }
 
     /**
      * Disable/enable a keybind.
-     * 
+     *
      * @param {number | string} keyOrIdentifier Key or keybind identifier.
      * @param {boolean} value Keybind disabled state.
      * @returns {void}
      */
     static setDisabled(keyOrIdentifier: number | string, value: boolean): void {
-        const index = Keybinds.getIndexByKeyOrIdentifier(keyOrIdentifier)
+        const index = Keybinds.getIndexByKeyOrIdentifier(keyOrIdentifier);
         if (index <= -1) return;
         keyMappings[index].disabled = value;
     }
 
     /**
      * Get key info.
-     * 
+     *
      * @param {number | string} keyOrIdentifier Key or keybind identifier.
      * @returns {KeyInfo | undefined} Returns undefined if no keybind found.
      */
@@ -93,7 +92,7 @@ class Keybinds {
 
     /**
      * Get list of key info.
-     * 
+     *
      * @param {number | string} keyOrIdentifier Key or keybind identifier.
      * @returns {KeyInfo | undefined} Returns empty list if no keybinds found.
      */
@@ -104,7 +103,7 @@ class Keybinds {
 
     /**
      * 'keydown' event handler.
-     * 
+     *
      * @param {number} key Key number obtained from an alt event.
      * @returns {void}
      */
@@ -134,14 +133,14 @@ class Keybinds {
                 keyDownTime[keyInfo.identifier] = Date.now() + keyInfo.delayedKeyDown.msToTrigger;
             }
             if (!keyInfo.keyDown) continue;
-            if(typeof keyInfo.restrictions !== "undefined" && !Keybinds.isValidRestrictions(keyInfo.restrictions)) continue;
+            if (typeof keyInfo.restrictions !== 'undefined' && !Keybinds.isValidRestrictions(keyInfo.restrictions)) continue;
             keyInfo.keyDown();
         }
     }
 
     /**
      * 'keyup' event handler.
-     * 
+     *
      * @param {number} key Key number obtained from an alt event.
      * @returns {void}
      */
@@ -201,11 +200,11 @@ export function useKeybinds() {
     /**
      * Add a key bind to the start listening for key presses.
      * https://www.toptal.com/developers/keycode
-     * 
+     *
      * @param {KeyInfo} keyBind Key details object.
      */
     function add(keyBind: KeyInfo) {
-        alt.logDebug(`:::: Registered key=${keyBind.key} for action=${keyBind.identifier}`)
+        alt.logDebug(`:::: Registered key=${keyBind.key} for action=${keyBind.identifier}`);
         const storageKey = `keybind-${keyBind.identifier}`;
 
         if (alt.LocalStorage.has(storageKey)) {
@@ -220,12 +219,12 @@ export function useKeybinds() {
      * Used to check if a keybind passes certain validation metrics.
      * Useful for show on-screen data related to a key bind.
      * Do not call this function constantly, use a delay. At least ~500 - 1000ms.
-     * 
+     *
      * @param {number | string} keyOrIdentifier Key or keybind identifier.
      * @returns {boolean}
      */
-    function checkValidation(key: number): boolean
-    function checkValidation(identifier: string): boolean
+    function checkValidation(key: number): boolean;
+    function checkValidation(identifier: string): boolean;
     function checkValidation(keyOrIdentifier: number | string): boolean {
         const keyInfo = Keybinds.getKeyInfo(keyOrIdentifier);
         if (typeof keyInfo === 'undefined') return false;
@@ -234,22 +233,22 @@ export function useKeybinds() {
 
     /**
      * Disable a keybind.
-     * 
+     *
      * @param {number | string} keyOrIdentifier Key or keybind identifier.
      */
-    function disable(key: number): void
-    function disable(identifier: string): void
+    function disable(key: number): void;
+    function disable(identifier: string): void;
     function disable(keyOrIdentifier: number | string): void {
         Keybinds.setDisabled(keyOrIdentifier, true);
     }
 
     /**
      * Enable a keybind.
-     * 
+     *
      * @param {number | string} keyOrIdentifier Key or keybind identifier.
      */
-    function enable(key: number): void
-    function enable(identifier: string): void
+    function enable(key: number): void;
+    function enable(identifier: string): void;
     function enable(keyOrIdentifier: number | string): void {
         Keybinds.setDisabled(keyOrIdentifier, false);
     }
@@ -257,11 +256,11 @@ export function useKeybinds() {
     /**
      * Rebind a keybind with a new key at runtime.
      * It will save a replacement to LocalStorage, so it will automatically be loaded on next server join.
-     * 
+     *
      * @param {number | string} keyOrIdentifier Key or keybind identifier.
      */
-    function rebind(key: number, keyCode: number): void
-    function rebind(identifier: string, keyCode: number): void
+    function rebind(key: number, keyCode: number): void;
+    function rebind(identifier: string, keyCode: number): void;
     function rebind(keyOrIdentifier: number | string, keyCode: number): void {
         const index = Keybinds.getIndexByKeyOrIdentifier(keyOrIdentifier);
         if (index <= -1) return;
@@ -274,7 +273,7 @@ export function useKeybinds() {
 
     /**
      * Returns all hotkeys and their relevant information.
-     * 
+     *
      * @returns {KeyInfoDefault[]}
      */
     function hotkeys(): KeyInfoDefault[] {
@@ -283,26 +282,32 @@ export function useKeybinds() {
 
     /**
      * Returns a keybind information for the key.
-     * 
+     *
      * @param {number | string} keyOrIdentifier Key or keybind identifier.
      * @returns {KeyInfo | undefined} Returns undefined when key is not found or bound.
      */
-    function hotkey(key: number): KeyInfo | undefined
-    function hotkey(identifier: string): KeyInfo | undefined
+    function hotkey(key: number): KeyInfo | undefined;
+    function hotkey(identifier: string): KeyInfo | undefined;
     function hotkey(keyOrIdentifier: string | number): KeyInfo | undefined {
         return Keybinds.getKeyInfo(keyOrIdentifier);
     }
 
     return {
-        add, checkValidation, disable, enable, rebind, hotkeys, hotkey,
-    }
+        add,
+        checkValidation,
+        disable,
+        enable,
+        rebind,
+        hotkeys,
+        hotkey,
+    };
 }
 
 declare global {
     export interface ClientPlugin {
-        ['keybinds-api']: ReturnType<typeof useKeybinds>;
+        ['keybind-controller']: ReturnType<typeof useKeybinds>;
     }
 }
 
-useClientApi().register('keybinds-api', useKeybinds());
+useClientApi().register('keybind-controller', useKeybinds());
 Keybinds.init();
