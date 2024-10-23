@@ -15,6 +15,7 @@ async function init() {
         identifier: 'control-menu-key',
         description: 'Open control menu',
         keyDown: handleOpen,
+        keyUp: handleClose,
         allowInAnyMenu: false,
         allowIfDead: false,
     });
@@ -24,11 +25,11 @@ async function init() {
     webview.on(controlMenuEvents.toClient.onSubClick, handleSubClick);
 }
 
-alt.on('keyup', (key: alt.KeyCode) => {
-    if (key === 18 && alt.getMeta('control-menu-open')) {
-        handleClose();
-    }
-});
+// alt.on('keyup', (key: alt.KeyCode) => {
+//     if (key === 18 && alt.getMeta('control-menu-open')) {
+//         handleClose();
+//     }
+// });
 
 alt.on('windowFocusChange', (isFocused: boolean) => {
     handleClose();
