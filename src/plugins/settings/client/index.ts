@@ -1,11 +1,7 @@
 import * as alt from 'alt-client';
 import { useRebarClient } from '@Client/index.js';
 import { SettingsEvents } from '../shared/events.js';
-import { clone } from '@Shared/utility/index.js';
-
-import './api.js';
-
-import { useSettingsAPI } from './api.js';
+import { getSettings } from './settings.js';
 
 const Rebar = useRebarClient();
 const api = Rebar.useClientApi();
@@ -30,7 +26,7 @@ function open() {
         alt.toggleGameControls(false);
         webview.show('Settings', 'page', true);
         alt.setMeta('settings-open', true);
-        webview.emit(SettingsEvents.toWebview.parse, clone.arrayData(useSettingsAPI().get()));
+        getSettings();
     }
 }
 

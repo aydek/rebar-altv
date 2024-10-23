@@ -1,24 +1,30 @@
 import * as alt from 'alt-client';
 import { useRebarClient } from '@Client/index.js';
-import { ISettings } from '../shared/types.js';
+import { getSettings } from './settings.js';
 
 const Rebar = useRebarClient();
 const api = Rebar.useClientApi();
-
-const settings: ISettings[] = [];
+const webview = Rebar.webview.useWebview();
 
 export function useSettingsAPI() {
-    function add(item: ISettings) {
-        settings.push(item);
+    function open() {
+        if (!alt.getMeta('settings-open')) {
+            alt.toggleGameControls(false);
+            webview.show('Settings', 'page', true);
+            alt.setMeta('settings-open', true);
+            getSettings();
+        }
     }
 
-    function get() {
-        return settings;
+    function close() {
+        if (alt.getMeta('settings-open')) {
+            alt.deleteMeta('settings-open');
+            alt.toggleGameControls(true);
+        }
     }
-    
     return {
-        add,
-        get,
+        open,
+        close,
     };
 }
 
@@ -29,3 +35,7 @@ declare global {
 }
 
 api.register('settings-api', useSettingsAPI());
+
+webview.onClose('Settings', () => {
+    useSettingsAPI().close();
+});
