@@ -53,3 +53,4 @@ export function handleClose() {
         alt.deleteMeta('control-menu-open');
     }
 }
+
