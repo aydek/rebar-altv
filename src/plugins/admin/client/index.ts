@@ -6,13 +6,13 @@ const Rebar = useRebarClient();
 const api = Rebar.useClientApi();
 
 async function init() {
-    const menuAPI = await api.getAsync('control-menu-api');
+    const menuAPI = await api.getAsync('diamond-menu-api');
 
     menuAPI.add({
         name: 'Admin',
         icon: 'icon-admin_panel_settings',
         onClick: () => {},
-        submenus: [
+        submenu: [
             {
                 name: 'Noclip',
                 icon: 'icon-flying-fox',

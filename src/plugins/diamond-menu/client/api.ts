@@ -1,19 +1,17 @@
-import * as alt from 'alt-client';
 import { useRebarClient } from '@Client/index.js';
-import { IMenuItem } from '../shared/types.js';
+import { IDiamondMenuItem } from '../shared/types.js';
 
 const Rebar = useRebarClient();
 const api = Rebar.useClientApi();
-const webview = Rebar.webview.useWebview();
 
-let menuItems: IMenuItem[] = [];
+let menuItems: IDiamondMenuItem[] = [];
 
 export function getMenuItems() {
     return menuItems;
 }
 
 export function useControlMenuAPI() {
-    function add(item: IMenuItem) {
+    function add(item: IDiamondMenuItem) {
         menuItems.push(item);
     }
 
@@ -24,8 +22,8 @@ export function useControlMenuAPI() {
 
 declare global {
     export interface ClientPlugin {
-        ['control-menu-api']: ReturnType<typeof useControlMenuAPI>;
+        ['diamond-menu-api']: ReturnType<typeof useControlMenuAPI>;
     }
 }
 
-api.register('control-menu-api', useControlMenuAPI());
+api.register('diamond-menu-api', useControlMenuAPI());

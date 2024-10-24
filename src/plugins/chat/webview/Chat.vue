@@ -94,7 +94,7 @@ function mockMessages() {
         <Button @click="mockMessages()">Add message</Button>
         <Button @click="store.setFocus(!store.focus.value)">Toggle focus</Button>
     </div>
-    <div :class="twMerge('opacity-100 transition-opacity', store.hidden.value.state && 'opacity-0')">
+    <div :class="twMerge('absolute opacity-100 transition-opacity', store.hidden.value.state && 'opacity-0')">
         <Resizable
             :width="store.settings.value.width"
             :height="store.settings.value.height"

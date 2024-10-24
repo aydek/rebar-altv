@@ -38,7 +38,7 @@ function close() {
 }
 
 async function init() {
-    const menuAPI = await api.getAsync('control-menu-api');
+    const menuAPI = await api.getAsync('diamond-menu-api');
     menuAPI.add({
         name: 'Settings',
         icon: 'icon-settings',
