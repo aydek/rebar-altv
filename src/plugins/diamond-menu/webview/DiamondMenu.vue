@@ -67,7 +67,11 @@ onMounted(() => {
 
 <template>
     <div class="absolute grid h-screen w-screen place-items-center">
-        <div :class="twMerge('grid aspect-square w-20 grid-cols-5 place-items-center  transition-all', items.length === 0 && 'translate-y-10 opacity-0')">
+        <div
+            :class="
+                twMerge('grid aspect-square w-20 grid-cols-5 place-items-center transition-all duration-500', items.length === 0 && 'translate-y-10 opacity-0')
+            "
+        >
             <div v-for="(item, index) of getCurrentItems()" class="absolute" :style="getPosition(index)">
                 <RecursiveItem :icon="item.icon" :size="size" :text="item.name" v-on:on-click="handleClick(index, item)" />
             </div>
