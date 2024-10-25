@@ -4,4 +4,7 @@ export const AdminEvents = {
         enable: 'adminevents:noclip:enable',
         disable: 'adminevents:noclip:disable',
     },
+    rpctoServer: {
+        isAdmin: 'adminevents:rpctoserver:isadmin'
+    }
 };
