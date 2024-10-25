@@ -1,1 +1,2 @@
-import './nolcip.js'
+import './events.js';
+import './nolcip.js';
