@@ -1,27 +1,20 @@
 <script setup lang="ts">
-import { onMounted, ref, StyleValue } from 'vue';
-import Item from './components/Item.vue';
+import { onMounted, ref, StyleValue, toRaw } from 'vue';
+import RecursiveItem from './components/RecursiveItem.vue';
 import { getCordinates } from './functions';
 import { IDiamondMenuItem } from '../shared/types';
 import { altInWindow } from '@Composables/altInWindow';
 import { useEvents } from '@Composables/useEvents';
 import { DiamondMenuEvents } from '../shared/events';
 import { twMerge } from 'tailwind-merge';
+import { dummyItems } from './data';
 
 const events = useEvents();
 
-const items = ref<IDiamondMenuItem[]>(
-    altInWindow()
-        ? []
-        : [
-              { name: 'Settings', icon: 'icon-settings' },
-              { name: 'Admin', icon: 'icon-admin_panel_settings' },
-              { name: 'Chat', icon: 'icon-chat' },
-          ],
-);
+const items = ref<IDiamondMenuItem[]>(altInWindow() ? [] : dummyItems);
 
 const size = ref(6);
-const submenu = ref(-1);
+const layers = ref([]);
 
 function getPosition(index: number): StyleValue {
     const { x, y } = getCordinates(index, size.value / 1.4 + 0.2);
@@ -30,18 +23,40 @@ function getPosition(index: number): StyleValue {
     };
 }
 
-function handleClick(sub: number, index: number) {
-    if (submenu.value < 0) {
-        if (!items.value[index].submenu) {
-            events.emitClient(DiamondMenuEvents.toClient.onClick, sub, index);
-            return;
-        }
-        submenu.value = index;
+function handleClick(index: number, item: IDiamondMenuItem) {
+    if (layers.value.length > 0 && index === 0) {
+        layers.value.pop();
+
         return;
     }
+    //Subtract 1 if theres a back button
+    let subtractIndex = layers.value.length > 0 ? 1 : 0;
 
-    submenu.value = -1;
-    events.emitClient(DiamondMenuEvents.toClient.onClick, sub, index);
+    if (item.submenu) {
+        layers.value.push(index - subtractIndex);
+        // events.emitClient(DiamondMenuEvents.toClient.onClick, sub, index);
+        return;
+    }
+    events.emitClient(DiamondMenuEvents.toClient.onClick, toRaw(layers.value), index - subtractIndex);
+}
+
+function getCurrentItems() {
+    let currentItem = items.value;
+
+    if (layers.value.length < 1) return currentItem;
+
+    for (const layer of layers.value) {
+        currentItem = currentItem[layer].submenu;
+    }
+
+    const currentItemWithBack = [...currentItem];
+
+    // Only add the "Back" item if there are layers to go back
+    if (layers.value.length > 0) {
+        currentItemWithBack.unshift({ name: 'Back', icon: 'icon-back' });
+    }
+
+    return currentItemWithBack;
 }
 
 onMounted(() => {
@@ -53,11 +68,8 @@ onMounted(() => {
 <template>
     <div class="absolute grid h-screen w-screen place-items-center">
         <div :class="twMerge('grid aspect-square w-20 grid-cols-5 place-items-center  transition-all', items.length === 0 && 'translate-y-10 opacity-0')">
-            <div v-if="submenu < 0" v-for="(item, index) of items" class="absolute" :style="getPosition(index)">
-                <Item :icon="item.icon" :size="size" :text="item.name" v-on:on-click="handleClick(-1, index)" />
-            </div>
-            <div v-if="submenu > -1" v-for="(item, index) of items[submenu].submenu" class="absolute" :style="getPosition(index)">
-                <Item :icon="item.icon" :size="size" :text="item.name" v-on:on-click="handleClick(submenu, index)" />
+            <div v-for="(item, index) of getCurrentItems()" class="absolute" :style="getPosition(index)">
+                <RecursiveItem :icon="item.icon" :size="size" :text="item.name" v-on:on-click="handleClick(index, item)" />
             </div>
         </div>
     </div>

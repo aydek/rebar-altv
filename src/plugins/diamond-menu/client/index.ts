@@ -24,12 +24,6 @@ async function init() {
     webview.on(DiamondMenuEvents.toClient.onClick, handleClick);
 }
 
-// alt.on('keyup', (key: alt.KeyCode) => {
-//     if (key === 18 && alt.getMeta('control-menu-open')) {
-//         handleClose();
-//     }
-// });
-
 alt.on('windowFocusChange', (isFocused: boolean) => {
     handleClose();
 });
