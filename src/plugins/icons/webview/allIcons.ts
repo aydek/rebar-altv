@@ -1,4 +1,10 @@
 export const allIcons = [
+    'icon-hood-open',
+    'icon-trunk-open',
+    'icon-door-back-left',
+    'icon-door-back-right',
+    'icon-door-front-left',
+    'icon-door-front-right',
     'icon-d-meeple',
     'icon-abbot-meeple',
     'icon-abstract-001',
