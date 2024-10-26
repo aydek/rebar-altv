@@ -44,7 +44,7 @@ function mouseLeave() {
                 height="96"
                 rx="5"
                 stroke-width="1"
-                class="stroke-accent-600 fill-accent-700/50 hover:fill-accent-500/50 cursor-pointer"
+                class="hover:fill-accent-800/50 stroke-accent-900 cursor-pointer fill-neutral-900/50"
                 @mouseenter="mouseEnter"
                 @mouseleave="mouseLeave"
                 @click="handleClick"
@@ -56,4 +56,3 @@ function mouseLeave() {
         </div>
     </div>
 </template>
-
