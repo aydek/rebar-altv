@@ -1,14 +1,13 @@
 import { altInWindow } from '@Composables/altInWindow.js';
 import { ref } from 'vue';
 import { dummySuggestions } from './webview/utils/dummy.js';
-import { chatConfig } from './shared/config.js';
+import { chatConfig, chatSettingsKeys } from './shared/config.js';
 import { ChatSettings } from './shared/types.js';
-import { useEvents } from '@Composables/useEvents.js';
-import { ChatEvents } from './shared/events.js';
+import { useLocalStorage } from '@Composables/useLocalStorage.js';
 
 export type CommandInfo = { name: string; desc: string };
 
-const events = useEvents();
+const altStorage = useLocalStorage();
 
 const suggestions = ref<CommandInfo[]>(altInWindow() ? [] : dummySuggestions);
 const inputHistory = ref<string[]>([]);
@@ -36,6 +35,16 @@ export function useStore() {
             time: Date.now() + 7000,
         };
     }
+
+    function getSettings() {
+        Object.entries(chatSettingsKeys).forEach(async ([key, value]) => {
+            const storage = await altStorage.get(value);
+            if (value) {
+                settings.value[key] = storage;
+            }
+        });
+    }
+
     return {
         suggestions,
         setSuggestions: (data: CommandInfo[]) => {
@@ -48,13 +57,12 @@ export function useStore() {
             focus.value = value;
         },
         settings,
-        setSettings: (val: ChatSettings) => {
-            settings.value = val;
-            events.emitClient(ChatEvents.toClient.setSettings, settings.value);
+        setSetting: <K extends keyof ChatSettings>(key: K, value: ChatSettings[K]) => {
+            settings.value[key] = value;
+            altStorage.set(chatSettingsKeys[key], value);
         },
         resetHide,
         hidden,
+        getSettings,
     };
 }
-
-events.on(ChatEvents.toWebview.setSettings, (data: ChatSettings) => useStore().setSettings(data));

@@ -1,14 +1,16 @@
-type OptionTypes = 'boolean' | 'slider';
+type OptionTypes = 'checkbox' | 'slider' | 'number';
+type ValueTypes = boolean | number;
 
-export interface ISettings {
+export type ISettingsItem = {
     title: string;
     icon: string;
-    options: {
+    options: Array<{
         title: string;
         type: OptionTypes;
         key: string;
-        value: any;
+        value?: ValueTypes;
+        step?: number;
         min?: number;
         max?: number;
-    }[];
-}
+    }>;
+};

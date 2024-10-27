@@ -10,7 +10,6 @@ import InputBox from './components/InputBox.vue';
 import { CommandInfo, useStore } from '../store';
 import { useEvents } from '@Composables/useEvents';
 import { ChatEvents } from '../shared/events';
-import { ChatSettings } from '../shared/types';
 
 const autoScroll = ref(null);
 
@@ -30,7 +29,8 @@ function getMixMax() {
 
 function handleEnd(props) {
     const { height, width } = props;
-    store.setSettings({ ...store.settings.value, width, height });
+    store.setSetting('width', width);
+    store.setSetting('height', height);
     autoScroll.value?.scrollIntoView({ block: 'end' });
 }
 
@@ -67,11 +67,14 @@ onMounted(() => {
         prefix.value = command;
         store.resetHide();
     });
+
     events.on(ChatEvents.toWebview.unfocus, () => {
         store.resetHide();
         store.setFocus(false);
     });
-    events.emitClient(ChatEvents.toClient.getSettings, store.settings.value);
+
+    store.getSettings();
+
     setTimeout(() => {
         autoScroll.value?.scrollIntoView({ block: 'end' });
     }, 50);
@@ -94,7 +97,7 @@ function mockMessages() {
         <Button @click="mockMessages()">Add message</Button>
         <Button @click="store.setFocus(!store.focus.value)">Toggle focus</Button>
     </div>
-    <div :class="twMerge('absolute opacity-100 transition-opacity', store.hidden.value.state && 'opacity-0')">
+    <div :class="twMerge('absolute opacity-100 transition-opacity', store.hidden.value.state && 'opacity-0', !store.focus.value && 'pointer-events-none')">
         <Resizable
             :width="store.settings.value.width"
             :height="store.settings.value.height"

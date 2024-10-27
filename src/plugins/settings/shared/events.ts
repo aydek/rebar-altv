@@ -1,8 +1,6 @@
 export const SettingsEvents = {
-    toWebview: {
-        parse: 'settingsevents:towebview:parse',
-    },
     toClient: {
-        setSetting: 'settingsevents:toclient:setsetting',
+        fetchItems: 'settingsevents:toclient:fetchItems',
+        close: 'settingevents:toClient:close',
     },
 };

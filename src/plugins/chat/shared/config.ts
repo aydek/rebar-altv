@@ -9,3 +9,11 @@ export const chatConfig = {
         close: 27, // escape
     },
 };
+
+export const chatSettingsKeys = {
+    width: 'chat-width',
+    height: 'chat-height',
+    timestamps: 'chat-timestamps',
+    autohide: 'chat-autohide',
+    fontsize: 'chat-fontsize',
+};

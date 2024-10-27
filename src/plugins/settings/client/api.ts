@@ -1,10 +1,12 @@
 import * as alt from 'alt-client';
 import { useRebarClient } from '@Client/index.js';
-import { getSettings } from './settings.js';
+import { ISettingsItem } from '../shared/types.js';
 
 const Rebar = useRebarClient();
 const api = Rebar.useClientApi();
 const webview = Rebar.webview.useWebview();
+
+const allSettings: ISettingsItem[] = [];
 
 export function useSettingsAPI() {
     function open() {
@@ -12,7 +14,6 @@ export function useSettingsAPI() {
             alt.toggleGameControls(false);
             webview.show('Settings', 'page', true);
             alt.setMeta('settings-open', true);
-            getSettings();
         }
     }
 
@@ -22,10 +23,15 @@ export function useSettingsAPI() {
             alt.toggleGameControls(true);
         }
     }
-    return {
-        open,
-        close,
-    };
+
+    function add(item: ISettingsItem) {
+        allSettings.push(item);
+    }
+
+    function getAll() {
+        return allSettings;
+    }
+    return { add, getAll, open, close };
 }
 
 declare global {
