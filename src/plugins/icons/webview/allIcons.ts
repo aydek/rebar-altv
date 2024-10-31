@@ -1,4 +1,6 @@
 export const allIcons = [
+    'icon-low-beam',
+    'icon-high-beam',
     'icon-hood-open',
     'icon-trunk-open',
     'icon-door-back-left',
