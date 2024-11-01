@@ -26,12 +26,12 @@ body {
 
 .text-shadow {
     text-shadow:
-        1px 1px 1px black,
-        /* Shadow to the right-bottom */ -1px -1px 1px black,
-        /* Shadow to the left-top */ -1px 1px 1px black,
-        /* Shadow to the left-bottom */ 1px -1px 1px black,
-        /* Shadow to the right-top */ 1.2px 1.2px 1.2px rgba(0, 0, 0, 0.5),
-        /* Softer outer shadow for smoothness */ -1.2px -1.2px 1.2px rgba(0, 0, 0, 0.5); /* Softer outer shadow in opposite direction */
+        #000 0px 0px 1px,
+        #000 0px 0px 1px,
+        #000 0px 0px 1px,
+        #000 0px 0px 1px,
+        #000 0px 0px 1px,
+        #000 0px 0px 1px;
 }
 
 ::-webkit-scrollbar-track {
