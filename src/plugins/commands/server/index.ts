@@ -5,7 +5,7 @@ const Rebar = useRebar();
 const messenger = Rebar.messenger.useMessenger();
 
 messenger.commands.register({
-    name: 'vehicle',
+    name: 'veh',
     desc: '[model] - Create vehicle',
     callback: (player: alt.Player, model: string | number) => {
         try {
@@ -26,17 +26,5 @@ messenger.commands.register({
         } catch {
             Rebar.messenger.useMessenger().message.send(player, { content: 'Invalid model', type: 'alert' });
         }
-    },
-});
-
-messenger.commands.register({
-    name: 'engine',
-    desc: 'Toggle engine',
-    callback: (player: alt.Player) => {
-        const vehicle = Rebar.vehicle.useVehicle(player.vehicle);
-        if (vehicle) {
-            vehicle.toggleEngine();
-        }
-        Rebar.messenger.useMessenger().message.send(player, { content: 'Engine toggled', type: 'info' });
     },
 });
