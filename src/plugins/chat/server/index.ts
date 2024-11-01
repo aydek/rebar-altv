@@ -14,12 +14,15 @@ const messenger = Rebar.messenger.useMessenger();
 async function showChat(player: alt.Player) {
     const webview = Rebar.player.useWebview(player);
     webview.show('Chat', 'overlay');
+    alt.log('show chat');
     await webview.isReady('Chat', 'overlay');
     await alt.Utils.wait(1000);
-
-    const commands = await messenger.commands.getCommands(player);
-    webview.emit(ChatEvents.toWebview.commands, commands);
 }
+
+alt.onRpc(ChatEvents.toServer.getCommands, async (player: alt.Player) => {
+    const commands = await messenger.commands.getCommands(player);
+    return commands;
+});
 
 function handlePlayerMessage(player: alt.Player, msg: string) {
     for (let target of alt.Player.all) {

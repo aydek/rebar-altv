@@ -39,7 +39,7 @@ export function useStore() {
     function getSettings() {
         Object.entries(chatSettingsKeys).forEach(async ([key, value]) => {
             const storage = await altStorage.get(value);
-            if (value) {
+            if (storage) {
                 settings.value[key] = storage;
             }
         });

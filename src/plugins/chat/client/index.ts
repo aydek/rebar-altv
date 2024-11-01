@@ -38,18 +38,22 @@ function unfocusChat() {
 
 alt.on('keyup', (key: number) => {
     if (!webview.isOverlayOpen('Chat')) {
+        alt.log('chat overlay not open');
         return;
     }
 
     if (webview.isAnyPageOpen()) {
+        alt.log('some page open');
         return;
     }
 
     if (alt.isConsoleOpen()) {
+        alt.log('console open');
         return;
     }
 
     if (key === chatConfig.keybinds.open) {
+        alt.log('focus');
         focusChat();
     }
 

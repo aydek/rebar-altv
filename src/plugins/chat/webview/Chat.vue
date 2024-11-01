@@ -60,8 +60,7 @@ function emitInterval() {
     }
 }
 
-onMounted(() => {
-    events.on(ChatEvents.toWebview.commands, setCommands);
+onMounted(async () => {
     events.on(ChatEvents.toWebview.focus, (command: string) => {
         store.setFocus(true);
         prefix.value = command;
@@ -78,9 +77,14 @@ onMounted(() => {
     setTimeout(() => {
         autoScroll.value?.scrollIntoView({ block: 'end' });
     }, 50);
+
     const interval = setInterval(emitInterval, 1000);
 
     onUnmounted(() => clearInterval(interval));
+    
+    const data = await events.emitServerRpc(ChatEvents.toServer.getCommands);
+
+    setCommands(data);
 });
 
 function mockMessages() {
