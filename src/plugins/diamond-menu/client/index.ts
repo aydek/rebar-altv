@@ -4,28 +4,37 @@ import { handleClick, handleClose, handleOpen, parseItemsToWebview } from './fun
 import { DiamondMenuEvents } from '../shared/events.js';
 
 const Rebar = useRebarClient();
-const api = Rebar.useClientApi();
 const webview = Rebar.webview.useWebview();
 
-async function init() {
-    const keybindApi = await api.getAsync('keybind-controller');
+function runChecks() {
+    if (webview.isAnyPageOpen()) {
+        return false;
+    }
 
-    keybindApi.add({
-        key: 18, // alt
-        identifier: 'control-menu-key',
-        description: 'Open control menu',
-        keyDown: handleOpen,
-        keyUp: handleClose,
-        allowInAnyMenu: false,
-        allowIfDead: false,
-    });
+    if (!alt.gameControlsEnabled()) {
+        return false;
+    }
 
-    webview.on(DiamondMenuEvents.toClient.getItems, parseItemsToWebview);
-    webview.on(DiamondMenuEvents.toClient.onClick, handleClick);
+    return true;
 }
+
+alt.on('keydown', (key: alt.KeyCode) => {
+    if (!runChecks()) return;
+    if (key === alt.KeyCode.Alt) {
+        handleOpen();
+    }
+});
+
+alt.on('keyup', (key: alt.KeyCode) => {
+    if (!runChecks()) return;
+    if (key === alt.KeyCode.Alt) {
+        handleClose();
+    }
+});
 
 alt.on('windowFocusChange', (isFocused: boolean) => {
     handleClose();
 });
 
-init();
+webview.on(DiamondMenuEvents.toClient.getItems, parseItemsToWebview);
+webview.on(DiamondMenuEvents.toClient.onClick, handleClick);
