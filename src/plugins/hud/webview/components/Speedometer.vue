@@ -31,13 +31,13 @@ function formatMileage(number: number) {
                 <div class="text-shadow line text-7xl font-bold">{{ formatNumberWithZeros(store.speedo.speed) }}</div>
                 <div class="text-shadow mb-1 font-bold">{{ store.speedo.units }}</div>
             </div>
-            <div class="mb-2 flex gap-4">
-                <Icon icon="icon-low-beam" :size="1.7" class="text-shadow text-neutral-400" v-if="store.speedo.lights === 0" />
+            <div class="text-shadow mb-2 flex gap-4 text-neutral-300">
+                <Icon icon="icon-low-beam" :size="1.7" v-if="store.speedo.lights === 0" />
                 <Icon icon="icon-low-beam" :size="1.7" class="text-green-800" v-if="store.speedo.lights === 1" />
                 <Icon icon="icon-high-beam" :size="1.7" class="text-blue-800" v-if="store.speedo.lights === 2" />
                 <Icon icon="icon-lock1" :size="1.7" class="text-green-800" v-if="store.speedo.locked" />
-                <Icon icon="icon-unlock-alt" :size="1.7" class="text-shadow text-neutral-400" v-if="!store.speedo.locked" />
-                <Icon icon="icon-seatbelt-fill" :size="1.7" :class="store.speedo.belt ? 'text-green-800' : 'text-shadow text-neutral-400'" />
+                <Icon icon="icon-unlock-alt" :size="1.7" v-if="!store.speedo.locked" />
+                <Icon icon="icon-seatbelt-fill" :size="1.7" :class="store.speedo.belt && 'text-green-800'" />
             </div>
             <div class="flex divide-x rounded-md border border-neutral-300 bg-neutral-900">
                 <div v-if="store.speedo.units !== 'KN'" class="px-0.5 text-center text-base" v-for="item of formatMileage(store.speedo.mileage)">
@@ -49,7 +49,6 @@ function formatMileage(number: number) {
             <path
                 d="M2.56429 84.6693C10.6826 72.5506 15.3331 58.4428 16.0126 43.872C16.6922 29.3011 13.3751 14.8218 6.42001 2"
                 class="stroke-neutral-600"
-                stroke-opacity="0.6"
                 stroke-width="4"
             />
             <path
@@ -67,7 +66,6 @@ function formatMileage(number: number) {
             <path
                 d="M21.5026 120.497C11.7129 110.708 5.04603 98.235 2.34506 84.6563C-0.355904 71.0776 1.03033 57.003 6.32846 44.2122C11.6266 31.4213 20.5987 20.4888 32.1101 12.7971C43.6216 5.10543 57.1553 1 71 1C84.8447 1 98.3785 5.10543 109.89 12.7971C121.401 20.4888 130.373 31.4213 135.672 44.2122C140.97 57.003 142.356 71.0777 139.655 84.6563C136.954 98.235 130.287 110.708 120.498 120.497"
                 class="stroke-neutral-600"
-                stroke-opacity="0.6"
                 stroke-width="6"
             />
             <path
