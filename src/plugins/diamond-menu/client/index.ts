@@ -26,7 +26,6 @@ alt.on('keydown', (key: alt.KeyCode) => {
 });
 
 alt.on('keyup', (key: alt.KeyCode) => {
-    if (!runChecks()) return;
     if (key === alt.KeyCode.Alt) {
         handleClose();
     }
