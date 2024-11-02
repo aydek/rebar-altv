@@ -18,13 +18,58 @@ messenger.commands.register({
                 return undefined;
             }
 
-            alt.nextTick(async () => {
+            alt.setTimeout(() => {
                 player.setIntoVehicle(vehicle, 1);
-                return true;
-            });
-            Rebar.messenger.useMessenger().message.send(player, { content: 'Enjoy your vehicle', type: 'info' });
+            }, 500);
+            messenger.message.send(player, { content: 'Enjoy your vehicle', type: 'info' });
         } catch {
-            Rebar.messenger.useMessenger().message.send(player, { content: 'Invalid model', type: 'alert' });
+            messenger.message.send(player, { content: 'Invalid model', type: 'alert' });
         }
+    },
+});
+
+messenger.commands.register({
+    name: 'health',
+    desc: '[number] - Set your health',
+    callback: (player: alt.Player, val: string) => {
+        if (!player.valid) return;
+        const value = Number(val);
+
+        if (isNaN(value)) {
+            messenger.message.send(player, { content: '{cc0000} Invalid value', type: 'alert' });
+            return;
+        }
+
+        if (value > 200 || value < 100) {
+            messenger.message.send(player, { content: '{cc0000} Value has to be between 100 and 200', type: 'alert' });
+            return;
+        }
+
+        player.health = value;
+
+        messenger.message.send(player, { content: `Your health set to: {00cc00}${value}`, type: 'info' });
+    },
+});
+
+messenger.commands.register({
+    name: 'armour',
+    desc: '[number] - Set your armour',
+    callback: (player: alt.Player, val: string) => {
+        if (!player.valid) return;
+        const value = Number(val);
+
+        if (isNaN(value)) {
+            messenger.message.send(player, { content: '{cc0000} Invalid value', type: 'alert' });
+            return;
+        }
+
+        if (value > 100 || value < 0) {
+            messenger.message.send(player, { content: '{cc0000} Value has to be between 0 and 100', type: 'alert' });
+            return;
+        }
+
+        player.armour = value;
+
+        messenger.message.send(player, { content: `Your armour set to: {00cc00}${value}`, type: 'info' });
     },
 });
