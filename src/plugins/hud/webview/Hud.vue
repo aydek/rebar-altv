@@ -6,6 +6,7 @@ import Speedometer from './components/Speedometer.vue';
 import { useStore } from './store';
 import { useEvents } from '@Composables/useEvents';
 import { HudEvents } from '../shared/events';
+import Stats from './components/Stats.vue';
 
 const store = useStore();
 const events = useEvents();
@@ -28,4 +29,5 @@ onMounted(() => {
 <template>
     <Compass />
     <Speedometer />
+    <Stats />
 </template>
