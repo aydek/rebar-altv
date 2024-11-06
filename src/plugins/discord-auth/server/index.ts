@@ -16,6 +16,7 @@ declare module '@Shared/types/account.js' {
 import '../translate/index.js';
 
 import * as Plugin from './api.js';
+import { useBanHandlerAPI } from '@Plugins/ban-handler/server/api.js';
 
 const Rebar = useRebar();
 const api = Rebar.useApi();
@@ -158,7 +159,7 @@ async function setAccount(player: alt.Player, account: Account) {
     Rebar.document.account.useAccountBinder(player).bind(account);
     const view = Rebar.player.useWebview(player);
 
-    const banAPI = await api.getAsync('ban-handler-api');
+    const banAPI = useBanHandlerAPI();
 
     view.hide('DiscordAuth');
 

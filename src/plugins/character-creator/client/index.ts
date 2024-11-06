@@ -12,6 +12,7 @@ import { useClientApi } from '@Client/api/index.js';
 
 import '../translate/index.js';
 import { useTranslate } from '@Shared/translate.js';
+import { useInstructionKeysAPI } from '@Plugins/instruction-keys/client/api.js';
 
 const pedClone = useClonedPed();
 const webview = useWebview();
@@ -59,7 +60,7 @@ async function handleTogglePedEdit() {
         heading: 160,
     });
     await pedClone.camera.create({ distance: 2, zOffset: 0.3 });
-    const keys = await api.getAsync('instruction-keys-api');
+    const keys = useInstructionKeysAPI();
     keys.showInstructionKeys([
         { key: 'A', text: '' },
         { key: 'D', text: t('character.creator.rotate') },
@@ -68,8 +69,7 @@ async function handleTogglePedEdit() {
         { key: 'icon-cartwheel', text: t('character.creator.zoom') },
     ]);
 }
-
-async function handleBack() {
+ function handleBack() {
     alt.setConfigFlag('DISABLE_IDLE_CAMERA', false);
     native.doScreenFadeOut(0);
     alt.off('disconnect', pedClone.ped.destroy);
@@ -80,7 +80,7 @@ async function handleBack() {
     appearance = clone.objectData(DefaultAppearance);
     clothes = clone.objectData(DefaultClothes);
 
-    const keys = await api.getAsync('instruction-keys-api');
+    const keys = useInstructionKeysAPI();
     keys.hideInstructionKeys();
     alt.emitServer(CharacterCreatorEvents.toServer.exit);
 }

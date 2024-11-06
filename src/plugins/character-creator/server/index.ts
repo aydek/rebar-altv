@@ -6,6 +6,7 @@ import { CollectionNames } from '@Server/document/shared.js';
 import { Character } from '@Shared/types/character.js';
 import { Appearance } from '@Shared/types/appearance.js';
 import { ClothingComponent } from '@Shared/types/clothingComponent.js';
+import { useCharacterSelectAPI } from '@Plugins/character-select/server/api.js';
 
 const Rebar = useRebar();
 const api = Rebar.useApi();
@@ -50,14 +51,7 @@ async function handleNameCheck(player: alt.Player, firstName: string, lastName: 
     webview.emit(CharacterCreatorEvents.toServer.nameCheck, document ? true : false);
 }
 
-async function handleSave(
-    player: alt.Player,
-    firstName: string,
-    lastName: string,
-    age: number,
-    appearance: Appearance,
-    clothes: ClothingComponent[],
-) {
+async function handleSave(player: alt.Player, firstName: string, lastName: string, age: number, appearance: Appearance, clothes: ClothingComponent[]) {
     if (!player.getMeta(sessionKey)) {
         player.kick('');
         return;
@@ -94,7 +88,7 @@ async function handleSave(
 }
 
 async function init() {
-    const select = await api.getAsync('character-select-api');
+    const select = useCharacterSelectAPI();
     select.onOpenCreator(showCreator);
     alt.onClient(CharacterCreatorEvents.toServer.exit, handdleExit);
     alt.onClient(CharacterCreatorEvents.toServer.nameCheck, handleNameCheck);

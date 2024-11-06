@@ -1,6 +1,7 @@
 import * as alt from 'alt-server';
 import { useRebar } from '@Server/index.js';
 import './api.js';
+import { useDiscordAuthAPI } from '@Plugins/discord-auth/server/api.js';
 
 const Rebar = useRebar();
 
@@ -22,8 +23,7 @@ async function handleLogin(player: alt.Player) {
 }
 
 async function init() {
-    await alt.Utils.waitFor(() => Rebar.useApi().isReady('discord-auth-api'), 30000);
-    const auth = Rebar.useApi().get('discord-auth-api');
+    const auth = useDiscordAuthAPI();
     auth.onLogin(handleLogin);
 }
 

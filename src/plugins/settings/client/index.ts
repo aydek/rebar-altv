@@ -1,13 +1,10 @@
-import { useRebarClient } from '@Client/index.js';
 import './api.js';
 import './events.js';
 import { useSettingsAPI } from './api.js';
-
-const Rebar = useRebarClient();
-const api = Rebar.useClientApi();
+import { useControlMenuAPI } from '@Plugins/diamond-menu/client/api.js';
 
 async function init() {
-    const menuAPI = await api.getAsync('diamond-menu-api');
+    const menuAPI = useControlMenuAPI();
     menuAPI.add({
         name: 'Settings',
         icon: 'icon-settings',

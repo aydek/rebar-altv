@@ -1,12 +1,9 @@
 import * as alt from 'alt-client';
 import * as native from 'natives';
-import { useRebarClient } from '@Client/index.js';
-
-const Rebar = useRebarClient();
-const api = Rebar.useClientApi();
+import { useControlMenuAPI } from '@Plugins/diamond-menu/client/api.js';
 
 async function init() {
-    const menuApi = await api.getAsync('diamond-menu-api');
+    const menuApi = useControlMenuAPI();
 
     menuApi.add({
         name: 'Vehicle',

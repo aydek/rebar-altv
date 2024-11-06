@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, onUpdated, ref } from 'vue';
 import Resizable from './components/Resizable.vue';
 import { altInWindow } from '@Composables/altInWindow';
 import { useMessenger } from '@Composables/useMessenger';
@@ -59,6 +59,7 @@ function emitInterval() {
         store.hidden.value.state = true;
     }
 }
+
 
 onMounted(async () => {
     events.on(ChatEvents.toWebview.focus, (command: string) => {

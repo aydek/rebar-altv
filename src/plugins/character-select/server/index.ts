@@ -4,9 +4,10 @@ import { useRebar } from '@Server/index.js';
 import { CharacterSelectEvents } from '../shared/events.js';
 import { Character } from '@Shared/types/character.js';
 import { CollectionNames } from '@Server/document/shared.js';
+import { useCreatorAPI } from '@Plugins/character-creator/server/api.js';
+import { useDiscordAuthAPI } from '@Plugins/discord-auth/server/api.js';
 
 const Rebar = useRebar();
-const api = Rebar.useApi();
 const db = Rebar.database.useDatabase();
 const sessionKey = 'can-select-character';
 
@@ -150,9 +151,9 @@ async function handleSpawnCharacter(player: alt.Player, id: string) {
     PluginAPI.invokeSelect(player, character);
 }
 
-async function init() {
-    const auth = await api.getAsync('discord-auth-api');
-    const creator = await api.getAsync('character-creator-api');
+function init() {
+    const auth = useDiscordAuthAPI();
+    const creator = useCreatorAPI();
     creator.onExit(showSelection);
     auth.onLogin(handleLogin);
     alt.onClient(CharacterSelectEvents.toServer.openCreator, openCreator);

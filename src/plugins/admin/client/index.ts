@@ -1,14 +1,11 @@
 import * as alt from 'alt-client';
 import './noclip.js';
-import { useRebarClient } from '@Client/index.js';
 import { NoClip } from './noclip.js';
 import { AdminEvents } from '../shared/events.js';
+import { useControlMenuAPI } from '@Plugins/diamond-menu/client/api.js';
 
-const Rebar = useRebarClient();
-const api = Rebar.useClientApi();
-
-async function init() {
-    const menuAPI = await api.getAsync('diamond-menu-api');
+function init() {
+    const menuAPI = useControlMenuAPI();
 
     menuAPI.add({
         name: 'Admin',
