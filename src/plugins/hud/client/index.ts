@@ -1,11 +1,11 @@
 import { useRebarClient } from '@Client/index.js';
 import * as alt from 'alt-client';
-import * as native from 'natives';
 import { HudEvents } from '../shared/events.js';
 import { HudSettingsKeys } from '../shared/settings.js';
 
 import { updateCompass } from './compass.js';
 import { updateSpeedometer } from './speedometer.js';
+import { updateStats } from './stats.js';
 
 const Rebar = useRebarClient();
 const webview = Rebar.webview.useWebview();
@@ -27,4 +27,5 @@ function render() {
 
     updateCompass();
     updateSpeedometer();
+    updateStats();
 }

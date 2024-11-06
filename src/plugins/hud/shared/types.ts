@@ -21,6 +21,30 @@ export type ISpeedoData = {
     rpm: number;
 };
 
+export type IStatsItem = {
+    id: string;
+    icon: string;
+    color: string;
+    value: () => number;
+    min: number;
+    max: number;
+    hidden: () => boolean;
+    active: () => boolean;
+    activeColor: string;
+};
+
+export type ISanitizedStatsItem = {
+    id: string;
+    icon: string;
+    color: string;
+    value: number;
+    min: number;
+    max: number;
+    hidden: boolean;
+    active: boolean;
+    activeColor: string;
+};
+
 // export type IHudData = {
 //     showSpeedometer: boolean;
 //     vehicleType: string;

@@ -1,72 +1,88 @@
 <script setup lang="ts">
 import Icon from '@Components/Icon.vue';
-import { usePlayerStats } from '@Composables/usePlayerStats';
+import { altInWindow } from '@Composables/altInWindow';
+import { useEvents } from '@Composables/useEvents';
+import { HudEvents } from '@Plugins/hud/shared/events';
+import { ISanitizedStatsItem } from '@Plugins/hud/shared/types';
 import { twMerge } from 'tailwind-merge';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { dummyStats } from '../dunnyStats';
+import Button from '@Components/Button.vue';
 
-const stats = usePlayerStats();
+const events = useEvents();
 
-type IStatItem = {
-    id: string;
-    icon: string;
-    color: string;
-    value: any;
-    min: number;
-    max: number;
-    active?: any;
-    activeColor?: string;
-};
+const stats = ref<ISanitizedStatsItem[]>(altInWindow() ? [] : dummyStats);
 
-const defaultStats = ref<IStatItem[]>([
-    {
-        id: 'stat-mic',
-        icon: 'icon-microphone',
-        color: '#ede100',
-        value: 33,
-        min: 0,
-        max: 100,
-        active: stats.isTalking,
-        activeColor: '#ede100',
-    },
-    {
-        id: 'stat-health',
-        icon: 'icon-heart',
-        color: '#cc0000',
-        value: stats.health,
-        min: 100,
-        max: 200,
-    },
-    {
-        id: 'stat-armour',
-        icon: 'icon-shield2',
-        color: '#0055ff',
-        value: stats.armour,
-        min: 0,
-        max: 100,
-    },
-]);
-
-function combined() {
-    return [...defaultStats.value];
+function handleUpdate(data: Array<{ id: string; value: number; hidden: boolean; active: boolean }>) {
+    stats.value.forEach((item) => {
+        const dataItem = data.find((i) => i.id === item.id);
+        if (!dataItem) return;
+        item.value = dataItem.value;
+        item.hidden = dataItem.hidden;
+        item.active = dataItem.active;
+    });
 }
 
-function calculateValue(item: IStatItem) {
+onMounted(async () => {
+    events.on(HudEvents.toWebview.setStats, handleUpdate);
+    const data = await events.emitClientRpc(HudEvents.toClient.getStatsRPC);
+    if (data) stats.value = data;
+});
+
+function calculateValue(item: ISanitizedStatsItem) {
     const range = item.max - item.min;
     const adjustedValue = item.value - item.min;
-    return (adjustedValue / range) * 100;
+    return 384 - (adjustedValue / range) * 384;
+}
+
+function toggleHidden() {
+    stats.value[1].hidden = !stats.value[1].hidden;
+    // stats.value[1].value = stats.value[1].value + 20;
+    // if (stats.value[1].value > 200) {
+    //     stats.value[1].value = 100;
+    // }
 }
 </script>
 
 <template>
-    <div class="fixed bottom-1 left-3 flex w-full justify-start gap-6">
-        <div v-for="item of defaultStats" class="flex flex-col items-center justify-center" :key="item.id" :style="{ color: item.active && item.activeColor }">
-            <Icon :icon="item.icon" class="h-11 w-10 rounded-t-lg bg-black bg-opacity-50 transition-all" />
-            <div class="relative h-2 w-[130%]">
-                <div :style="{ background: item.color, filter: 'brightness(40%)' }" class="absolute left-0 top-0 h-full w-full rounded-lg"></div>
-                <div
-                    class="absolute left-0 top-0 h-full rounded-lg transition-all"
-                    :style="{ background: item.color, width: `${calculateValue(item)}%` }"
-                ></div>
+    <Button class="absolute left-2 top-2" v-if="!altInWindow()" @click="toggleHidden"> Toggle </Button>
+
+    <div class="fixed bottom-3 left-0 flex w-full justify-start">
+        <div
+            v-for="item of stats"
+            :class="twMerge('mx-3 flex flex-col items-center justify-center transition-all duration-500', item.hidden && '-mx-6 translate-y-[200%]')"
+            :key="item.id"
+            :style="{ color: item.active ? item.activeColor : 'white' }"
+        >
+            <Icon :icon="item.icon" class="absolute z-10" :size="1.7" />
+
+            <div class="aspect-square w-12">
+                <svg viewBox="-1 -1 100 100" width="100%" height="100%" class="rotate-45">
+                    <rect
+                        x="1"
+                        y="1"
+                        width="96"
+                        height="96"
+                        rx="20"
+                        :stroke="item.color"
+                        stroke-width="10"
+                        fill="#000000AA"
+                        :style="{ filter: 'brightness(40%)' }"
+                    />
+                    <rect
+                        x="1"
+                        y="1"
+                        width="96"
+                        height="96"
+                        rx="20"
+                        :stroke="item.color"
+                        class="transition-all"
+                        stroke-width="10"
+                        fill="none"
+                        stroke-dasharray="384"
+                        :stroke-dashoffset="calculateValue(item)"
+                    />
+                </svg>
             </div>
         </div>
     </div>
