@@ -25,6 +25,10 @@ function render() {
         return;
     }
 
+    if (webview.isAnyPageOpen()) {
+        return;
+    }
+
     updateCompass();
     updateSpeedometer();
     updateStats();
