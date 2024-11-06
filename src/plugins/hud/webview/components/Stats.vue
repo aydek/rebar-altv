@@ -50,13 +50,13 @@ function toggleHidden() {
     <div class="fixed bottom-3 left-0 flex w-full justify-start">
         <div
             v-for="item of stats"
-            :class="twMerge('mx-3 flex flex-col items-center justify-center transition-all duration-500', item.hidden && '-mx-6 translate-y-[200%]')"
+            :class="twMerge('mx-3 flex flex-col items-center justify-center transition-all duration-500', item.hidden && '-mx-5 translate-y-[200%]')"
             :key="item.id"
             :style="{ color: item.active ? item.activeColor : 'white' }"
         >
-            <Icon :icon="item.icon" class="absolute z-10" :size="1.7" />
+            <Icon :icon="item.icon" class="absolute z-10" :size="1.3" />
 
-            <div class="aspect-square w-12">
+            <div class="aspect-square w-10">
                 <svg viewBox="-1 -1 100 100" width="100%" height="100%" class="rotate-45">
                     <rect
                         x="1"
