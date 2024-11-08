@@ -69,12 +69,7 @@ onUnmounted(() => {
     <div class="fixed right-0 top-0 z-50">
         <div v-if="showToolbar" class="items-center justify-center p-4">
             <div class="flex w-72 flex-col gap-2">
-                <Button
-                    v-for="(pageName, index) in pages"
-                    :key="index"
-                    :type="isVisible(pageName) ? 'primary' : 'secondary'"
-                    @click="togglePage(pageName)"
-                >
+                <Button v-for="(pageName, index) in pages" :key="index" :type="isVisible(pageName) ? 'primary' : 'secondary'" @click="togglePage(pageName)">
                     {{ pageName }}
                 </Button>
             </div>
