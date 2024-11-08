@@ -7,7 +7,7 @@ export const dummyStats = [
         value: 33,
         min: 0,
         max: 100,
-        active: false,
+        active: true,
         activeColor: '#ede100',
     },
     {
@@ -18,8 +18,8 @@ export const dummyStats = [
         value: 200,
         min: 100,
         max: 200,
-        active: false,
-        activeColor: '#ede100',
+        active: true,
+        activeColor: '#cc0000',
     },
     {
         id: 'stat-armour',

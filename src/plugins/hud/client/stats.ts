@@ -37,8 +37,8 @@ const stats: IStatsItem[] = [
         value: () => 0,
         min: 0,
         max: 100,
-        active: () => false,
-        activeColor: '#cc0000',
+        active: () => true,
+        activeColor: '#990000',
     },
     {
         id: 'stat-health',
@@ -48,7 +48,7 @@ const stats: IStatsItem[] = [
         value: () => alt.Player.local.health,
         min: 100,
         max: 200,
-        active: () => false,
+        active: () => alt.Player.local.health < 115,
         activeColor: '#cc0000',
     },
     {
@@ -62,7 +62,7 @@ const stats: IStatsItem[] = [
         value: () => alt.Player.local.armour,
         min: 0,
         max: 100,
-        active: () => false,
+        active: () => alt.Player.local.armour < 15,
         activeColor: '#0055ff',
     },
 ];
@@ -82,6 +82,12 @@ export function updateStats() {
     }
 
     webview.emit(HudEvents.toWebview.setStats, data);
+}
+
+export function addStatsItem(items: IStatsItem[]) {
+    for (const item of items) {
+        stats.push(item);
+    }
 }
 
 webview.onRpc(HudEvents.toClient.getStatsRPC, () => {
