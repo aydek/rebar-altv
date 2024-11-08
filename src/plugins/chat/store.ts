@@ -25,7 +25,7 @@ export function useStore() {
     function addChatHistory(message: string) {
         inputHistory.value.push(message);
         if (inputHistory.value.length > chatConfig.maxHistoryMessages) {
-            inputHistory.value.pop();
+            inputHistory.value.shift();
         }
     }
 
