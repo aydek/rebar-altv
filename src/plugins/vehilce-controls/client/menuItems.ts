@@ -2,6 +2,11 @@ import * as alt from 'alt-client';
 import * as native from 'natives';
 import { useControlMenuAPI } from '@Plugins/diamond-menu/client/api.js';
 
+import '../translate/index.js';
+import { useTranslate } from '@Shared/translate.js';
+
+const { t } = useTranslate();
+
 async function init() {
     const menuApi = useControlMenuAPI();
 
@@ -13,7 +18,7 @@ async function init() {
         },
         submenu: [
             {
-                name: 'Engine',
+                name: t('vehiclecontrols:engine'),
                 icon: 'icon-engine-fill',
                 onClick: () => {
                     const vehicle = alt.Player.local.vehicle;
@@ -22,7 +27,7 @@ async function init() {
                 disableCloseOnClick: true,
             },
             {
-                name: 'Door',
+                name: t('vehiclecontrols:door'),
                 icon: 'icon-door-front-left',
                 condition: async () => {
                     return native.getIsDoorValid(alt.Player.local.vehicle, 0);
@@ -35,7 +40,7 @@ async function init() {
                 disableCloseOnClick: true,
             },
             {
-                name: 'Door',
+                name: t('vehiclecontrols:door'),
                 icon: 'icon-door-front-right',
                 condition: async () => {
                     return native.getIsDoorValid(alt.Player.local.vehicle, 1);
@@ -48,7 +53,7 @@ async function init() {
                 disableCloseOnClick: true,
             },
             {
-                name: 'Door',
+                name: t('vehiclecontrols:door'),
                 icon: 'icon-door-back-left',
                 condition: async () => {
                     return native.getIsDoorValid(alt.Player.local.vehicle, 2);
@@ -61,7 +66,7 @@ async function init() {
                 disableCloseOnClick: true,
             },
             {
-                name: 'Door',
+                name: t('vehiclecontrols:door'),
                 icon: 'icon-door-back-right',
                 condition: async () => {
                     return native.getIsDoorValid(alt.Player.local.vehicle, 3);
@@ -74,7 +79,7 @@ async function init() {
                 disableCloseOnClick: true,
             },
             {
-                name: 'Bonnet',
+                name: t('vehiclecontrols:bonnet'),
                 icon: 'icon-hood-open',
                 condition: async () => {
                     return native.getIsDoorValid(alt.Player.local.vehicle, 4);
@@ -87,7 +92,7 @@ async function init() {
                 disableCloseOnClick: true,
             },
             {
-                name: 'Boot',
+                name: t('vehiclecontrols:boot'),
                 icon: 'icon-trunk-open',
                 condition: async () => {
                     return native.getIsDoorValid(alt.Player.local.vehicle, 5);
