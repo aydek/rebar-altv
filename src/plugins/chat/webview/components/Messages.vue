@@ -48,36 +48,25 @@ function convertTimestampToTime(timestamp: number): string {
     return `${hours}:${minutes}:${seconds}`;
 }
 // type: "info" | "player" | "system" | "alert" | "warning" | "custom"
-function getMessageStyling(message: Message) {
-    let classes = '';
-    let icon = '';
+function getTypeEmoji(message: Message) {
     switch (message.type) {
         case 'info': {
-            classes = 'bg-gradient-to-r from-blue-500/40 to-transperant p-2 bg-opacity-40 rounded-lg';
-            icon = 'icon-info3';
-            break;
+            return '✅';
         }
 
         case 'warning': {
-            classes = 'bg-gradient-to-r from-amber-500/40 to-transperant p-2 bg-opacity-40 rounded-lg';
-            icon = 'icon-warning3';
-            break;
+            return '❓';
         }
 
         case 'system': {
-            classes = 'bg-gradient-to-r from-gray-500/40 to-transperant p-2 bg-opacity-40 rounded-lg';
-            icon = 'icon-bell';
-            break;
+            return '🔔';
         }
 
         case 'alert': {
-            classes = 'bg-gradient-to-r from-red-500/40 to-transperant p-2 bg-opacity-40 rounded-lg';
-            icon = 'icon-error_outline';
-            break;
+            return '❌';
         }
     }
-
-    return { classes, icon };
+    return '';
 }
 </script>
 <template>
@@ -89,10 +78,9 @@ function getMessageStyling(message: Message) {
         <span v-if="store.settings.value.timestamps" :class="twMerge('mr-1 rounded-lg p-1 transition-all', !store.focus.value && 'bg-black bg-opacity-50')">{{
             convertTimestampToTime(message.timestamp)
         }}</span>
-        <div :class="twMerge('flex w-full items-center', getMessageStyling(message).classes)">
-            <Icon :icon="getMessageStyling(message).icon" v-if="getMessageStyling(message).icon.length > 0" :size="2" class="mr-2"></Icon>
-            <span v-if="message.author" class="text-shadow">{{ message.author }}:&nbsp;</span>
-            <span v-html="colorify(useSanitizeInput(replaceEmoji(message.content)))" class="text-shadow"></span>
+        <div :class="twMerge('flex w-full items-center')">
+            <span v-if="message.author" class="text-shadow">🗨 {{ message.author }}:&nbsp;</span>
+            <span v-html="colorify(useSanitizeInput(replaceEmoji(getTypeEmoji(message) + message.content)))" class="text-shadow"></span>
         </div>
     </div>
 </template>
