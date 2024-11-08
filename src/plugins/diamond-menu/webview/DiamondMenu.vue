@@ -9,7 +9,11 @@ import { DiamondMenuEvents } from '../shared/events';
 import { twMerge } from 'tailwind-merge';
 import { dummyItems } from './data';
 
+import '../translate/index';
+import { useTranslate } from '@Shared/translate';
+
 const events = useEvents();
+const { t } = useTranslate();
 
 const items = ref<IDiamondMenuItem[]>(altInWindow() ? [] : dummyItems);
 
@@ -53,7 +57,7 @@ function getCurrentItems() {
 
     // Only add the "Back" item if there are layers to go back
     if (layers.value.length > 0) {
-        currentItemWithBack.unshift({ name: 'Back', icon: 'icon-back' });
+        currentItemWithBack.unshift({ name: t('diamondmenu:back'), icon: 'icon-back' });
     }
 
     return currentItemWithBack;
