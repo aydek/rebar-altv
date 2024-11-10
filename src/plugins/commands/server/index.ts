@@ -1,8 +1,10 @@
 import * as alt from 'alt-server';
 import { useRebar } from '@Server/index.js';
+import { useNotificationAPI } from '@Plugins/notifications/server/api.js';
 
 const Rebar = useRebar();
 const messenger = Rebar.messenger.useMessenger();
+const notifications = useNotificationAPI();
 
 messenger.commands.register({
     name: 'veh',
@@ -21,9 +23,9 @@ messenger.commands.register({
             alt.setTimeout(() => {
                 player.setIntoVehicle(vehicle, 1);
             }, 500);
-            messenger.message.send(player, { content: 'Enjoy your vehicle', type: 'info' });
+            notifications.show(player, 'Enjoy your vehicle', 'success');
         } catch {
-            messenger.message.send(player, { content: 'Invalid model', type: 'alert' });
+            notifications.show(player, 'Invalid model', 'error');
         }
     },
 });
@@ -46,8 +48,7 @@ messenger.commands.register({
         }
 
         player.health = value;
-
-        messenger.message.send(player, { content: `Your health set to: {00cc00}${value}`, type: 'info' });
+        notifications.show(player, `Your health set to: {00cc00}${value}`, 'success');
     },
 });
 
@@ -69,7 +70,6 @@ messenger.commands.register({
         }
 
         player.armour = value;
-
-        messenger.message.send(player, { content: `Your armour set to: {00cc00}${value}`, type: 'info' });
+        notifications.show(player, `Your armour set to: {00cc00}${value}`, 'success');
     },
 });
