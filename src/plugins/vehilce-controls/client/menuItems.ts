@@ -11,7 +11,7 @@ async function init() {
     const menuApi = useControlMenuAPI();
 
     menuApi.add({
-        name: 'Vehicle',
+        name: t('vehiclecontrols:vehicle'),
         icon: 'icon-directions_car',
         condition: async () => {
             return alt.Player.local.vehicle ? true : false;
@@ -22,7 +22,8 @@ async function init() {
                 icon: 'icon-engine-fill',
                 onClick: () => {
                     const vehicle = alt.Player.local.vehicle;
-                    native.setVehicleEngineOn(vehicle.scriptID, !vehicle.engineOn, false, true);
+                    if (!vehicle) return;
+                    native.setVehicleEngineOn(vehicle, !vehicle.engineOn, false, true);
                 },
                 disableCloseOnClick: true,
             },
