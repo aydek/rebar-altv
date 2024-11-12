@@ -1,6 +1,6 @@
 import * as alt from 'alt-server';
 import { useRebar } from '@Server/index.js';
-import { TimeConfig } from './config.js';
+import { TimeConfig } from '@Plugins/world/shared/config.js';
 import './api.js';
 
 const Rebar = useRebar();
@@ -59,7 +59,7 @@ alt.on('rebar:timeChanged', updateAllPlayers);
 
 alt.on('playerConnect', (player: alt.Player) => {
     disableServerTimeUpdate(player);
-    Rebar.player.useWorld(player).setTime(17, 0, 0);
+    Rebar.player.useWorld(player).setTime(15, 0, 0);
 });
 alt.on('rebar:playerCharacterBound', (player: alt.Player) => {
     const time = timeService.getTime();

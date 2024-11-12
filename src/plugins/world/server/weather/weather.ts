@@ -1,6 +1,6 @@
 import * as alt from 'alt-server';
 import { useRebar } from '@Server/index.js';
-import { WeatherConfig } from './config.js';
+import { WeatherConfig } from '../../shared/config.js';
 import { Weathers } from '@Shared/data/weathers.js';
 import './api.js';
 
