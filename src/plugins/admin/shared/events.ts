@@ -5,6 +5,9 @@ export const AdminEvents = {
         disable: 'adminevents:noclip:disable',
     },
     rpctoServer: {
-        isAdmin: 'adminevents:rpctoserver:isadmin'
-    }
+        isAdmin: 'adminevents:rpctoserver:isadmin',
+    },
+    toServer: {
+        setWeather: 'adminevent:toserver:setweather',
+    },
 };
