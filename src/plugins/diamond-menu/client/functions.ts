@@ -10,6 +10,9 @@ const webview = Rebar.webview.useWebview();
 const messenger = Rebar.messenger.useMessenger();
 
 export async function parseItemsToWebview() {
+    if (!alt.getMeta('control-menu-open')) {
+        return;
+    }
     const items = getMenuItems();
 
     const validItems = await filterItems(items, true);
@@ -73,6 +76,7 @@ export async function handleClick(layers: number[], index: number) {
     // if theres more layers
 
     for (const layer of layers) {
+        if (!currentItems[layer]) break;
         if (!currentItems[layer].submenu) break;
         currentItems = currentItems[layer].submenu;
     }

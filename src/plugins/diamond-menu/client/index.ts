@@ -15,6 +15,10 @@ function runChecks() {
         return false;
     }
 
+    if (alt.getMeta('isEnteringORLeavingVehicle')) {
+        return false;
+    }
+
     return true;
 }
 
@@ -37,3 +41,19 @@ alt.on('windowFocusChange', (isFocused: boolean) => {
 
 webview.on(DiamondMenuEvents.toClient.getItems, parseItemsToWebview);
 webview.on(DiamondMenuEvents.toClient.onClick, handleClick);
+alt.on('startLeavingVehicle', () => {
+    alt.setMeta('isEnteringORLeavingVehicle', true);
+});
+alt.on('leftVehicle', () => {
+    alt.setMeta('isEnteringORLeavingVehicle', false);
+    handleClose();
+});
+
+alt.on('startEnteringVehicle', () => {
+    alt.setMeta('isEnteringORLeavingVehicle', true);
+});
+
+alt.on('enteredVehicle', () => {
+    alt.setMeta('isEnteringORLeavingVehicle', false);
+    handleClose();
+});
