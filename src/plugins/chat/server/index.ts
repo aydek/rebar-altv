@@ -13,6 +13,7 @@ const messenger = Rebar.messenger.useMessenger();
 
 alt.onRpc(ChatEvents.toServer.getCommands, async (player: alt.Player) => {
     const commands = await messenger.commands.getCommands(player);
+
     return commands;
 });
 
