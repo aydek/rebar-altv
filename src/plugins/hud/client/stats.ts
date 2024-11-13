@@ -72,11 +72,12 @@ export function updateStats() {
     if (alt.LocalStorage.get(HudSettingsKeys.statsHidden)) {
         return;
     }
-    
+
     const data = [];
     if (alt.Player.local.isDead) {
         for (const item of stats) {
-            if (item.id === 'stat-mic') data.push({ id: item.id, value: item.value(), hidden: item.hidden(), active: item.active() });
+            if (item.id === 'stat-mic')
+                data.push({ id: item.id, value: item.value(), hidden: item.hidden(), active: item.active() });
             else if (item.id === 'stat-dead') data.push({ id: item.id, value: 0, hidden: false, active: false });
             else data.push({ id: item.id, value: 0, hidden: true, active: false });
         }
