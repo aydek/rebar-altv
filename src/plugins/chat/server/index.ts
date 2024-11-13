@@ -32,6 +32,7 @@ function showOverlay(player: alt.Player) {
 
 alt.onRpc(ChatEvents.toServer.getCommands, async (player: alt.Player) => {
     const commands = await messenger.commands.getCommands(player);
+    alt.log('sending comannds to cliet');
     return commands;
 });
 
