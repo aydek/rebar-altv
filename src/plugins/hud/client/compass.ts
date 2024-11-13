@@ -22,7 +22,9 @@ export function updateCompass() {
     const street = native.getStreetNameAtCoord(alt.Player.local.pos.x, alt.Player.local.pos.y, alt.Player.local.pos.z);
     const streetName = native.getStreetNameFromHashKey(street[1]);
     const crossingName = native.getStreetNameFromHashKey(street[2]);
-    const zoneName = native.getFilenameForAudioConversation(native.getNameOfZone(alt.Player.local.pos.x, alt.Player.local.pos.y, alt.Player.local.pos.z));
+    const zoneName = native.getFilenameForAudioConversation(
+        native.getNameOfZone(alt.Player.local.pos.x, alt.Player.local.pos.y, alt.Player.local.pos.z),
+    );
 
     let crossing = '';
 
