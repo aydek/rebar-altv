@@ -3,12 +3,14 @@ const { setBulk } = useTranslate();
 
 setBulk({
     en: {
+        'chat:chat': 'Chat',
         'chat:placeholder': 'Input message...',
         'chat:setting:timestaps': 'Show timestamps at the messages',
         'chat:setting:autohide': 'Automatically hide chat',
         'chat:setting:fontsize': 'Fontsize',
     },
     lt: {
+        'chat:chat': `Chat'as`,
         'chat:placeholder': 'Įveskite tekstą...',
         'chat:setting:timestaps': 'Rodyti laiką prie žinučių',
         'chat:setting:autohide': 'Automatiškai paslėpti',

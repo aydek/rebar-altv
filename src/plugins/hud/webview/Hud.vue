@@ -9,12 +9,14 @@ import { HudEvents } from '../shared/events';
 import Stats from './components/Stats.vue';
 import { useLocalStorage } from '@Composables/useLocalStorage';
 import { HudSettingsKeys } from '../shared/settings';
+import { twMerge } from 'tailwind-merge';
 
 const store = useStore();
 const events = useEvents();
 const storage = useLocalStorage();
+const allHidden = ref(true);
 
-onMounted(() => {
+onMounted(async () => {
     events.emitClient(HudEvents.toClient.startInterval);
     events.on(HudEvents.toWebview.setCompass, store.setCompass);
     events.on(HudEvents.toWebview.setSpeedo, store.setSpeedo);
@@ -26,11 +28,12 @@ onMounted(() => {
             }
         }, 30);
     }
+    allHidden.value = await storage.get(HudSettingsKeys.allHidden);
 });
 </script>
 
 <template>
-    <div v-if="!storage.get(HudSettingsKeys.allHidden)">
+    <div :class="twMerge('transition-all', allHidden && 'opacity-0')">
         <Compass />
         <Speedometer />
         <Stats />

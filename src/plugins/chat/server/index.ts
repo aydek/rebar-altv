@@ -33,5 +33,9 @@ function handlePlayerMessage(player: alt.Player, msg: string) {
     }
 }
 
-alt.on('rebar:playerCharacterBound', (player: alt.Player) => alt.emitClient(player, ChatEvents.toClient.showOverlay));
+alt.on('rebar:playerCharacterBound', (player: alt.Player, doc: Character) => {
+    const webview = Rebar.player.useWebview(player);
+    webview.show('Chat', 'overlay');
+    alt.log('chat:characterbound:showoverlay');
+});
 alt.on('rebar:playerSendMessage', handlePlayerMessage);

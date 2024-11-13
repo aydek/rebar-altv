@@ -2,13 +2,20 @@
 import { useLocalStorage } from '@Composables/useLocalStorage';
 import { useStore } from '../store';
 import { HudSettingsKeys } from '@Plugins/hud/shared/settings';
+import { onMounted, ref } from 'vue';
+import { twMerge } from 'tailwind-merge';
 
 const store = useStore();
 const storage = useLocalStorage();
+const compassHidden = ref(true);
+
+onMounted(async () => {
+    compassHidden.value = await storage.get(HudSettingsKeys.compassHidden);
+});
 </script>
 
 <template>
-    <div class="compass-wrapper" v-if="!storage.get(HudSettingsKeys.compassHidden)">
+    <div :class="twMerge('compass-wrapper transition-all', compassHidden && 'opacity-0')">
         <div class="street-container">
             <div class="area">{{ store.compass.area }}</div>
         </div>

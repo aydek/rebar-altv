@@ -13,6 +13,7 @@ import { HudSettingsKeys } from '@Plugins/hud/shared/settings';
 
 const events = useEvents();
 const storage = useLocalStorage();
+const statsHidden = ref(true);
 
 const stats = ref<ISanitizedStatsItem[]>(altInWindow() ? [] : dummyStats);
 
@@ -30,6 +31,8 @@ onMounted(async () => {
     events.on(HudEvents.toWebview.setStats, handleUpdate);
     const data = await events.emitClientRpc(HudEvents.toClient.getStatsRPC);
     if (data) stats.value = data;
+
+    statsHidden.value = await storage.get(HudSettingsKeys.statsHidden);
 });
 
 function calculateValue(item: ISanitizedStatsItem) {
@@ -50,7 +53,7 @@ function toggleHidden() {
 <template>
     <Button class="absolute left-2 top-2" v-if="!altInWindow()" @click="toggleHidden"> Toggle </Button>
 
-    <div class="fixed bottom-3 left-0 flex w-full justify-start" v-if="!storage.get(HudSettingsKeys.statsHidden)">
+    <div :class="twMerge('fixed bottom-3 left-0 flex w-full justify-start transition-all', statsHidden && 'opacity-0')">
         <div
             v-for="item of stats"
             :class="twMerge('mx-2 flex flex-col items-center justify-center transition-all duration-500', item.hidden && '-mx-5 translate-y-[200%]')"

@@ -5,7 +5,7 @@ const settingsApi = useSettingsAPI();
 
 settingsApi.add({
     title: 'Hud',
-    icon: 'icon-hud',
+    icon: 'icon-fit_screen',
     options: [
         {
             title: 'Hide hud',

@@ -7,7 +7,7 @@ const settingsApi = useSettingsAPI();
 const { t } = useTranslate();
 
 settingsApi.add({
-    title: 'Chat',
+    title: t('chat:chat'),
     icon: 'icon-chat',
     options: [
         {

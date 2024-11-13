@@ -5,9 +5,11 @@ import { useStore } from '../store';
 import Icon from '@Components/Icon.vue';
 import { useLocalStorage } from '@Composables/useLocalStorage';
 import { HudSettingsKeys } from '@Plugins/hud/shared/settings';
+import { onMounted, ref } from 'vue';
 
 const store = useStore();
 const storage = useLocalStorage();
+const speedHidden = ref(true);
 
 function formatNumberWithZeros(number: number) {
     const formattedNumber = String(number).padStart(3, '0');
@@ -18,13 +20,14 @@ function formatMileage(number: number) {
     const fnumber = String(number).padStart(7, '0');
     return [fnumber[0], fnumber[1], fnumber[2], fnumber[3], fnumber[4], fnumber[5], fnumber[6]];
 }
+
+onMounted(async () => {
+    speedHidden.value = await storage.get(HudSettingsKeys.speedoHidden);
+});
 </script>
 
 <template>
-    <div
-        :class="twMerge('fixed bottom-14 right-8  opacity-0 transition-opacity', store.speedo.show && 'opacity-100')"
-        v-if="!storage.get(HudSettingsKeys.speedoHidden)"
-    >
+    <div :class="twMerge('fixed bottom-14 right-8  opacity-0 transition-opacity', speedHidden ? 'opacity-0' : store.speedo.show && 'opacity-100')">
         <div
             :class="
                 twMerge(

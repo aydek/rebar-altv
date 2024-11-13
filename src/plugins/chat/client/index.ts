@@ -8,12 +8,7 @@ const Rebar = useRebarClient();
 const messenger = Rebar.messenger.useMessenger();
 const webview = Rebar.webview.useWebview();
 
-let isOverlayOpen = false;
 
-function showOverlay() {
-    webview.show('Chat', 'overlay');
-    isOverlayOpen = true;
-}
 
 function focusChat(prefix: string = '') {
     if (messenger.isChatFocused()) {
@@ -44,15 +39,18 @@ function unfocusChat() {
 }
 
 alt.on('keyup', (key: number) => {
-    if (!isOverlayOpen) {
+    if (!webview.isOverlayOpen('Chat')) {
+        alt.log('chat:client:overlayopen');
         return;
     }
 
     if (webview.isAnyPageOpen()) {
+        alt.log('chat:client:anypageopen');
         return;
     }
 
     if (alt.isConsoleOpen()) {
+        alt.log('chat:client:consoleopen');
         return;
     }
 
@@ -68,5 +66,4 @@ alt.on('keyup', (key: number) => {
     }
 });
 
-alt.onServer(ChatEvents.toClient.showOverlay, showOverlay);
 webview.on(ChatEvents.toClient.unfocus, unfocusChat);
