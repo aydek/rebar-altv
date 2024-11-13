@@ -94,7 +94,10 @@ export function updateSpeedometer() {
     ) {
         units = 'KN';
         realSpeed = parseInt((currentSpeed * 1.943844).toFixed(0));
-        if (native.getVehicleClass(veh) === VehicleClass.Helicopters || native.getVehicleClass(veh) === VehicleClass.Planes) {
+        if (
+            native.getVehicleClass(veh) === VehicleClass.Helicopters ||
+            native.getVehicleClass(veh) === VehicleClass.Planes
+        ) {
             rpm = veh.pos.z / 1000;
             if (rpm < 0) rpm = 0;
             if (rpm > 1) rpm = 1;
