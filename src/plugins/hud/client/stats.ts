@@ -2,6 +2,7 @@ import * as alt from 'alt-client';
 import { ISanitizedStatsItem, IStatsItem } from '../shared/types.js';
 import { useRebarClient } from '@Client/index.js';
 import { HudEvents } from '../shared/events.js';
+import { HudSettingsKeys } from '../shared/settings.js';
 
 const Rebar = useRebarClient();
 const webview = Rebar.webview.useWebview();
@@ -68,6 +69,10 @@ const stats: IStatsItem[] = [
 ];
 
 export function updateStats() {
+    if (alt.LocalStorage.get(HudSettingsKeys.statsHidden)) {
+        return;
+    }
+    
     const data = [];
     if (alt.Player.local.isDead) {
         for (const item of stats) {

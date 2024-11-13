@@ -8,8 +8,11 @@ import { twMerge } from 'tailwind-merge';
 import { onMounted, ref } from 'vue';
 import { dummyStats } from '../dunnyStats';
 import Button from '@Components/Button.vue';
+import { useLocalStorage } from '@Composables/useLocalStorage';
+import { HudSettingsKeys } from '@Plugins/hud/shared/settings';
 
 const events = useEvents();
+const storage = useLocalStorage();
 
 const stats = ref<ISanitizedStatsItem[]>(altInWindow() ? [] : dummyStats);
 
@@ -47,7 +50,7 @@ function toggleHidden() {
 <template>
     <Button class="absolute left-2 top-2" v-if="!altInWindow()" @click="toggleHidden"> Toggle </Button>
 
-    <div class="fixed bottom-3 left-0 flex w-full justify-start">
+    <div class="fixed bottom-3 left-0 flex w-full justify-start" v-if="!storage.get(HudSettingsKeys.statsHidden)">
         <div
             v-for="item of stats"
             :class="twMerge('mx-2 flex flex-col items-center justify-center transition-all duration-500', item.hidden && '-mx-5 translate-y-[200%]')"

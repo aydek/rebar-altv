@@ -1,11 +1,14 @@
 <script lang="ts" setup>
+import { useLocalStorage } from '@Composables/useLocalStorage';
 import { useStore } from '../store';
+import { HudSettingsKeys } from '@Plugins/hud/shared/settings';
 
 const store = useStore();
+const storage = useLocalStorage();
 </script>
 
 <template>
-    <div class="compass-wrapper">
+    <div class="compass-wrapper" v-if="!storage.get(HudSettingsKeys.compassHidden)">
         <div class="street-container">
             <div class="area">{{ store.compass.area }}</div>
         </div>

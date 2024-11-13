@@ -3,8 +3,11 @@ import { twMerge } from 'tailwind-merge';
 import { useStore } from '../store';
 
 import Icon from '@Components/Icon.vue';
+import { useLocalStorage } from '@Composables/useLocalStorage';
+import { HudSettingsKeys } from '@Plugins/hud/shared/settings';
 
 const store = useStore();
+const storage = useLocalStorage();
 
 function formatNumberWithZeros(number: number) {
     const formattedNumber = String(number).padStart(3, '0');
@@ -18,7 +21,10 @@ function formatMileage(number: number) {
 </script>
 
 <template>
-    <div :class="twMerge('fixed bottom-14 right-8  opacity-0 transition-opacity', store.speedo.show && 'opacity-100')">
+    <div
+        :class="twMerge('fixed bottom-14 right-8  opacity-0 transition-opacity', store.speedo.show && 'opacity-100')"
+        v-if="!storage.get(HudSettingsKeys.speedoHidden)"
+    >
         <div
             :class="
                 twMerge(

@@ -7,9 +7,12 @@ import { useStore } from './store';
 import { useEvents } from '@Composables/useEvents';
 import { HudEvents } from '../shared/events';
 import Stats from './components/Stats.vue';
+import { useLocalStorage } from '@Composables/useLocalStorage';
+import { HudSettingsKeys } from '../shared/settings';
 
 const store = useStore();
 const events = useEvents();
+const storage = useLocalStorage();
 
 onMounted(() => {
     events.emitClient(HudEvents.toClient.startInterval);
@@ -27,7 +30,9 @@ onMounted(() => {
 </script>
 
 <template>
-    <Compass />
-    <Speedometer />
-    <Stats />
+    <div v-if="!storage.get(HudSettingsKeys.allHidden)">
+        <Compass />
+        <Speedometer />
+        <Stats />
+    </div>
 </template>
