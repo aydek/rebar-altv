@@ -3,24 +3,26 @@ import { altInWindow } from '@Composables/altInWindow';
 import { ISettingsItem } from '../shared/types';
 import { dummyData } from './dummy';
 import { onMounted, ref } from 'vue';
-import CenterBox from '@Components/CenterBox.vue';
 import Icon from '@Components/Icon.vue';
-import Button from '@Components/Button.vue';
+import CloseButton from '@Components/CloseButton.vue';
 import { twMerge } from 'tailwind-merge';
 import CheckBox from '@Components/CheckBox.vue';
 import Slider from '@Components/Slider.vue';
 import { useEvents } from '@Composables/useEvents';
 import { useLocalStorage } from '@Composables/useLocalStorage';
 import { SettingsEvents } from '../shared/events';
+import FullScreenBG from '@Components/FullScreenBG.vue';
 
 const events = useEvents();
 const altStorage = useLocalStorage();
 
 const settings = ref<ISettingsItem[]>(altInWindow() ? [] : dummyData);
-const tabIndex = ref(0);
 
 onMounted(async () => {
     const result = await events.emitClientRpc(SettingsEvents.toClient.fetchItems);
+    if (!result) {
+        return;
+    }
     settings.value = result;
 });
 
@@ -33,42 +35,39 @@ function handleClose() {
 }
 </script>
 <template>
-    <CenterBox class="w-1/4" v-if="settings.length > 0" @onClose="handleClose">
-        <div class="flex w-full">
-            <template v-for="(item, index) of settings">
-                <Button
-                    :type="tabIndex === index ? 'primary' : 'secondary'"
+    <FullScreenBG class="grid place-items-center">
+        <CloseButton @on-close="handleClose" />
+        <div class="flex max-h-[60rem] w-[40rem] flex-col overflow-y-scroll rounded-xl bg-neutral-900 bg-opacity-90 p-5">
+            <div v-for="(item, index) of settings" class="flex w-full">
+                <div
                     :class="
-                        twMerge(
-                            'w-full',
-                            index === 0 && 'rounded-r-none border-r-0',
-                            index > 0 && index < settings.length - 1 && 'rounded-l-none rounded-r-none border-x-0',
-                            index >= settings.length - 1 && 'rounded-l-none border-l-0',
-                        )
+                        twMerge('flex w-28 flex-col items-center justify-center gap-4 border-r border-neutral-700', index < settings.length - 1 && 'border-b')
                     "
-                    @click="() => (tabIndex = index)"
                 >
-                    <Icon class="h-auto" :icon="item.icon" :size="3" />
+                    <Icon class="h-auto" :icon="item.icon" :size="2" />
                     <div>{{ item.title }}</div>
-                </Button>
-            </template>
-        </div>
-
-        <div class="mt-5 flex flex-col gap-2 whitespace-nowrap font-semibold">
-            <template v-for="item of settings[tabIndex].options">
-                <div class="flex items-center justify-between">
-                    <div>{{ item.title }}:</div>
-                    <CheckBox v-if="item.type === 'checkbox'" :checked="item.value as boolean" @onToggle="(val: boolean) => setValue(item.key, val)" />
-                    <Slider
-                        v-if="item.type === 'slider'"
-                        :value="item.value as number"
-                        :min="item.min"
-                        :max="item.max"
-                        :step="item.step"
-                        @onChange="(val: number) => setValue(item.key, val)"
-                    />
                 </div>
-            </template>
+                <div class="flex w-full flex-col gap-2 whitespace-nowrap py-5 pl-5 font-semibold">
+                    <template v-for="optionItem of item.options">
+                        <div class="flex items-center justify-between">
+                            <div>{{ optionItem.title }}:</div>
+                            <CheckBox
+                                v-if="optionItem.type === 'checkbox'"
+                                :checked="optionItem.value as boolean"
+                                @onToggle="(val: boolean) => setValue(optionItem.key, val)"
+                            />
+                            <Slider
+                                v-if="optionItem.type === 'slider'"
+                                :value="optionItem.value as number"
+                                :min="optionItem.min"
+                                :max="optionItem.max"
+                                :step="optionItem.step"
+                                @onChange="(val: number) => setValue(optionItem.key, val)"
+                            />
+                        </div>
+                    </template>
+                </div>
+            </div>
         </div>
-    </CenterBox>
+    </FullScreenBG>
 </template>
