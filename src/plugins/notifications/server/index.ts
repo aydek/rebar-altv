@@ -6,7 +6,7 @@ const Rebar = useRebar();
 
 function showNotificationWebview(player: alt.Player) {
     const webview = Rebar.player.useWebview(player);
-    webview.show('Notifications', 'persistent')
+    webview.show('Notifications', 'persistent');
 }
 
 alt.on('rebar:playerAccountBound', showNotificationWebview);
