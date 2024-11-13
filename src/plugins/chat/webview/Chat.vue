@@ -41,9 +41,6 @@ messenger.onUpdate(() => {
     }, 50);
 });
 
-function setCommands(data: CommandInfo[]) {
-    store.setSuggestions(data);
-}
 
 function emitInterval() {
     if (!store.settings.value.autohide) {
@@ -60,8 +57,7 @@ function emitInterval() {
     }
 }
 
-
-onMounted(async () => {
+onMounted(() => {
     events.on(ChatEvents.toWebview.focus, (command: string) => {
         store.setFocus(true);
         prefix.value = command;
@@ -82,10 +78,14 @@ onMounted(async () => {
     const interval = setInterval(emitInterval, 1000);
 
     onUnmounted(() => clearInterval(interval));
-    
-    const data = await events.emitServerRpc(ChatEvents.toServer.getCommands);
 
-    setCommands(data);
+    async function init() {
+        const data = await events.emitServerRpc(ChatEvents.toServer.getCommands);
+
+        store.setSuggestions(data);
+    }
+
+    init();
 });
 
 function mockMessages() {
