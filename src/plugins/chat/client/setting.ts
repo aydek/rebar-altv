@@ -1,26 +1,29 @@
+import { useTranslate } from '@Shared/translate.js';
 import { chatSettingsKeys } from '../shared/config.js';
 import { useSettingsAPI } from '@Plugins/settings/client/api.js';
+import '../translate/index.js';
 
 const settingsApi = useSettingsAPI();
+const { t } = useTranslate();
 
 settingsApi.add({
     title: 'Chat',
     icon: 'icon-chat',
     options: [
         {
-            title: 'Timestamps',
+            title: t('chat:setting:timestaps'),
             type: 'checkbox',
             key: chatSettingsKeys.timestamps,
             value: false,
         },
         {
-            title: 'Automatically hide',
+            title: t('chat:setting:autohide'),
             type: 'checkbox',
             key: chatSettingsKeys.autohide,
             value: true,
         },
         {
-            title: 'Font size',
+            title: t('chat:setting:fontsize'),
             type: 'slider',
             key: chatSettingsKeys.fontsize,
             value: 1.2,
