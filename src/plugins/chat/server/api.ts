@@ -1,5 +1,6 @@
 import * as alt from 'alt-server';
 import { ChatEvents } from '../shared/events.js';
+import { useApi } from '@Server/api/index.js';
 
 type PlayerChatCallback = (player: alt.Player, isChatting: boolean) => void;
 
@@ -14,7 +15,7 @@ function handleIsChatting(player: alt.Player, value: boolean) {
     }
 }
 
-function useChatAPI() {
+export function useChatAPI() {
     function isChatting(player: alt.Player) {
         return player.getMeta(sessionKey) ? true : false;
     }
@@ -28,5 +29,13 @@ function useChatAPI() {
         onChatStatusChange,
     };
 }
+
+declare global {
+    export interface ServerPlugin {
+        ['chat-api']: ReturnType<typeof useChatAPI>;
+    }
+}
+
+useApi().register('chat-api', useChatAPI());
 
 alt.onClient(ChatEvents.toServer.isChatting, handleIsChatting);
