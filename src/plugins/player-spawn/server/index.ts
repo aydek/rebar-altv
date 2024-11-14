@@ -10,25 +10,21 @@ const spawnCoords = new alt.Vector3(0, 0, 72);
 
 async function handleSpawn(player: alt.Player, character: Character) {
     const world = Rebar.player.useWorld(player);
-    const clothing = Rebar.player.useClothing(player);
-    const appearance = Rebar.player.usePlayerAppearance(player);
-    const state = Rebar.player.useState(player);
-
-    appearance.sync();
-    clothing.sync();
-    state.sync();
 
     if (character.newCharacter) {
         player.pos = spawnCoords;
-        db.update<Character>({ newCharacter: false, _id: character._id, account_id: character.account_id }, CollectionNames.Characters);
+        db.update<Character>(
+            { newCharacter: false, _id: character._id, account_id: character.account_id },
+            CollectionNames.Characters,
+        );
     }
 
     player.frozen = false;
     player.visible = true;
+
+    await alt.Utils.wait(2000);
     world.clearScreenFade(500);
+    alt.emit('playerFullySpawned', player);
 }
 
-alt.on('rebar:playerCharacterBound',  handleSpawn);
-
-
-
+alt.on('rebar:playerCharacterBound', handleSpawn);

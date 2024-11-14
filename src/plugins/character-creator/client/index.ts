@@ -3,20 +3,16 @@ import * as native from 'natives';
 import { useClonedPed } from '@Client/ped/clone.js';
 import { useWebview } from '@Client/webview/index.js';
 import { Appearance } from '@Shared/types/appearance.js';
-
 import { DefaultAppearance, DefaultClothes } from '../shared/defaultAppearance.js';
 import { CharacterCreatorEvents } from '../shared/events.js';
 import { clone } from '@Shared/utility/index.js';
 import { ClothingComponent } from '@Shared/types/clothingComponent.js';
-import { useClientApi } from '@Client/api/index.js';
-
 import '../translate/index.js';
 import { useTranslate } from '@Shared/translate.js';
 import { useInstructionKeysAPI } from '@Plugins/instruction-keys/client/api.js';
 
 const pedClone = useClonedPed();
 const webview = useWebview();
-const api = useClientApi();
 const { t } = useTranslate();
 
 let appearance: Appearance = clone.objectData(DefaultAppearance);
@@ -69,7 +65,7 @@ async function handleTogglePedEdit() {
         { key: 'icon-cartwheel', text: t('character.creator.zoom') },
     ]);
 }
- function handleBack() {
+function handleBack() {
     alt.setConfigFlag('DISABLE_IDLE_CAMERA', false);
     native.doScreenFadeOut(0);
     alt.off('disconnect', pedClone.ped.destroy);

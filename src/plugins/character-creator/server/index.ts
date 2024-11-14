@@ -9,8 +9,8 @@ import { ClothingComponent } from '@Shared/types/clothingComponent.js';
 import { useCharacterSelectAPI } from '@Plugins/character-select/server/api.js';
 
 const Rebar = useRebar();
-const api = Rebar.useApi();
 const db = Rebar.database.useDatabase();
+const select = useCharacterSelectAPI();
 const sessionKey = 'character-creator';
 
 declare module '@Shared/types/character.js' {
@@ -51,7 +51,14 @@ async function handleNameCheck(player: alt.Player, firstName: string, lastName: 
     webview.emit(CharacterCreatorEvents.toServer.nameCheck, document ? true : false);
 }
 
-async function handleSave(player: alt.Player, firstName: string, lastName: string, age: number, appearance: Appearance, clothes: ClothingComponent[]) {
+async function handleSave(
+    player: alt.Player,
+    firstName: string,
+    lastName: string,
+    age: number,
+    appearance: Appearance,
+    clothes: ClothingComponent[],
+) {
     if (!player.getMeta(sessionKey)) {
         player.kick('');
         return;
@@ -87,12 +94,7 @@ async function handleSave(player: alt.Player, firstName: string, lastName: strin
     alt.emitClient(player, CharacterCreatorEvents.toClient.creationDone);
 }
 
-async function init() {
-    const select = useCharacterSelectAPI();
-    select.onOpenCreator(showCreator);
-    alt.onClient(CharacterCreatorEvents.toServer.exit, handdleExit);
-    alt.onClient(CharacterCreatorEvents.toServer.nameCheck, handleNameCheck);
-    alt.onClient(CharacterCreatorEvents.toServer.save, handleSave);
-}
-
-init();
+select.onOpenCreator(showCreator);
+alt.onClient(CharacterCreatorEvents.toServer.exit, handdleExit);
+alt.onClient(CharacterCreatorEvents.toServer.nameCheck, handleNameCheck);
+alt.onClient(CharacterCreatorEvents.toServer.save, handleSave);

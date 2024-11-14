@@ -34,5 +34,5 @@ alt.onRpc(ChatEvents.toServer.getCommands, async (player: alt.Player) => {
     return commands;
 });
 
-alt.on('rebar:playerCharacterBound', showOverlay);
+alt.on('playerFullySpawned', showOverlay);
 alt.on('rebar:playerSendMessage', handlePlayerMessage);

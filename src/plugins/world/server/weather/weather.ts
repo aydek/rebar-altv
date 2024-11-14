@@ -54,7 +54,7 @@ alt.on('playerConnect', (player: alt.Player) => {
     updatePlayerWeather(player, 'EXTRASUNNY');
 });
 
-alt.on('rebar:playerCharacterBound', (player: alt.Player) => {
+alt.on('playerFullySpawned', (player: alt.Player) => {
     enableServerWeatherUpdate(player);
     updatePlayerWeather(player, weatherService.getWeather());
 });

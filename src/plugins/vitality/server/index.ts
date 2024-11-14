@@ -63,7 +63,7 @@ function onUpdate(player: alt.Player, key: keyof IVitals, value: number) {
 }
 
 alt.onClient(VitalityEvents.toServer.tick, handleTick);
-alt.on('rebar:playerCharacterBound', (player: alt.Player) => {
+alt.on('playerFullySpawned', (player: alt.Player) => {
     handleTick(player, 0);
     alt.emitClient(player, VitalityEvents.toClient.startTick);
 });

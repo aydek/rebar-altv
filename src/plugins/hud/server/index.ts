@@ -9,4 +9,4 @@ function showHud(player: alt.Player) {
     webview.show('Hud', 'overlay');
 }
 
-alt.on('rebar:playerCharacterBound', showHud);
+alt.on('playerFullySpawned', showHud);

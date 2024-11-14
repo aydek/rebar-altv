@@ -61,7 +61,7 @@ alt.on('playerConnect', (player: alt.Player) => {
     disableServerTimeUpdate(player);
     Rebar.player.useWorld(player).setTime(15, 0, 0);
 });
-alt.on('rebar:playerCharacterBound', (player: alt.Player) => {
+alt.on('playerFullySpawned', (player: alt.Player) => {
     const time = timeService.getTime();
     Rebar.player.useWorld(player).setTime(time.hour, time.minute, time.second);
     enableServerTimeUpdate(player);

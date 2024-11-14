@@ -1,5 +1,6 @@
 import * as alt from 'alt-server';
 import { Character } from '@Shared/types/character.js';
+import { useApi } from '@Server/api/index.js';
 
 type PlayerCharacterCallback = (player: alt.Player, character: Character) => void;
 type CreatorOpenCallback = (player: alt.Player) => void;
@@ -33,3 +34,12 @@ export function useCharacterSelectAPI() {
         onOpenCreator,
     };
 }
+
+declare global {
+    export interface ServerPlugin {
+        ['character-select-api']: ReturnType<typeof useCharacterSelectAPI>;
+    }
+}
+
+
+useApi().register('character-select-api', useCharacterSelectAPI());

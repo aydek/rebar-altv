@@ -6,9 +6,12 @@ import { Character } from '@Shared/types/character.js';
 import { CollectionNames } from '@Server/document/shared.js';
 import { useCreatorAPI } from '@Plugins/character-creator/server/api.js';
 import { useDiscordAuthAPI } from '@Plugins/discord-auth/server/api.js';
+import './api.js';
 
 const Rebar = useRebar();
 const db = Rebar.database.useDatabase();
+const auth = useDiscordAuthAPI();
+const creator = useCreatorAPI();
 const sessionKey = 'can-select-character';
 
 const spawnCoords = {
@@ -27,7 +30,10 @@ async function getCharacters(player: alt.Player): Promise<Character[] | undefine
         return undefined;
     }
 
-    const characters = await db.getMany<Character>({ account_id: accDocument.getField('_id') }, CollectionNames.Characters);
+    const characters = await db.getMany<Character>(
+        { account_id: accDocument.getField('_id') },
+        CollectionNames.Characters,
+    );
 
     characters.sort((a, b) => b.lastPlayed - a.lastPlayed);
 
@@ -48,21 +54,27 @@ async function getCharacter(player: alt.Player, id: string): Promise<Character |
 }
 
 async function showSelection(player: alt.Player) {
-    await alt.Utils.wait(100);
     if (!player.getMeta(sessionKey)) {
         return;
     }
-    const playerWorld = Rebar.player.useWorld(player);
+
+    await alt.Utils.wait(200);
+
     player.emit(CharacterSelectEvents.toClient.toggleControls, false);
 
+    const playerWorld = Rebar.player.useWorld(player);
     const characters = await getCharacters(player);
-
     const webview = Rebar.player.useWebview(player);
+
+    if (characters && characters.length > 0) {
+        syncAppearance(player, characters[0]._id);
+    }
+
+    await alt.Utils.wait(1500);
+
     webview.show('CharacterSelect', 'page');
     await webview.isReady('CharacterSelect', 'page');
-
     webview.emit(CharacterSelectEvents.toWebview.setCharacters, characters);
-    await alt.Utils.wait(500);
     playerWorld.clearScreenFade(500);
 }
 
@@ -73,9 +85,7 @@ async function handleLogin(player: alt.Player) {
     player.rot = new alt.Vector3(spawnCoords.rot.x, spawnCoords.rot.y, spawnCoords.rot.z);
     player.frozen = true;
     player.visible = false;
-    await alt.Utils.wait(500);
     player.setMeta(sessionKey, true);
-    player.dimension = player.id + 1;
     showSelection(player);
 }
 
@@ -138,28 +148,18 @@ async function handleSpawnCharacter(player: alt.Player, id: string) {
 
     world.setScreenFade(0);
 
-    await alt.Utils.wait(500);
-
-    Rebar.document.character.useCharacterBinder(player).bind(character);
-
-    webview.hide('CharacterSelect');
-
     player.dimension = 0;
-
+    Rebar.document.character.useCharacterBinder(player).bind(character);
+    webview.hide('CharacterSelect');
     player.emit(CharacterSelectEvents.toClient.toggleControls, true);
     player.deleteMeta(sessionKey);
+
     PluginAPI.invokeSelect(player, character);
 }
 
-function init() {
-    const auth = useDiscordAuthAPI();
-    const creator = useCreatorAPI();
-    creator.onExit(showSelection);
-    auth.onLogin(handleLogin);
-    alt.onClient(CharacterSelectEvents.toServer.openCreator, openCreator);
-    alt.onClient(CharacterSelectEvents.toServer.delete, handleDelete);
-    alt.onClient(CharacterSelectEvents.toServer.syncAppearance, syncAppearance);
-    alt.onClient(CharacterSelectEvents.toServer.handlePlay, handleSpawnCharacter);
-}
-
-init();
+creator.onExit(showSelection);
+auth.onLogin(handleLogin);
+alt.onClient(CharacterSelectEvents.toServer.openCreator, openCreator);
+alt.onClient(CharacterSelectEvents.toServer.delete, handleDelete);
+alt.onClient(CharacterSelectEvents.toServer.syncAppearance, syncAppearance);
+alt.onClient(CharacterSelectEvents.toServer.handlePlay, handleSpawnCharacter);

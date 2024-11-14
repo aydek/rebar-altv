@@ -1,9 +1,10 @@
 import * as alt from 'alt-client';
 import { useRebarClient } from '@Client/index.js';
 import { ISettingsItem } from '../shared/types.js';
+import { useClientApi } from '@Client/api/index.js';
 
 const Rebar = useRebarClient();
-const api = Rebar.useClientApi();
+const api = useClientApi();
 const webview = Rebar.webview.useWebview();
 
 const allSettings: ISettingsItem[] = [];
