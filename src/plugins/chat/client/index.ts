@@ -40,17 +40,14 @@ function unfocusChat() {
 
 alt.on('keyup', (key: number) => {
     if (!webview.isOverlayOpen('Chat')) {
-        alt.log('chat:client:overlayopen');
         return;
     }
 
     if (webview.isAnyPageOpen()) {
-        alt.log('chat:client:anypageopen');
         return;
     }
 
     if (alt.isConsoleOpen()) {
-        alt.log('chat:client:consoleopen');
         return;
     }
 
