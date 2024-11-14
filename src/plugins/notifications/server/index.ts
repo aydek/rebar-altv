@@ -9,4 +9,4 @@ function showNotificationWebview(player: alt.Player) {
     webview.show('Notifications', 'persistent');
 }
 
-alt.on('rebar:playerAccountBound', showNotificationWebview);
+alt.on('playerConnect', showNotificationWebview);
