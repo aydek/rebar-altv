@@ -27,12 +27,10 @@ function handlePlayerMessage(player: alt.Player, msg: string) {
 function showOverlay(player: alt.Player) {
     const webview = Rebar.player.useWebview(player);
     webview.show('Chat', 'overlay');
-    alt.log('chat:characterbound:showoverlay');
 }
 
 alt.onRpc(ChatEvents.toServer.getCommands, async (player: alt.Player) => {
     const commands = await messenger.commands.getCommands(player);
-    alt.log('sending comannds to cliet');
     return commands;
 });
 
